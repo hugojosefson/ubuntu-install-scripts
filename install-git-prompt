@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt || (cd ~/.bash-git-prompt && git pull)
+grep gitprompt.sh ~/.bashrc || echo '. ~/.bash-git-prompt/gitprompt.sh' >> ~/.bashrc
