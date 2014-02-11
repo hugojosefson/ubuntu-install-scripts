@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+sudo aptitude update
+sudo aptitude install -y vim
+
+grep 'export EDITOR=vim' ~/.bashrc || (echo 'export EDITOR=vim' >> ~/.bashrc)
