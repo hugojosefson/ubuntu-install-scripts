@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+sudo aptitude install -y git rake
+cd $(mktemp -d)
+git clone https://github.com/github/hub.git
+cd hub
+sudo chown -R $USER:$GROUP /usr/local
+rake install prefix=/usr/local
+grep 'alias git=hub' ~/.bash_aliases || echo 'alias git=hub' >> ~/.bash_aliases
