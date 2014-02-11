@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+sudo aptitude update
+sudo aptitude install -y tilda byobu
+cat > ~/.config/autostart/tilda.desktop <<EOF
+[Desktop Entry]
+Type=Application
+Exec=tilda
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=tilda
+Name=tilda
+Comment[en_US]=
+Comment=
+EOF
