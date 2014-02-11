@@ -1,0 +1,16 @@
+#!/bin/bash
+
+wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+echo "deb http://download.virtualbox.org/virtualbox/debian $($(dirname $0)/ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+sudo aptitude update
+sudo aptitude install -y virtualbox-4.3
+
+TEMP_DIR=$(dirname $(mktemp))
+VIRTUALBOX_VERSION=$(vboxmanage --version)
+EXTPACK_VERSION=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 1)
+EXTPACK_BUILD=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 2)
+EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-${EXTPACK_VERSION}.vbox-extpack"
+EXTPACK_FILE="${TEMP_DIR}/${EXTPACK_FILENAME}"
+wget "http://download.virtualbox.org/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O ${EXTPACK_FILE}
+#sudo VBoxManage extpack uninstall "Oracle VM VirtualBox Extension Pack"
+sudo VBoxManage extpack install ${EXTPACK_FILE} --replace
