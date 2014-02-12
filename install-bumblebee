@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Reference: https://wiki.ubuntu.com/Bumblebee
+
+set -e
+
+sudo add-apt-repository ppa:bumblebee/stable
+sudo aptitude update
+sudo aptitude install -y bumblebee bumblebee-nvidia primus virtualgl linux-headers-generic
