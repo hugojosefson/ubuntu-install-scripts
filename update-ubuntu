@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Exit early if no packages seem to need upgrading
+apt-get -s -o Debug::NoLocking=true upgrade | grep -q ^Inst || exit 0
+
+sudo apt-get update
+which aptitude || sudo apt-get install -y aptitude
+sudo aptitude dist-upgrade --purge -y
+sudo aptitude autoclean
