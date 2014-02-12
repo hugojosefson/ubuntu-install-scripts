@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+gnome-open http://www.nvidia.com/object/unix.html
