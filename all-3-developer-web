@@ -6,3 +6,4 @@ set -e
 
 ./install-nvm-and-nodejs
 ./install-chrome-dev
+./install-webstorm
