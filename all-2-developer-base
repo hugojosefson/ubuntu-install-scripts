@@ -7,3 +7,4 @@ set -e
 ./install-github-git-plugin
 
 ./install-vim
+./install-meld
