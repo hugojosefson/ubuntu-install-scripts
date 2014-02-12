@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+which aptitude || sudo apt-get install -y aptitude
+which nmap || sudo aptitude install -y nmap
+which wireshark || sudo aptitude install -y wireshark
+sudo aptitude install -y netcat-traditional
