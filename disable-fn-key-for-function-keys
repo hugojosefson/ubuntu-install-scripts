@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+sudo su -c "echo -n 0x02 > /sys/module/hid_apple/parameters/fnmode"
+echo options hid_apple fnmode=2 | sudo tee /etc/modprobe.d/disable-fn-key-for-function-keys.conf
