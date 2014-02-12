@@ -3,6 +3,7 @@
 set -e
 
 sudo aptitude install -y tilda byobu
+mkdir -p ~/.config/autostart
 cat > ~/.config/autostart/tilda.desktop <<EOF
 [Desktop Entry]
 Type=Application
