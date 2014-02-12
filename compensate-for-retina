@@ -7,5 +7,5 @@ sudo sed -r 's/distance name="left_width" value="1"/distance name="left_width" v
 sudo sed -r 's/distance name="right_width" value="1"/distance name="right_width" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
 sudo sed -r 's/distance name="bottom_height" value="1"/distance name="bottom_height" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
 
-# TIP: Choose Terminus 32x16
+echo HINT: Choose Terminus 32x16
 sudo dpkg-reconfigure console-setup
