@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+which aptitude || sudo apt-get install -y aptitude
+which meld || sudo aptitude install -y meld
