@@ -2,6 +2,11 @@
 
 set -e
 
+# Exit early if already installed
+if (grep 'alias git=hub' ~/.bash_aliases); then
+  which hub && exit 0
+fi
+
 which aptitude || sudo apt-get install -y aptitude
 which git || sudo aptitude install -y git
 which rake || sudo aptitude install -y rake
