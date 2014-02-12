@@ -2,6 +2,8 @@
 
 set -e
 
+./all-1-minimal-sanity
+
 ./install-gitk
 ./install-git-prompt
 ./install-github-git-plugin
