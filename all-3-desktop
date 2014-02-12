@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+./compensate-for-retina
+./disable-fn-key-for-function-keys
+./install-chrome-dev

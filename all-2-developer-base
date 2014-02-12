@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+./install-gitk
+./install-git-prompt
+./install-github-git-plugin
+
+./install-vim

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+./disable-fn-key-for-function-keys
+./compensate-for-retina
+./install-vim
