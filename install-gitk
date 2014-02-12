@@ -2,4 +2,4 @@
 
 set -e
 
-sudo aptitude install -y gitk
+which gitk || sudo aptitude install -y gitk

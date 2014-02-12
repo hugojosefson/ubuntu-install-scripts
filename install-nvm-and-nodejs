@@ -2,7 +2,9 @@
 
 set -e
 
-sudo aptitude install -y curl git
+which aptitude || sudo apt-get install -y aptitude
+which git || sudo aptitude install -y git
+which curl || sudo aptitude install -y curl
 
 INSTALL_FILE=$(mktemp --suffix=nvm-install.sh)
 curl https://raw.github.com/creationix/nvm/master/install.sh > ${INSTALL_FILE}
