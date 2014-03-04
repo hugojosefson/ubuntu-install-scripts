@@ -12,3 +12,17 @@ Happy (re-)installing!
 
 	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/master.tar.gz | tar xzv
 	cd ubuntu-install-scripts-master
+
+## TODO
+
+I should check out:
+  * MATE 2d desktop
+    * http://wiki.mate-desktop.org/download#ubuntu_saucy_salamander_1310_repository
+    * http://itsfoss.com/install-gnome-2-fork-mate-desktop-ubuntu-1310/
+    * http://askubuntu.com/questions/87040/how-to-install-mate
+  * Any other desktop?
+    * http://askubuntu.com/questions/65083/what-different-desktop-environments-and-shells-are-available
+  * Choose an application launcher
+    * https://en.wikipedia.org/wiki/Comparison_of_applications_launchers#Linux
+  * More things to install / configure?
+    * http://itsfoss.com/things-to-do-after-installing-ubuntu-13-10/
