@@ -3,9 +3,15 @@
 set -e
 
 gsettings set org.gnome.desktop.interface text-scaling-factor 1.8
-sudo sed -r 's/distance name="left_width" value="1"/distance name="left_width" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
-sudo sed -r 's/distance name="right_width" value="1"/distance name="right_width" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
-sudo sed -r 's/distance name="bottom_height" value="1"/distance name="bottom_height" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
+
+METACITY_FILE=/usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
+if [ -f $METACITY_FILE ]; then
+  sudo sed -r 's/distance name="left_width" value="1"/distance name="left_width" value="4"/' -i $METACITY_FILE
+  sudo sed -r 's/distance name="right_width" value="1"/distance name="right_width" value="4"/' -i $METACITY_FILE
+  sudo sed -r 's/distance name="bottom_height" value="1"/distance name="bottom_height" value="4"/' -i $METACITY_FILE
+fi
+
+which xfconf-query && xfconf-query --channel xsettings --property /Xft/DPI --set 192
 
 if ! grep 'FONTSIZE="32x16"' /etc/default/console-setup; then
     sudo sed -r 's/^FONTFACE=.*/FONTFACE="Terminus"/' -i /etc/default/console-setup
