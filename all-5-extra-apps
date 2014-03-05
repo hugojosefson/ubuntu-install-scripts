@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+./all-1-minimal-sanity
+
+./install-skype
+./install-spotify
+./install-dropbox
