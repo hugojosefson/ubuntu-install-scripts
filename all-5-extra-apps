@@ -7,5 +7,6 @@ set -e
 ./install-encfs
 ./install-skype
 ./install-spotify
+./install-libreoffice
 ./install-dropbox
 ./install-crashplan
