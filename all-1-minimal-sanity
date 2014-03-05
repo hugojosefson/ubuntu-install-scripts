@@ -8,6 +8,7 @@ set -e
 ./update-ubuntu
 ./disable-nouveau
 ./disable-fn-key-for-function-keys
+./enable-swedish-keyboard
 ./enable-natural-scrolling
 ./compensate-for-retina
 ./install-tilda-and-byobu

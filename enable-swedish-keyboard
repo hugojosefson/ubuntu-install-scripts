@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+if which xfconf-query; then
+    # Don't use default keyboard settings
+    xfconf-query --channel keyboard-layout --property /Default/XkbDisable --set false
+
+    # Both shift keys to toggle keyboard layout. 
+    xfconf-query --channel keyboard-layout --property /Default/XkbOptions/Group --set grp:shifts_toggle
+
+    # Add Swedish keyboard layout
+    xfconf-query --channel keyboard-layout --property /Default/XkbLayout --set us,se
+    xfconf-query --channel keyboard-layout --property /Default/XkbVariant --set ,
+fi
