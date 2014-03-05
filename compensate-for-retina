@@ -7,4 +7,9 @@ sudo sed -r 's/distance name="left_width" value="1"/distance name="left_width" v
 sudo sed -r 's/distance name="right_width" value="1"/distance name="right_width" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
 sudo sed -r 's/distance name="bottom_height" value="1"/distance name="bottom_height" value="4"/' -i /usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
 
-grep 'FONTSIZE="32x16"' /etc/default/console-setup || (echo HINT: Choose Terminus 32x16; sudo dpkg-reconfigure console-setup)
+if ! grep 'FONTSIZE="32x16"' /etc/default/console-setup; then
+    sudo sed -r 's/^FONTFACE=.*/FONTFACE="Terminus"/' -i /etc/default/console-setup
+    sudo sed -r 's/^FONTSIZE=.*/FONTSIZE="32x16"/' -i /etc/default/console-setup
+    sudo dpkg-reconfigure --priority=critical console-setup
+    sudo setupcon --force
+fi
