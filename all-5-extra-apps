@@ -7,3 +7,4 @@ set -e
 ./install-skype
 ./install-spotify
 ./install-dropbox
+./install-crashplan

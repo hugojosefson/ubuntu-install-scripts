@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+if ! which CrashPlanDesktop; then
+    if ! which hxnormalize; then
+        which aptitude || sudo apt-get install -y aptitude
+        sudo aptitude install -y html-xml-utils
+    fi
+
+    which java || ./install-java
+
+    CURRENT_VERSION=$(hxnormalize https://support.code42.com/Release_Notes/CrashPlan_For_Home 2>/dev/null |grep 'id="Current_Version"' -A 7|awk -F '>' '/>[0-9].*<\/a>/{print $2}'|awk -F '<' '{print $1}')
+
+    FILE=CrashPlan_${CURRENT_VERSION}_Linux.tgz
+    DOWNLOAD_URL=http://download.code42.com/installs/linux/install/CrashPlan/${FILE}
+
+    TEMP_DIR=$(dirname $(mktemp))
+    TEMP_FILE=${TEMP_DIR}/${FILE}
+
+    cd $TEMP_DIR
+    wget --continue $DOWNLOAD_URL
+    tar xzf $FILE
+    cd CrashPlan-install
+    ./install.sh
+fi
