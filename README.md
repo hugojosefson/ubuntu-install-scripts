@@ -26,3 +26,5 @@ I should check out:
     * https://en.wikipedia.org/wiki/Comparison_of_applications_launchers#Linux
   * More things to install / configure?
     * http://itsfoss.com/things-to-do-after-installing-ubuntu-13-10/
+  * Split up which things are general for Ubuntu vs specific for MacBookPro 10,1
+  * Split up which things are general for Ubuntu vs specific for Unity
