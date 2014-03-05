@@ -2,4 +2,8 @@
 
 set -e
 
-gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
+## Ubuntu with Unity:
+#gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
+
+# Xubuntu
+echo "pointer = 1 2 3 5 4 7 6 8 9 10 11 12" > ~/.Xmodmap && xmodmap ~/.Xmodmap
