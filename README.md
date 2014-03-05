@@ -30,3 +30,5 @@ I should check out:
   * Split up which things are general for Ubuntu vs specific for Unity
   * Configure git
   * Configure tilda
+  * Make apt-add-repository not ask any questions
+  * Make installation of Java not ask any questions
