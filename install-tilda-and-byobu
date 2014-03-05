@@ -20,3 +20,9 @@ Name=tilda
 Comment[en_US]=
 Comment=
 EOF
+
+mkdir -p ~/.config/tilda
+
+if [ ! -f ~/.config/tilda/config_0 ]; then
+    wget -O ~/.config/tilda/config_0 https://raw.github.com/hugojosefson/tilda-configuration/master/config_0
+fi
