@@ -2,6 +2,8 @@
 
 set -e
 
+./enable-apt-canonical-partners-sources
+./enable-apt-automatic-security-updates
 ./update-ubuntu
 ./disable-fn-key-for-function-keys
 ./enable-natural-scrolling

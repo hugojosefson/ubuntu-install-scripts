@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+# Enable Canonical partners sources.
+sudo sed -r 's/# (deb.*?partner)/\1/g' -i /etc/apt/sources.list
