@@ -5,6 +5,7 @@ set -e
 ./all-2-developer-base
 
 ./install-nvm-and-nodejs
+./install-ruby
 ./install-network-utils
 ./install-chrome-dev
 ./install-webstorm
