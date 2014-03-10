@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+# Xubuntu
+RIGHT_CTRL="keycode 105 = Control_R"
+grep "$RIGHT_CTRL" ~/.Xmodmap || echo $RIGHT_CTRL >> ~/.Xmodmap
+xmodmap ~/.Xmodmap

@@ -13,6 +13,7 @@ cd $(dirname ${0})
 ./enable-swedish-keyboard
 ./enable-natural-scrolling
 ./enable-week-numbers
+./remap-key-right-alt-to-right-control
 ./compensate-for-retina
 ./install-tilda-and-byobu
 ./install-vim
