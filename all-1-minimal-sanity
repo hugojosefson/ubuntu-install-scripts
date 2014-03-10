@@ -10,3 +10,4 @@ set -e
 ./compensate-for-retina
 ./install-tilda-and-byobu
 ./install-vim
+./save-bash-history

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+grep 'export PROMPT_COMMAND="history -a"' ~/.bashrc || (echo 'export PROMPT_COMMAND="history -a"' >> ~/.bashrc)
