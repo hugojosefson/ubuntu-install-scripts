@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Finds the scripts here which are not listed in any of the `all-*` scripts.
+
+set -e 
+
+for i in $(find . -maxdepth 1 -perm 755 -type f -not -name all-\*); do (grep $i all-* > /dev/null || echo $i); done;
