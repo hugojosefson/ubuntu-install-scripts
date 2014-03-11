@@ -16,14 +16,6 @@ Happy (re-)installing!
 ## TODO
 
 I should check out:
-  * MATE 2d desktop
-    * http://wiki.mate-desktop.org/download#ubuntu_saucy_salamander_1310_repository
-    * http://itsfoss.com/install-gnome-2-fork-mate-desktop-ubuntu-1310/
-    * http://askubuntu.com/questions/87040/how-to-install-mate
-  * Any other desktop?
-    * http://askubuntu.com/questions/65083/what-different-desktop-environments-and-shells-are-available
-  * Choose an application launcher
-    * https://en.wikipedia.org/wiki/Comparison_of_applications_launchers#Linux
   * More things to install / configure?
     * http://itsfoss.com/things-to-do-after-installing-ubuntu-13-10/
   * Split up which things are general for Ubuntu vs specific for MacBookPro 10,1
