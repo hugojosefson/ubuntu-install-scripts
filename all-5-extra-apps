@@ -4,6 +4,7 @@ set -e
 
 ./all-1-minimal-sanity
 
+./install-ecryptfs
 ./install-skype
 ./install-spotify
 ./install-dropbox
