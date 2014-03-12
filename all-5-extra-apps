@@ -9,4 +9,4 @@ set -e
 ./install-spotify
 ./install-dropbox
 ./install-crashplan
-./install-pipelight-for-netflix
+./install-netflix
