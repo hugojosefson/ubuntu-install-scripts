@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+sudo apt-add-repository -y ppa:pipelight/stable
+which aptitude || sudo apt-get install -y aptitude
+sudo aptitude update
+sudo aptitude install -y pipelight-multi
+pipelight-plugin --enable silverlight
