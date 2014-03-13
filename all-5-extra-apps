@@ -9,4 +9,3 @@ set -e
 ./install-spotify
 ./install-dropbox
 ./install-crashplan
-./install-netflix
