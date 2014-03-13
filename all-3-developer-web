@@ -8,5 +8,6 @@ set -e
 ./install-ruby
 ./install-network-utils
 ./install-chrome-dev
+./install-firefox-trunk
 ./install-dillo
 ./install-webstorm
