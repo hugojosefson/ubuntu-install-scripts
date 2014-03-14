@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+sudo apt-add-repository -y ppa:gnome3-team/gnome3-next
+sudo apt-add-repository -y ppa:gnome3-team/gnome3-staging
+which aptitude || sudo apt-get install -y aptitude
+sudo aptitude update
+sudo aptitude dist-upgrade --purge -y
+sudo aptitude install -y ubuntu-gnome-desktop
+
+firefox https://extensions.gnome.org/extension/615/appindicator-support/
