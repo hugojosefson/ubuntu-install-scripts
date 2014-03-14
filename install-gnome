@@ -9,4 +9,6 @@ sudo aptitude update
 sudo aptitude dist-upgrade --purge -y
 sudo aptitude install -y ubuntu-gnome-desktop
 
+echo $(which gdm) | sudo tee /etc/X11/default-display-manager
+
 firefox https://extensions.gnome.org/extension/615/appindicator-support/
