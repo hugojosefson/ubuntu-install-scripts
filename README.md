@@ -10,8 +10,8 @@ Happy (re-)installing!
 
 ## Easy download
 
-	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/master.tar.gz | tar xzv
-	cd ubuntu-install-scripts-master
+	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/ubuntu-13.10-unity.tar.gz | tar xzv
+	cd ubuntu-install-scripts-ubuntu-13.10-unity
 
 ## TODO
 
