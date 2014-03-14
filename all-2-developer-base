@@ -5,6 +5,7 @@ set -e
 ./all-1-minimal-sanity
 
 ./install-gitk
+./install-git-flow
 ./install-git-prompt
 ./install-github-git-plugin
 
