@@ -2,6 +2,7 @@
 
 set -e
 
+./disable-unity-shopping-scopes
 ./enable-apt-canonical-partners-sources
 ./enable-apt-automatic-security-updates
 ./update-ubuntu
