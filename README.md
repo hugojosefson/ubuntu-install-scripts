@@ -17,3 +17,4 @@ Happy (re-)installing!
 
   * Split up which things are general for Ubuntu vs specific for MacBookPro 10,1
   * Split up which things are general for Ubuntu vs specific for Unity
+  * Enable Swedish keyboard layout for non-Xubuntu too.
