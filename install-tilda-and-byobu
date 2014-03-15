@@ -24,5 +24,9 @@ EOF
 mkdir -p ~/.config/tilda
 
 if [ ! -f ~/.config/tilda/config_0 ]; then
-    wget -O ~/.config/tilda/config_0 https://raw.github.com/hugojosefson/tilda-configuration/master/config_0
+    if which xfconf-query; then
+        wget -O ~/.config/tilda/config_0 https://raw.github.com/hugojosefson/tilda-configuration/xubuntu/config_0
+    else
+        wget -O ~/.config/tilda/config_0 https://raw.github.com/hugojosefson/tilda-configuration/master/config_0
+    fi
 fi
