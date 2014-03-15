@@ -17,6 +17,8 @@ sudo aptitude update
 sudo aptitude dist-upgrade --purge -y
 sudo aptitude install -y ubuntu-gnome-desktop
 
+gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
+
 echo $(which gdm) | sudo tee /etc/X11/default-display-manager
 
 firefox https://extensions.gnome.org/extension/615/appindicator-support/ &
