@@ -10,6 +10,7 @@ set -e
 ./disable-fn-key-for-function-keys
 ./enable-swedish-keyboard
 ./enable-natural-scrolling
+./enable-week-numbers
 ./compensate-for-retina
 ./install-tilda-and-byobu
 ./install-vim
