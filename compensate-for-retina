@@ -2,7 +2,11 @@
 
 set -e
 
-gsettings set org.gnome.desktop.interface text-scaling-factor 1.8
+if pidof gnome-shell; then
+    gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
+else
+    gsettings set org.gnome.desktop.interface text-scaling-factor 1.8
+fi
 
 METACITY_FILE=/usr/share/themes/Ambiance/metacity-1/metacity-theme-1.xml
 if [ -f $METACITY_FILE ]; then
