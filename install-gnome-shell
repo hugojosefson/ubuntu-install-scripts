@@ -21,10 +21,9 @@ gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
 
 echo $(which gdm) | sudo tee /etc/X11/default-display-manager
 
-firefox https://extensions.gnome.org/extension/615/appindicator-support/ &
-
+firefox https://extensions.gnome.org/extension/615/appindicator-support/ >/dev/null 2>&1 &
 echo ===============================================================
-echo Enable the gnome extension I so helpfully opened for you in
-echo Firefox, if you want to be able to see Skype, Dropbox and
-echo similar apps in the system tray.
+echo Enable and allow to install, the extension "AppIndicator" which
+echo I so helpfully opened for you in Firefox, if you want to be
+echo able to see Skype, Dropbox and similar apps in the system tray.
 echo ===============================================================
