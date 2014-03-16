@@ -2,6 +2,9 @@
 
 set -e
 
+gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'se')]"
+gsettings set org.gnome.desktop.input-sources xkb-options "['grp:shifts_toggle']"
+
 if which xfconf-query; then
     # Don't use default keyboard settings
     xfconf-query --channel keyboard-layout --property /Default/XkbDisable --set false
