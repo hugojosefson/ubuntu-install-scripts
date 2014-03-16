@@ -21,6 +21,8 @@ gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
 
 echo $(which gdm) | sudo tee /etc/X11/default-display-manager
 
+gnome-shell-extension-tool --enable-extension=alternate-tab@gnome-shell-extensions.gcampax.github.com || true
+
 firefox https://extensions.gnome.org/extension/615/appindicator-support/ >/dev/null 2>&1 &
 echo ===============================================================
 echo Enable and allow to install, the extension "AppIndicator" which
