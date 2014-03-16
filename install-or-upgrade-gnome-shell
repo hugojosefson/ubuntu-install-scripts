@@ -3,7 +3,7 @@
 set -e
 
 echo ===============================================================
-echo When this script causes your computer to go blank or whatever,
+echo If this script causes your computer to go blank or whatever,
 echo please reboot, login, and re-run the script.
 echo It will then continue where it left off.
 echo ===============================================================
