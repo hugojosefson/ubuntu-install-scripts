@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+cd $(dirname ${0})
 
 ./all-2-developer-base
 

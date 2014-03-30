@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+cd $(dirname ${0})
 
 ORIGINAL_DIR="$(pwd)"
 

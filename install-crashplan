@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+cd $(dirname ${0})
 
 if ! which CrashPlanDesktop; then
     if ! which hxnormalize; then
