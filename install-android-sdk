@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -e
+
+ORIGINAL_DIR="$(pwd)"
+
+if [ ! -f /opt/android-sdk-linux/tools/android ]; then
+  which aptitude || sudo apt-get install -y aptitude
+  which curl || sudo apt-get install -y curl
+  which wget || sudo apt-get install -y wget
+  
+  DOWNLOAD_URL=$(curl --silent https://developer.android.com/sdk/index.html | hxpipe | grep ^Ahref | grep sdk | grep linux | cut -d ' ' -f 3)
+  FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
+  FILE=$(dirname $(mktemp))/$FILENAME
+  
+  wget --continue ${DOWNLOAD_URL} -O $FILE
+  DIR=$(tar tzf $FILE |head -n 1|cut -d '/' -f 1)
+  
+  sudo chown $USER:$GROUP /opt
+  tar xzf $FILE -C /opt
+fi
+
+java -version || ./install-java
+( sleep 2; while [ 1 ]; do sleep 1; echo y; done ) | /opt/android-sdk-linux/tools/android update sdk --no-ui --filter tool,platform-tool # --all --force
+
+grep 'export PATH=/opt/android-sdk-linux/platform-tools:/opt/android-sdk-linux/tools:$PATH' ~/.bashrc || echo export PATH=/opt/android-sdk-linux/platform-tools:/opt/android-sdk-linux/tools:\$PATH >> ~/.bashrc
+grep 'export ANDROID_HOME=/opt/android-sdk-linux' ~/.bashrc || echo export ANDROID_HOME=/opt/android-sdk-linux >> ~/.bashrc
