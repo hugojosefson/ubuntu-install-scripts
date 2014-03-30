@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+ORIGINAL_DIR="$(pwd)"
+
+which aptitude || sudo apt-get install -y aptitude
+which curl || sudo apt-get install -y curl
+which wget || sudo apt-get install -y wget
+
+VERSION=$(curl --silent http://www.jetbrains.com/js2/version.js|grep 'var versionIDEALong'|cut -d '"' -f 2)
+DOWNLOAD_URL=http://download.jetbrains.com/idea/ideaIC-${VERSION}.tar.gz
+FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
+FILE=$(dirname $(mktemp))/$FILENAME
+
+wget --continue ${DOWNLOAD_URL} -O $FILE
+DIR=$(tar tzf $FILE |head -n 1|cut -d '/' -f 1)
+
+sudo chown $USER:$GROUP /opt
+tar xzf $FILE -C /opt
+cd /opt
+rm idea || true
+ln -s $DIR idea
+
+cd "$ORIGINAL_DIR"
+java -version || ./install-java
+
+which idea || /opt/idea/bin/idea
+sed -r "s/${DIR}/idea/g" -i /usr/local/bin/idea || true
