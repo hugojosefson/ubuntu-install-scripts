@@ -5,5 +5,5 @@ set -e
 which aptitude || sudo apt-get install -y aptitude
 
 if ! which libreoffice; then
-    sudo aptitude install -y libreoffice
+    sudo aptitude install -y libreoffice ttf-mscorefonts-installer
 fi
