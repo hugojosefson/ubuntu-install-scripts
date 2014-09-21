@@ -8,7 +8,7 @@ which aptitude || sudo apt-get install -y aptitude
 which curl || sudo apt-get install -y curl
 which wget || sudo apt-get install -y wget
 
-VERSION=$(curl --silent http://www.jetbrains.com/js2/version.js|grep 'var versionIDEALong'|cut -d '"' -f 2)
+VERSION=$(curl --silent http://www.jetbrains.com/js2/version.js|grep 'var versionIDEALong'|cut -d '"' -f 2)b
 DOWNLOAD_URL=http://download.jetbrains.com/idea/ideaIC-${VERSION}.tar.gz
 FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
 FILE=$(dirname $(mktemp))/$FILENAME
