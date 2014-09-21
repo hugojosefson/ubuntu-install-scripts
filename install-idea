@@ -25,5 +25,5 @@ ln -s $DIR idea
 cd "$ORIGINAL_DIR"
 java -version || ./install-java
 
-which idea || /opt/idea/bin/idea
+which idea || /opt/idea/bin/idea.sh
 sed -r "s/${DIR}/idea/g" -i /usr/local/bin/idea || true
