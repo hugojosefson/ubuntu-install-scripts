@@ -4,3 +4,6 @@ set -e
 
 which aptitude || sudo apt-get install -y aptitude
 which dropbox || sudo aptitude install -y nautilus-dropbox
+
+sudo grep 'fs.inotify.max_user_watches = 100000' /etc/sysctl.d/40-dropbox || echo 'fs.inotify.max_user_watches = 100000' | sudo tee /etc/sysctl.d/40-dropbox
+sudo sysctl -p
