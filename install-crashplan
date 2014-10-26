@@ -25,3 +25,9 @@ if ! which CrashPlanDesktop; then
     cd CrashPlan-install
     ./install.sh
 fi
+
+echo "*********************************************************************************"
+echo "If the CrashPlanDesktop gui won't start, put this:"
+echo " -Dorg.eclipse.swt.browser.DefaultType=mozilla"
+echo " at the end of the GUI_JAVA_OPTS declaration in /usr/local/crashplan/bin/run.conf"
+echo "*********************************************************************************"
