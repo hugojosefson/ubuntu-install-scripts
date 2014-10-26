@@ -1,0 +1,14 @@
+#!/bin/bash
+gnome-shell-extension-tool --enable=alternate-tab@gnome-shell-extensions.gcampax.github.com
+gnome-shell-extension-tool --enable=drive-menu@gnome-shell-extensions.gcampax.github.com
+gnome-shell-extension-tool --enable=systemMonitor@gnome-shell-extensions.gcampax.github.com
+gnome-shell-extension-tool --enable=workspace-indicator@gnome-shell-extensions.gcampax.github.com
+gsettings set org.gnome.desktop.background picture-options 'zoom'
+gsettings set org.gnome.desktop.background picture-uri 'file:///home/hugo/Pictures/Wallpapers/Jays_1920x1200.png'
+gsettings set org.gnome.desktop.background show-desktop-icons true
+gsettings set org.gnome.desktop.interface clock-show-date true
+gsettings set org.gnome.nautilus.desktop volumes-visible true
+gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
+gsettings set org.gnome.nautilus.preferences sort-directories-first true
+gsettings set org.gnome.shell.calendar show-weekdate true
+# node -p "var ini = require('ini'), fs = require('fs');var user = ini.parse(fs.readFileSync('/var/lib/AccountsService/users/hugo', 'utf-8')); user.User.Icon='/home/hugo/.face'; ini.stringify(user);"
