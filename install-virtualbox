@@ -7,7 +7,7 @@ wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | s
 if (curl --fail --silent http://download.virtualbox.org/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
   echo "deb http://download.virtualbox.org/virtualbox/debian $(./ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 else
-  echo "deb http://download.virtualbox.org/virtualbox/debian saucy contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+  echo "deb http://download.virtualbox.org/virtualbox/debian trusty contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 fi
 which aptitude || sudo apt-get install -y aptitude
 sudo aptitude update
