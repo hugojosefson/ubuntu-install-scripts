@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd ~
+rmdir Desktop
+ln -s . Desktop
