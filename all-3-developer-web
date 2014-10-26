@@ -8,7 +8,7 @@ cd $(dirname ${0})
 ./install-nvm-and-nodejs
 ./install-ruby
 ./install-network-utils
-./install-chrome-dev
+./install-chrome
 ./install-firefox-trunk
 ./install-dillo
 ./install-webstorm
