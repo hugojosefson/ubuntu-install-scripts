@@ -12,7 +12,6 @@ cd $(dirname ${0})
 ./enable-swedish-keyboard
 ./enable-natural-scrolling
 ./enable-week-numbers
-./compensate-for-retina
 ./install-tilda-and-byobu
 ./install-vim
 ./save-bash-history
