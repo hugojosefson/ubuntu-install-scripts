@@ -14,7 +14,7 @@ sudo aptitude update
 sudo aptitude install -y virtualbox-4.3
 
 TEMP_DIR=$(dirname $(mktemp))
-VIRTUALBOX_VERSION=$(vboxmanage --version)
+VIRTUALBOX_VERSION=$(vboxmanage --version | tail -n 1)
 EXTPACK_VERSION=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 1)
 EXTPACK_BUILD=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 2)
 EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-${EXTPACK_VERSION}.vbox-extpack"
