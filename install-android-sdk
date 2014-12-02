@@ -6,8 +6,9 @@ ORIGINAL_DIR="$(pwd)"
 
 if [ ! -f /opt/android-sdk-linux/tools/android ]; then
   which aptitude || sudo apt-get install -y aptitude
-  which curl || sudo apt-get install -y curl
-  which wget || sudo apt-get install -y wget
+  which curl || sudo aptitude install -y curl
+  which wget || sudo aptitude install -y wget
+  which hxpipe || sudo aptitude install -y html-xml-utils
   
   DOWNLOAD_URL=$(curl --silent https://developer.android.com/sdk/index.html | hxpipe | grep ^Ahref | grep sdk | grep linux | cut -d ' ' -f 3)
   FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
