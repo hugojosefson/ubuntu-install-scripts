@@ -9,7 +9,7 @@ which aptitude || sudo apt-get install -y aptitude
 which curl || sudo apt-get install -y curl
 which wget || sudo apt-get install -y wget
 
-DOWNLOAD_URL=$(curl --silent http://www.jetbrains.com/webstorm/download/download_thanks.jsp|grep direct|cut -d '"' -f 2|sed -r 's/\.exe$/.tar.gz/')
+DOWNLOAD_URL=$(curl --silent http://www.jetbrains.com/webstorm/download/download_thanks.jsp|grep direct|cut -d '"' -f 4|sed -r 's/\.exe$/.tar.gz/')
 FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
 FILE=$(dirname $(mktemp))/$FILENAME
 
