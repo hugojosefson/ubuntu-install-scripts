@@ -26,4 +26,4 @@ cd "$ORIGINAL_DIR"
 java -version || ./install-java
 
 which wstorm || /opt/webstorm/bin/webstorm.sh
-sed -r "s/${DIR}/webstorm/g" -i /usr/local/bin/wstorm || true
+sudo sed -r "s/${DIR}/webstorm/g" -i /usr/local/bin/wstorm /usr/share/applications/jetbrains-webstorm.desktop || true
