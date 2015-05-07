@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+which aptitude || sudo apt-get install -y aptitude
+which curl || sudo aptitude install -y curl
+which unzip || sudo aptitude install -y unzip
+
+cd $(mktemp -d)
+
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+./awscli-bundle/install -b ~/bin/aws
