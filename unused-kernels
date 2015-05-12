@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Prints unused kernel package names
+#
+# Modified from oneliner by Sylvain Pineau; http://askubuntu.com/users/32239/sylvain-pineau
+# Source: http://askubuntu.com/a/594135/41862
+
+dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d'
