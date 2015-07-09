@@ -5,6 +5,7 @@ cd $(dirname ${0})
 
 ./all-1-minimal-sanity
 
+./install-git-tig
 ./install-gitk
 ./install-git-flow
 ./install-git-prompt
