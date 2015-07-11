@@ -26,5 +26,5 @@ if [ ! -d /opt/apache-maven/ ]; then
 fi
 
 java -version || ./install-java
-grep 'export PATH=/opt/apache-maven/bin:$PATH' ~/.bashrc || echo export PATH=/opt/apache-maven/bin:\$PATH >> ~/.bashrc
-grep 'export M2_HOME=/opt/apache-maven' ~/.bashrc || echo export M2_HOME=/opt/apache-maven >> ~/.bashrc
+grep -x 'export PATH=/opt/apache-maven/bin:$PATH' ~/.bashrc || echo -e '\nexport PATH=/opt/apache-maven/bin:$PATH' >> ~/.bashrc
+grep -x 'export M2_HOME=/opt/apache-maven' ~/.bashrc || echo export -e '\nM2_HOME=/opt/apache-maven' >> ~/.bashrc

@@ -5,4 +5,4 @@ set -e
 which aptitude || sudo apt-get install -y aptitude
 which git || sudo aptitude install -y git
 git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt || (cd ~/.bash-git-prompt && git pull)
-grep gitprompt.sh ~/.bashrc || echo '. ~/.bash-git-prompt/gitprompt.sh' >> ~/.bashrc
+grep -x '. ~/.bash-git-prompt/gitprompt.sh' ~/.bashrc || echo -e '\n. ~/.bash-git-prompt/gitprompt.sh' >> ~/.bashrc

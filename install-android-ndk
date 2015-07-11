@@ -27,4 +27,4 @@ fi
 
 java -version || ./install-java
 
-grep 'export ANDROID_NDK_HOME=/opt/android-ndk' ~/.bashrc || echo export ANDROID_NDK_HOME=/opt/android-ndk >> ~/.bashrc
+grep -x 'export ANDROID_NDK_HOME=/opt/android-ndk' ~/.bashrc || echo -e '\nexport ANDROID_NDK_HOME=/opt/android-ndk' >> ~/.bashrc

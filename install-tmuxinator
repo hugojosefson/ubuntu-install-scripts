@@ -8,6 +8,6 @@ which ruby || ./install-ruby
 gem install tmuxinator
 
 wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash -O ~/bin/tmuxinator.bash
-grep 'source ~/bin/tmuxinator.bash' ~/.bashrc || (echo 'source ~/bin/tmuxinator.bash' >> ~/.bashrc)
+grep -x 'source ~/bin/tmuxinator.bash' ~/.bashrc || (echo -e '\nsource ~/bin/tmuxinator.bash' >> ~/.bashrc)
 
 source ~/bin/tmuxinator.bash

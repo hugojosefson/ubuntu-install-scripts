@@ -5,4 +5,4 @@ set -e
 which aptitude || sudo apt-get install -y aptitude
 which vim || sudo aptitude install -y vim
 
-grep 'export EDITOR=vim' ~/.bashrc || (echo 'export EDITOR=vim' >> ~/.bashrc)
+grep -x 'export EDITOR=vim' ~/.bashrc || (echo -e '\nexport EDITOR=vim' >> ~/.bashrc)
