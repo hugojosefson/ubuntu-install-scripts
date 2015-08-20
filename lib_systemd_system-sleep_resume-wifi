@@ -1,0 +1,15 @@
+#!/bin/sh
+## Source: http://askubuntu.com/a/620325
+## Author: SpmP https://askubuntu.com/users/407648/spmp
+## License: http://creativecommons.org/licenses/by-sa/2.5/
+case $1/$2 in
+  pre/*)
+    echo "Going to $2..."
+    # better to put `exit 0` if no pre suspend action required
+    ;;
+  post/*)
+    echo "Waking up from $2..."
+    # Add whatever you want run post suspend (ie resume)
+    killall wpa_supplicant
+    ;;
+esac
