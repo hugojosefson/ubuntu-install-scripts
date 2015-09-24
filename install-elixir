@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+if ! which elixir; then
+    cd $(mktemp -d)
+    wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+    sudo dpkg -i erlang-solutions_1.0_all.deb
+
+    which aptitude || sudo apt-get install -y aptitude
+    sudo aptitude update
+    sudo aptitude install -y elixir
+fi
