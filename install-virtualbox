@@ -11,7 +11,9 @@ else
 fi
 which aptitude || sudo apt-get install -y aptitude
 sudo aptitude update
-sudo aptitude install -y virtualbox-4.3
+
+PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]'|sort -nr|cut -d ' ' -f 1|head -n 1)
+sudo aptitude install -y ${PKG_NAME}
 
 TEMP_DIR=$(dirname $(mktemp))
 VIRTUALBOX_VERSION=$(vboxmanage --version | tail -n 1)
