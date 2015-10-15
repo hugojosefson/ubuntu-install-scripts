@@ -2,4 +2,10 @@
 
 set -e
 
-which javac || sudo aptitude install -y default-jdk
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+which aptitude || sudo apt-get install -y aptitude
+
+sudo aptitude install -y oracle-java8-installer
