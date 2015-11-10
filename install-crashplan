@@ -22,7 +22,7 @@ if ! which CrashPlanDesktop; then
     cd $TEMP_DIR
     wget --continue $DOWNLOAD_URL
     tar xzf $FILE
-    cd CrashPlan-install
+    cd crashplan-install
     ./install.sh
 fi
 
