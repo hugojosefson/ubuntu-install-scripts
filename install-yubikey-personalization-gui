@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+if ! which yubikey-personalization-gui; then
+    sudo apt-add-repository -y ppa:yubico/stable
+    which aptitude || sudo apt-get install -y aptitude
+    sudo aptitude update
+    sudo aptitude install -y yubikey-personalization-gui
+fi
