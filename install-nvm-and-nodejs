@@ -9,6 +9,8 @@ which curl || sudo aptitude install -y curl
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | PROFILE=~/.bashrc bash
 
 . ~/.nvm/nvm.sh
-nvm install 0
-nvm alias default 0
+
+LATEST_MAJOR_VERSION=$(nvm ls-remote | grep -v iojs | tail -n 1 | cut -d . -f 1 | cut -d v -f 2)
+nvm install $LATEST_MAJOR_VERSION
+nvm alias default $LATEST_MAJOR_VERSION
 nvm use default
