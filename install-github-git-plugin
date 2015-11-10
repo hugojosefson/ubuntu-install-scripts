@@ -20,5 +20,5 @@ sudo mv etc/hub.bash_completion.sh /etc/bash_completion.d/
 
 sudo chown -R $USER:$GROUP /usr/local
 mkdir -p /usr/local/man/man1
-mv man/hub.1 /usr/local/man/
-mv hub /usr/local/bin/
+mv share/man/man1/hub.1 /usr/local/man/
+mv bin/hub /usr/local/bin/
