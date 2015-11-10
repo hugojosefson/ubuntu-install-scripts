@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+which slack && exit 0
+
+cd $(dirname $(mktemp))
+FILENAME=$(curl --silent https://slack.com/downloads | grep amd64.deb|head -n 1 |cut -d '"' -f 2)
+wget $FILENAME
+sudo dpkg -i *.deb
