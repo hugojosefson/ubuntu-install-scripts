@@ -25,5 +25,9 @@ ln -s $DIR webstorm
 cd "$ORIGINAL_DIR"
 java -version || ./install-java
 
-which wstorm || /opt/webstorm/bin/webstorm.sh
-sudo sed -r "s/${DIR}/webstorm/g" -i /usr/local/bin/wstorm /usr/share/applications/jetbrains-webstorm.desktop || true
+if [ -n "$DISPLAY" ]; then
+    which wstorm || /opt/webstorm/bin/webstorm.sh
+    sudo sed -r "s/${DIR}/webstorm/g" -i /usr/local/bin/wstorm /usr/share/applications/jetbrains-webstorm.desktop || true
+else
+    echo Skipping setting up wstorm executable, because there is no DISPLAY set.
+fi
