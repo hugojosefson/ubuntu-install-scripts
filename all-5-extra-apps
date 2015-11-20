@@ -7,7 +7,6 @@ cd $(dirname ${0})
 
 ./install-encfs
 ./install-skype
-./install-spotify
 ./install-libreoffice
 ./install-dropbox
 ./install-crashplan
