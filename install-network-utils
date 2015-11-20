@@ -4,6 +4,6 @@ set -e
 
 which aptitude || sudo apt-get install -y aptitude
 which nmap || sudo aptitude install -y nmap
-which wireshark || sudo aptitude install -y wireshark
+which wireshark || sudo DEBIAN_FRONTEND=noninteractive aptitude install -y wireshark
 which jwhois || sudo aptitude install -y jwhois
 sudo aptitude install -y netcat-traditional
