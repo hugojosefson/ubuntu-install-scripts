@@ -10,6 +10,5 @@ cd $(dirname ${0})
 ./install-ruby
 ./install-network-utils
 ./install-chrome
-./install-firefox-trunk
 ./install-dillo
 ./install-webstorm
