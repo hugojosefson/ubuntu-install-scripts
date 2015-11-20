@@ -7,9 +7,7 @@ cd $(dirname ${0})
 ./enable-apt-canonical-partners-sources
 ./enable-apt-automatic-security-updates
 ./update-ubuntu
-./disable-fn-key-for-function-keys
 ./disable-some-keyboard-shortcuts
-./enable-swedish-keyboard
 ./enable-natural-scrolling
 ./enable-week-numbers
 ./install-tilda-and-byobu
