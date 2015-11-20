@@ -5,6 +5,7 @@ set -e
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 sudo sh -c "echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list"
 which aptitude || sudo apt-get install -y aptitude
+sudo aptitude install -y apt-transport-https
 sudo aptitude update
 sudo aptitude install -y lxc-docker cgroup-lite
 sudo gpasswd -a ${USER} docker
