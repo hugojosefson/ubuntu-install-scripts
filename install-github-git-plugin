@@ -6,6 +6,7 @@ set -e
 which hub && exit 0
 
 which aptitude || sudo apt-get install -y aptitude
+which curl || sudo aptitude install -y curl
 which git || sudo aptitude install -y git
 sudo aptitude install -y bash-completion
 
