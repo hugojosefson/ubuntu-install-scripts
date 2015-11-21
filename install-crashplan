@@ -23,7 +23,11 @@ if ! which CrashPlanDesktop; then
     wget --continue $DOWNLOAD_URL
     tar xzf $FILE
     cd crashplan-install
-    ./install.sh
+
+    # non-interactive install
+    sed -r 's/^more /cat /g' -i install.sh
+    sed -r 's/agreed=0/agreed=1/g' -i install.sh
+    yes '' | sudo ./install.sh
 fi
 
 echo "*********************************************************************************"
