@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run ubuntu-install-scripts $*
+docker run -i ubuntu-install-scripts $*
