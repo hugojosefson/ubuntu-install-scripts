@@ -1,11 +1,5 @@
-FROM ubuntu:15.10
-
-RUN echo Updated packages 2015-11-20 13:51 UTC
-RUN apt-get update && apt-get install -y aptitude && aptitude dist-upgrade --purge -y
-RUN apt-get install -y -d ubuntu-gnome-desktop
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ubuntu-gnome-desktop
-RUN apt-get install -y sudo
+FROM hugojosefson/ubuntu-gnome:15.10
+MAINTAINER Hugo Josefson <hugo@josefson.org>
 
 RUN mkdir -p /ubuntu-install-scripts
 COPY . /ubuntu-install-scripts
