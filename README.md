@@ -15,7 +15,6 @@ Happy (re-)installing!
 
 ## TODO
 
-  * Split up which things are general for Ubuntu vs specific for MacBookPro 10,1
   * Disable content indexing: http://askubuntu.com/a/353450/41862
   * Split up which things are general for Ubuntu vs specific for Unity
   * Split up which things are general for Ubuntu vs specific for Gnome
