@@ -8,8 +8,9 @@ ORIGINAL_DIR="$(pwd)"
 which aptitude || sudo apt-get install -y aptitude
 which curl || sudo apt-get install -y curl
 which wget || sudo apt-get install -y wget
+which jq || sudo apt-get install -y jq
 
-DOWNLOAD_URL=$(curl --silent http://www.jetbrains.com/webstorm/download/download_thanks.jsp?os=linux|grep direct|cut -d '"' -f 6|sed -r 's/\.exe$/.tar.gz/')
+DOWNLOAD_URL=$(curl --silent 'https://data.services.jetbrains.com/products/releases?code=WS&latest=true&type=release' | jq -r .WS[0].downloads.linux.link)
 FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
 FILE=$(dirname $(mktemp))/$FILENAME
 
