@@ -13,3 +13,4 @@ cd $(dirname ${0})
 ./install-tilda-and-byobu
 ./install-vim
 ./save-bash-history
+./install-sshfs
