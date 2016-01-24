@@ -6,10 +6,10 @@ ORIGINAL_DIR="$(pwd)"
 
 which aptitude || sudo apt-get install -y aptitude
 which curl || sudo apt-get install -y curl
+which jq || sudo apt-get install -y jq
 which wget || sudo apt-get install -y wget
 
-VERSION=$(curl --silent http://www.jetbrains.com/js2/version.js|grep 'var versionIDEALong'|cut -d '"' -f 2)
-DOWNLOAD_URL=http://download.jetbrains.com/idea/ideaIC-${VERSION}.tar.gz
+DOWNLOAD_URL=$(curl --silent 'https://data.services.jetbrains.com/products/releases?code=IIU,IIC&latest=true&type=release' | jq -r .IIC[0].downloads.linux.link)
 FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
 FILE=$(dirname $(mktemp))/$FILENAME
 
