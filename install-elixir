@@ -2,12 +2,20 @@
 
 set -e
 
+. /etc/lsb-release
+
 if ! which elixir; then
     cd $(mktemp -d)
     wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-    sudo dpkg -i erlang-solutions_1.0_all.deb
+
+    # Fix detection of distro codename for Ubuntu 15.10+
+    dpkg -x erlang-solutions_1.0_all.deb unpack
+    dpkg -e erlang-solutions_1.0_all.deb unpack/DEBIAN
+    sed -r "s/CODENAME=\"\"/CODENAME=\"$DISTRIB_CODENAME\"/" -i unpack/DEBIAN/postinst
+    dpkg -b unpack erlang-solutions-modified.deb
+    sudo dpkg -i erlang-solutions-modified.deb
 
     which aptitude || sudo apt-get install -y aptitude
     sudo aptitude update
-    sudo aptitude install -y elixir
+    sudo aptitude install -y esl-erlang elixir
 fi
