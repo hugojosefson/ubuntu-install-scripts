@@ -10,7 +10,6 @@ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | PROFIL
 
 . ~/.nvm/nvm.sh
 
-LATEST_MAJOR_VERSION=$(nvm ls-remote | grep -v iojs | tail -n 1 | cut -d . -f 1 | cut -d v -f 2)
-nvm install $LATEST_MAJOR_VERSION
-nvm alias default $LATEST_MAJOR_VERSION
+nvm install stable
+nvm alias default stable
 nvm use default
