@@ -1,4 +1,4 @@
-FROM hugojosefson/ubuntu-gnome:15.10
+FROM hugojosefson/ubuntu-gnome:16.04
 MAINTAINER Hugo Josefson <hugo@josefson.org>
 
 RUN mkdir -p /ubuntu-install-scripts
