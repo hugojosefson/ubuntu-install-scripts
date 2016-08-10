@@ -3,6 +3,8 @@
 set -e
 cd $(dirname ${0})
 
+which curl || sudo apt-get install -y curl
+
 wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
 wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
 if (curl --fail --silent http://download.virtualbox.org/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
