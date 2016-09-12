@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+cd $(dirname ${0})
+
+ORIGINAL_DIR="$(pwd)"
+
+which aptitude || sudo apt-get install -y aptitude
+which curl || sudo apt-get install -y curl
+which wget || sudo apt-get install -y wget
+which jq || sudo apt-get install -y jq
+
+DOWNLOAD_URL=${1:-$(curl --silent 'https://data.services.jetbrains.com/products/releases?code=PCC&latest=true&type=release' | jq -r .PCC[0].downloads.linux.link)}
+FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
+FILE=$(dirname $(mktemp))/$FILENAME
+
+wget --continue ${DOWNLOAD_URL} -O $FILE
+DIR=$(tar tzf $FILE |head -n 1|cut -d '/' -f 1)
+
+sudo chown $USER:$GROUP /opt
+tar xzf $FILE -C /opt
+cd /opt
+rm pycharm || true
+ln -s $DIR pycharm
+
+cd "$ORIGINAL_DIR"
+java -version || ./install-java
+
+if [ -n "$DISPLAY" ]; then
+    which charm || /opt/webstorm/bin/pycharm.sh
+    sudo sed -r "s/${DIR}/pycharm/g" -i /usr/local/bin/charm /usr/local/share/applications/jetbrains-pycharm-ce.desktop || true
+else
+    echo Skipping setting up charm executable, because there is no DISPLAY set.
+fi
