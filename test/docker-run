@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -i hugojosefson/ubuntu-install-scripts $*
+docker run --rm -it hugojosefson/ubuntu-install-scripts $*
