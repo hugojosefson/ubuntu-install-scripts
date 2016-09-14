@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+dpkg -l aptitude 2>&1 | grep ^ii >/dev/null || sudo apt-get install -y aptitude
+dpkg -l socat 2>&1 | grep ^ii >/dev/null || sudo aptitude install -y socat
+
+PROXY=${PROXY:-localhost:3128}
+PROXY_HOST=${PROXY_HOST:-${PROXY%%:*}}
+PROXY_PORT=${PROXY_PORT:-${PROXY#*:}}
+
+mkdir -p ~/bin
+cat > ~/bin/gitproxy <<EOF
+#!/bin/sh
+exec socat STDIO PROXY:$PROXY_HOST:\$1:\$2,proxyport=$PROXY_PORT
+EOF
+
+chmod +x ~/bin/gitproxy
+git config --global --add core.gitproxy gitproxy
+
+echo Installed and configured gitproxy to access git:// urls through the proxy $PROXY_HOST:$PROXY_PORT
