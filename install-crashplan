@@ -12,6 +12,7 @@ if ! which CrashPlanDesktop; then
     which java || ./install-java
 
     CURRENT_VERSION=$(hxnormalize https://support.code42.com/Release_Notes/CrashPlan_For_Home 2>/dev/null |grep 'id="Current_Version"' -A 7|awk -F '>' '/>[0-9].*<\/a>/{print $2}'|awk -F '<' '{print $1}')
+    [[ $CURRENT_VERSION =~ ^[0-9]+\.[0-9]+$ ]] && CURRENT_VERSION=$CURRENT_VERSION.0
 
     FILE=CrashPlan_${CURRENT_VERSION}_Linux.tgz
     DOWNLOAD_URL=http://download.code42.com/installs/linux/install/CrashPlan/${FILE}
