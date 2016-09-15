@@ -5,9 +5,10 @@ set -e
 which aptitude || sudo apt-get install -y aptitude
 which tilda || sudo aptitude install -y tilda
 which byobu || sudo aptitude install -y byobu
+which tmuxinator || sudo aptitude install -y tmuxinator
+which xsel || sudo aptitude install -y xsel
 
 mkdir -p ~/.config/autostart
-
 cat > ~/.config/autostart/tilda.desktop <<EOF
 [Desktop Entry]
 Type=Application
@@ -22,7 +23,6 @@ Comment=
 EOF
 
 mkdir -p ~/.config/tilda
-
 if [ ! -f ~/.config/tilda/config_0 ]; then
     if which xfconf-query; then
         wget -O ~/.config/tilda/config_0 https://raw.github.com/hugojosefson/tilda-configuration/xubuntu/config_0
@@ -30,3 +30,19 @@ if [ ! -f ~/.config/tilda/config_0 ]; then
         wget -O ~/.config/tilda/config_0 https://raw.github.com/hugojosefson/tilda-configuration/master/config_0
     fi
 fi
+
+mkdir -p ~/code
+mkdir -p ~/.tmuxinator
+cat > ~/.tmuxinator/base.yml <<EOF
+name: base
+
+tmux_command: byobu-tmux
+
+windows:
+  - "": clear; sudo --list --non-interactive aptitude && (echo -n Press ENTER for dist-upgrade...; read -s;); sudo aptitude update && sudo aptitude dist-upgrade --purge -y && sudo aptitude autoclean
+  - top: top
+  - code: cd ~/code && ll -ltra
+EOF
+
+[[ -e ~/.bash_aliases ]] && mv ~/.bash_aliases{,.$(date +%s).backup}
+cp ./.bash_aliases ~/

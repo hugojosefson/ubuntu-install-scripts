@@ -10,7 +10,7 @@ cd $(dirname ${0})
 ./disable-some-keyboard-shortcuts
 ./enable-natural-scrolling
 ./enable-week-numbers
-./install-tilda-and-byobu
+./install-tilda-byobu-tmuxinator-bash_aliases
 ./install-vim
 ./save-bash-history
 ./install-sshfs
