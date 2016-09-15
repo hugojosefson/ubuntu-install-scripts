@@ -44,5 +44,54 @@ windows:
   - code: cd ~/code && ll -ltra
 EOF
 
+cat > ~/.tmuxinator/temp.TEMPLATE <<\EOF
+name: ${SESSION_NAME}
+root: ${SESSION_DIR}
+
+tmux_command: byobu-tmux
+
+windows:
+  - "":
+EOF
+
+cat > ~/.tmuxinator/mux.yml <<\EOF
+name: mux
+root: ~/.tmuxinator
+
+tmux_command: byobu-tmux
+
+windows:
+  - mux: ls -lF
+  - bin: cd ~/bin && ls -lFtr
+  - dotfiles: cd ~/.dotfiles && ls -lF
+  - mover: byobu select-window -t :0; exit
+EOF
+
+DOMAIN=${DOMAIN:-$(wbinfo --own-domain 2>/dev/null || true)}
+cat > ~/bin/m-temp <<EOF
+#!/bin/bash
+
+## Creates and opens a new temp session
+
+export SESSION_DIR=\$(readlink -f \${1:-\$(mktemp -d)})
+export SESSION_NAME="\$(echo \${SESSION_DIR} \
+                     | sed -r 's/^[\\./]//g' \
+                     | sed -r 's/[\\./]+/-/g' \
+                     | sed -r 's/^surviving-data-//' \
+                     | sed -r 's/^home-${DOMAIN}-[^-]+-//' \
+                     | sed -r 's/^home-${USER}-//' \
+                     | sed -r 's/^code-//g')"
+FILE_NAME="\${SESSION_NAME}.yml"
+
+cd ~/.tmuxinator
+envsubst < temp.TEMPLATE > "\${FILE_NAME}"
+
+mkdir -p \${SESSION_DIR}
+tmuxinator start \${SESSION_NAME}
+sleep 1
+rm "\${FILE_NAME}"
+EOF
+chmod +x ~/bin/m-temp
+
 [[ -e ~/.bash_aliases ]] && mv ~/.bash_aliases{,.$(date +%s).backup}
 cp ./.bash_aliases ~/
