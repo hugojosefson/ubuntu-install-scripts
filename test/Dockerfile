@@ -8,7 +8,6 @@ WORKDIR /ubuntu-install-scripts
 RUN ./all-1-minimal-sanity
 RUN ./all-2-developer-base
 RUN ./all-3-developer-web
-RUN ./install-virtualbox
 RUN ./all-5-extra-apps
 
 CMD ["bash"]
