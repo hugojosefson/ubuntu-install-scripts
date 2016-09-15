@@ -1,2 +1,2 @@
 #!/bin/bash
-cat /etc/lsb-release | awk --field-separator = '/DISTRIB_CODENAME/{print $2}'
+cat /etc/lsb-release | awk -F '=' '/DISTRIB_CODENAME/{print $2}'
