@@ -18,4 +18,6 @@ EOF
 chmod +x ~/bin/gitproxy
 git config --global --add core.gitproxy gitproxy
 
-echo Installed and configured gitproxy to access git:// urls through the proxy $PROXY_HOST:$PROXY_PORT
+echo Installed and configured gitproxy to access git:// urls through the proxy $PROXY_HOST:$PROXY_PORT.
+echo     ~/.gitconfig
+echo     ~/bin/gitproxy

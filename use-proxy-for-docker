@@ -33,4 +33,6 @@ sudo systemctl daemon-reload
 sudo systemctl stop docker
 sudo systemctl start docker
 
-echo Configured docker to go through the proxy $PROXY
+echo Configured docker to go through the proxy $PROXY.
+echo     /etc/systemd/system/docker.service.d/http-proxy.conf
+echo     $(docker ps | grep ncarlier/redsocks)

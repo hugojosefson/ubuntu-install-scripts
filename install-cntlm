@@ -45,10 +45,13 @@ sudo service cntlm restart
 
 echo
 echo Reconfigured cntlm.
-echo Whenever you change password for \${USERNAME}@\${DOMAIN}, run update-proxy-password afterwards.
+echo     /etc/cntlm.conf
+echo Whenever you change password for \${USERNAME}@\${DOMAIN}, run update-proxy-password again.
 EOFOUTER
 
 chmod +x ~/bin/update-proxy-password
-echo Installed cntlm. Running update-proxy-password to configure your password...
+echo Installed cntlm.
+echo     ~/bin/update-proxy-password
+echo Running update-proxy-password to configure your password...
 ~/bin/update-proxy-password
 
