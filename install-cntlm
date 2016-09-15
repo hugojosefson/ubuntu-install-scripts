@@ -2,13 +2,6 @@
 
 set -e
 
-dpkg -l aptitude 2>&1 | grep ^ii >/dev/null || sudo apt-get install -y aptitude
-dpkg -l cntlm 2>&1 | grep ^ii >/dev/null || sudo aptitude install -y cntlm
-
-mkdir -p ~/bin
-cat > ~/bin/update-proxy-password <<EOFOUTER
-#!/bin/bash
-set -e
 USERNAME="${USERNAME:-$USER}"
 DOMAIN="${DOMAIN:-$(wbinfo --own-domain)}"
 PROXY="${PROXY:-$(gsettings get org.gnome.system.proxy.http host | sed -r "s/'//g"):$(gsettings get org.gnome.system.proxy.http port | sed -r "s/'//g")}"
@@ -18,6 +11,18 @@ NO_PROXY="${NO_PROXY:-$(gsettings get org.gnome.system.proxy ignore-hosts | sed 
 [[ -z "$DOMAIN" ]] && echo Please set env variable DOMAIN. && exit 1
 [[ -z "$PROXY" ]] && echo Please set env variable PROXY. && exit 1
 [[ "$PROXY" =~ ^:$ ]] && echo Please set env variable PROXY. && exit 1
+
+dpkg -l aptitude 2>&1 | grep ^ii >/dev/null || sudo apt-get install -y aptitude
+dpkg -l cntlm 2>&1 | grep ^ii >/dev/null || sudo aptitude install -y cntlm
+
+mkdir -p ~/bin
+cat > ~/bin/update-proxy-password <<EOFOUTER
+#!/bin/bash
+set -e
+USERNAME="$USERNAME"
+DOMAIN="$DOMAIN"
+PROXY="$PROXY"
+NO_PROXY="$NO_PROXY"
 
 PASSWORD_1=1
 PASSWORD_2=2
