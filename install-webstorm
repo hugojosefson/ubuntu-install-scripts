@@ -32,3 +32,11 @@ if [ -n "$DISPLAY" ]; then
 else
     echo Skipping setting up wstorm executable, because there is no DISPLAY set.
 fi
+
+mkdir -p ~/bin
+echo > ~/bin/ws <<\EOF
+#!/bin/bash
+arg=${1:-.}
+wstorm "${arg}" &>/dev/null &
+EOF
+chmod +x ~/bin/ws
