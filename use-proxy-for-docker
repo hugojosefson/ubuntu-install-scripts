@@ -3,6 +3,7 @@
 set -e
 
 dpkg -l aptitude 2>&1 | grep ^ii >/dev/null || sudo apt-get install -y aptitude
+dpkg -l docker-engine 2>&1 | grep ^ii >/dev/null || ./install-docker
 
 PROXY=${PROXY:-localhost:3128}
 PROXY_HOST=${PROXY_HOST:-${PROXY%%:*}}
@@ -33,6 +34,6 @@ sudo systemctl daemon-reload
 sudo systemctl stop docker
 sudo systemctl start docker
 
-echo Configured docker to go through the proxy $PROXY.
-echo     /etc/systemd/system/docker.service.d/http-proxy.conf
-echo     $(docker ps | grep ncarlier/redsocks)
+echo "Configured docker to go through the proxy $PROXY."
+echo "    /etc/systemd/system/docker.service.d/http-proxy.conf"
+echo "    $(docker ps | grep ncarlier/redsocks)"

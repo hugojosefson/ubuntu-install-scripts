@@ -14,6 +14,11 @@ DOMAIN="${DOMAIN:-$(wbinfo --own-domain)}"
 PROXY="${PROXY:-$(gsettings get org.gnome.system.proxy.http host | sed -r "s/'//g"):$(gsettings get org.gnome.system.proxy.http port | sed -r "s/'//g")}"
 NO_PROXY="${NO_PROXY:-$(gsettings get org.gnome.system.proxy ignore-hosts | sed -r "s/\[|]|'//g")}"
 
+[[ -z "$USERNAME" ]] && echo Please set env variable USERNAME. && exit 1
+[[ -z "$DOMAIN" ]] && echo Please set env variable DOMAIN. && exit 1
+[[ -z "$PROXY" ]] && echo Please set env variable PROXY. && exit 1
+[[ "$PROXY" =~ ^:$ ]] && echo Please set env variable PROXY. && exit 1
+
 PASSWORD_1=1
 PASSWORD_2=2
 until [ "\$PASSWORD_1" == "\$PASSWORD_2" ]; do
@@ -44,14 +49,14 @@ sudo chmod u=rw,go= /etc/cntlm.conf
 sudo service cntlm restart
 
 echo
-echo Reconfigured cntlm.
-echo     /etc/cntlm.conf
-echo Whenever you change password for \${USERNAME}@\${DOMAIN}, run update-proxy-password again.
+echo "Reconfigured cntlm."
+echo "    /etc/cntlm.conf"
+echo "Whenever you change password for \${USERNAME}@\${DOMAIN}, run update-proxy-password again."
 EOFOUTER
 
 chmod +x ~/bin/update-proxy-password
-echo Installed cntlm.
-echo     ~/bin/update-proxy-password
-echo Running update-proxy-password to configure your password...
+echo "Installed cntlm."
+echo "    ~/bin/update-proxy-password"
+echo "Running update-proxy-password to configure your password..."
 ~/bin/update-proxy-password
 
