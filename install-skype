@@ -2,5 +2,11 @@
 
 set -e
 
+which skypeforlinux && exit 0
+
 which aptitude || sudo apt-get install -y aptitude
-which skype || sudo aptitude install -y skype
+which gdebi || sudo aptitude -y install gdebi-core
+
+cd $(dirname $(mktemp))
+wget https://go.skype.com/skypeforlinux-64-alpha.deb -O skypeforlinux-64-alpha.deb
+sudo gdebi --non-interactive skypeforlinux-64-alpha.deb
