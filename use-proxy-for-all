@@ -6,4 +6,4 @@ cd $(dirname ${0})
 ./install-cntlm
 ./use-proxy-for-git
 ./use-proxy-for-ssh
-./use-proxy-for-docker
+./install-docker-behind-proxy
