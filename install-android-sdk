@@ -22,7 +22,11 @@ if [ ! -f /opt/android-sdk-linux/tools/android ]; then
 fi
 
 java -version || ./install-java
-( sleep 2; while [ 1 ]; do sleep 1; echo y; done ) | /opt/android-sdk-linux/tools/android update sdk --no-ui --filter tool,platform-tool # --all --force
+ 
+echo "If it hangs on downloading URLs, edit install-android-sdk and uncomment PROXY_ARGUMENTS" 
+PROXY_ARGUMENTS=""
+#PROXY_ARGUMENTS="--proxy-host localhost --proxy-port 3128"
+( sleep 2; while [ 1 ]; do sleep 1; echo y; done ) | /opt/android-sdk-linux/tools/android update sdk --no-ui ${PROXY_ARGUMENTS} --filter tool,platform-tool # --all --force
 
 grep -x 'export PATH=/opt/android-sdk-linux/platform-tools:/opt/android-sdk-linux/tools:$PATH' ~/.bashrc || echo -e '\nexport PATH=/opt/android-sdk-linux/platform-tools:/opt/android-sdk-linux/tools:$PATH' >> ~/.bashrc
 grep -x 'export ANDROID_HOME=/opt/android-sdk-linux' ~/.bashrc || echo -e '\nexport ANDROID_HOME=/opt/android-sdk-linux' >> ~/.bashrc
