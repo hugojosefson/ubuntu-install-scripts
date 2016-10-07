@@ -10,7 +10,7 @@ if [ ! -f /opt/android-sdk-linux/tools/android ]; then
   which wget || sudo aptitude install -y wget
   which hxpipe || sudo aptitude install -y html-xml-utils
   
-  DOWNLOAD_URL=$(curl --silent https://developer.android.com/sdk/index.html | hxpipe | grep ^Ahref | grep sdk | grep linux | cut -d ' ' -f 3)
+  DOWNLOAD_URL=$(curl --silent --location https://developer.android.com/studio/index.html | hxpipe | grep ^Ahref | grep sdk | grep linux | cut -d ' ' -f 3)
   FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
   FILE=$(dirname $(mktemp))/$FILENAME
   
