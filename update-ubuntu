@@ -7,5 +7,5 @@ apt-get -s -o Debug::NoLocking=true upgrade | grep -q ^Inst || exit 0
 
 sudo apt-get update
 which aptitude || sudo apt-get install -y aptitude
-sudo aptitude dist-upgrade --purge -y
+sudo aptitude dist-upgrade --purge-unused -y
 sudo aptitude autoclean
