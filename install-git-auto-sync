@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+which aptitude || sudo apt-get install -y aptitude
+which inotifywait || sudo aptitude install -y inotify-tools
+
+mkdir -p ~/bin
+
+curl https://raw.githubusercontent.com/hugojosefson/git-auto-sync/recursive/git-auto-sync > ~/bin/git-auto-sync
+chmod +x ~/bin/git-auto-sync
