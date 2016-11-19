@@ -68,6 +68,7 @@ windows:
 EOF
 
 DOMAIN=${DOMAIN:-$(wbinfo --own-domain 2>/dev/null || true)}
+mkdir -p ~/bin
 cat > ~/bin/m-temp <<EOF
 #!/bin/bash
 
