@@ -4,14 +4,9 @@ set -e
 cd $(dirname ${0})
 
 if ! which CrashPlanDesktop; then
-    if ! which hxnormalize; then
-        which aptitude || sudo apt-get install -y aptitude
-        sudo aptitude install -y html-xml-utils
-    fi
-
     which java || ./install-java
 
-    CURRENT_VERSION=$(hxnormalize https://support.code42.com/Release_Notes/CrashPlan_For_Home 2>/dev/null |grep 'id="Current_Version"' -A 7|awk -F '>' '/>[0-9].*<\/a>/{print $2}'|awk -F '<' '{print $1}')
+    CURRENT_VERSION=$(curl -s https://www.crashplan.com/shared/js/cp.download.js 2>/dev/null |grep 'CPC_CLIENT_VERSION ='|awk -F "'" '{print $2}')
     [[ $CURRENT_VERSION =~ ^[0-9]+\.[0-9]+$ ]] && CURRENT_VERSION=$CURRENT_VERSION.0
 
     FILE=CrashPlan_${CURRENT_VERSION}_Linux.tgz
