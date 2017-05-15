@@ -5,8 +5,6 @@ cd $(dirname ${0})
 
 ./all-1-minimal-sanity
 
-./install-encfs
 ./install-skype
 ./install-libreoffice
-./install-dropbox
 ./install-crashplan
