@@ -17,9 +17,9 @@ sudo su - $USER -c "docker run hello-world"
 
 mkdir -p ~/bin
 
-curl -L  https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > ~/bin/docker-compose
+curl -L  https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > ~/bin/docker-compose
 chmod +x ~/bin/docker-compose
-sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose"
+sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/1.13.0/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose"
 
 cd $(mktemp -d)
 git clone https://gist.github.com/76b450a0c986e576e98b.git
