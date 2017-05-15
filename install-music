@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo aptitude install -y rosegarden hydrogen hydrogen-drumkits-effects lilypond muse yoshimi
