@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+which aptitude || sudo apt-get install -y aptitude
+which stack || sudo aptitude install -y haskell-stack
+
+stack setup
+stack config set resolver lts
+
+grep -x 'export PATH=$(stack path --bin-path 2>/dev/null)' ~/.bashrc || echo -e '\nexport PATH=$(stack path --bin-path 2>/dev/null)' >> ~/.bashrc
+grep -x 'eval "$(stack --bash-completion-script stack)"' ~/.bashrc || echo -e '\neval "$(stack --bash-completion-script stack)"' >> ~/.bashrc
+
+# Pre-cache more stuff
+which docker && stack docker pull
+(cd $(mktemp -d) && stack new helloworld new-template -p "author-email:value" -p "author-name:value" -p "category:value" -p "copyright:value" -p "github-username:value" && cd helloworld && stack build)
