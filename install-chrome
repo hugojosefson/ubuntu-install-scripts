@@ -2,7 +2,7 @@
 
 set -e
 
-which google-chrome-stable && exit 0
+#which google-chrome-stable && exit 0
 
 which aptitude || sudo apt-get install -y aptitude
 which gdebi || sudo aptitude -y install gdebi-core
