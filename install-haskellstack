@@ -12,5 +12,12 @@ grep -x 'export PATH=$(stack path --bin-path 2>/dev/null)' ~/.bashrc || echo -e 
 grep -x 'eval "$(stack --bash-completion-script stack)"' ~/.bashrc || echo -e '\neval "$(stack --bash-completion-script stack)"' >> ~/.bashrc
 
 # Pre-cache more stuff
-which docker && stack docker pull
+stack build intero
 (cd $(mktemp -d) && stack new helloworld new-template -p "author-email:value" -p "author-name:value" -p "category:value" -p "copyright:value" -p "github-username:value" && cd helloworld && stack build)
+
+# https://thoughtbot.com/maybe_haskell-sample.pdf
+# https://gumroad.com/l/haskellbook
+# https://github.com/bitemyapp/learnhaskell
+# https://docs.haskellstack.org/en/stable/README/
+# https://docs.haskellstack.org/en/stable/GUIDE/
+
