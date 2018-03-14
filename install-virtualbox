@@ -10,7 +10,7 @@ wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | s
 if (curl --fail --silent http://download.virtualbox.org/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
   echo "deb http://download.virtualbox.org/virtualbox/debian $(./ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 else
-  echo "deb http://download.virtualbox.org/virtualbox/debian wily contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+  echo "deb http://download.virtualbox.org/virtualbox/debian zesty contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 fi
 which aptitude || sudo apt-get install -y aptitude
 sudo aptitude update
@@ -26,4 +26,4 @@ EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-${EXTPACK_VERSION}.vbox-ex
 EXTPACK_FILE="${TEMP_DIR}/${EXTPACK_FILENAME}"
 wget "http://download.virtualbox.org/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O ${EXTPACK_FILE}
 #sudo VBoxManage extpack uninstall "Oracle VM VirtualBox Extension Pack"
-sudo VBoxManage extpack install ${EXTPACK_FILE} --replace
+sudo VBoxManage extpack install ${EXTPACK_FILE} --replace --accept-license=56be48f923303c8cababb0bb4c478284b688ed23f16d775d729b89a2e8e5f9eb
