@@ -6,17 +6,17 @@ cd $(dirname ${0})
 which curl || sudo apt-get install -y curl
 
 wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
-if (curl --fail --silent http://download.virtualbox.org/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
-  echo "deb http://download.virtualbox.org/virtualbox/debian $(./ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+wget -q https://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+if (curl --fail --silent https://download.virtualbox.org/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
+  echo "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian $(./ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 else
-  echo "deb http://download.virtualbox.org/virtualbox/debian zesty contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+  echo "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bionic contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 fi
-which aptitude || sudo apt-get install -y aptitude
-sudo aptitude update
+which apt || sudo apt-get install -y apt
+sudo apt update
 
 PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]'|sort -nr|cut -d ' ' -f 1|head -n 1)
-sudo aptitude install -y ${PKG_NAME}
+sudo apt install -y ${PKG_NAME}
 
 TEMP_DIR=$(dirname $(mktemp))
 VIRTUALBOX_VERSION=$(vboxmanage --version | tail -n 1)
@@ -24,6 +24,6 @@ EXTPACK_VERSION=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 1)
 EXTPACK_BUILD=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 2)
 EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-${EXTPACK_VERSION}.vbox-extpack"
 EXTPACK_FILE="${TEMP_DIR}/${EXTPACK_FILENAME}"
-wget "http://download.virtualbox.org/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O ${EXTPACK_FILE}
+wget "https://download.virtualbox.org/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O ${EXTPACK_FILE}
 #sudo VBoxManage extpack uninstall "Oracle VM VirtualBox Extension Pack"
 sudo VBoxManage extpack install ${EXTPACK_FILE} --replace --accept-license=56be48f923303c8cababb0bb4c478284b688ed23f16d775d729b89a2e8e5f9eb
