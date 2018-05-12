@@ -8,10 +8,62 @@ set -e
 grep 'DOCKER_OPTS="--iptables=false --dns 1.1.1.1 --dns 1.0.0.1' /etc/default/docker || echo -e '\nDOCKER_OPTS="--iptables=false --dns 1.1.1.1 --dns 1.0.0.1"' | sudo tee -a /etc/default/docker
 sudo systemctl restart docker
 
+## Set up firewall
 sudo ufw allow ssh/tcp
 sudo ufw allow http/tcp
 sudo ufw allow https/tcp
 sudo ufw --force enable
 
+## Install captainduckduck
 sudo mkdir -p /captain
 sudo docker run -v /var/run/docker.sock:/var/run/docker.sock dockersaturn/captainduckduck
+
+## Change default password
+which jq || sudo apt install -y jq
+OLD_PASS="captain42"
+NEW_PASS=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;)
+COOKIE_JAR=$(mktemp)
+
+echo "Logging in to change default captain password..."
+unset TOKEN
+until [ ${#TOKEN} -ge 20 ]; do
+    TOKEN=$(curl -sS \
+        --junk-session-cookies \
+        --cookie "${COOKIE_JAR}" \
+        --cookie-jar "${COOKIE_JAR}" \
+        localhost:3000/api/v1/login \
+        -X POST \
+        -H "Content-Type: application/json;charset=UTF-8" \
+        -H "x-namespace: captain" \
+        --data "{\"password\":\"${OLD_PASS}\"}" | jq -r .token)
+    echo
+    sleep 2
+done
+
+echo "Changing captain password..."
+curl -sS \
+    --cookie "${COOKIE_JAR}" \
+    --cookie-jar "${COOKIE_JAR}" \
+    localhost:3000/api/v1/user/changepassword \
+    -X POST \
+    -H "Content-Type: application/json;charset=UTF-8" \
+    -H "x-captain-auth: ${TOKEN}" \
+    -H "x-namespace: captain" \
+    --data "{\"oldPassword\":\"${OLD_PASS}\", \"newPassword\":\"${NEW_PASS}\"}"
+
+rm ${COOKIE_JAR} || true
+
+## Instructions
+echo
+echo
+echo "=============================================================================="
+echo "All incoming ports except 22, 80 and 443 are firewalled off. Use an ssh tunnel"
+echo "from your desktop to this server, for initial domain configuration of captain:"
+echo
+echo "ssh ${USER}@$(curl -sS https://api.ipify.org/) -L 3000:localhost:3000"
+echo
+echo "Then browse to http://localhost:3000/ and configure your domain."
+echo "Default captain password has been changed to ${NEW_PASS}"
+echo
+echo "See also https://github.com/githubsaturn/captainduckduck/wiki/Getting-Started"
+echo "=============================================================================="
