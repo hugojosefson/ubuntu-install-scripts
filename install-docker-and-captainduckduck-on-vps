@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+./install-docker
+
+## https://www.techrepublic.com/article/how-to-fix-the-docker-and-ufw-security-flaw/
+grep 'DOCKER_OPTS="--iptables=false --dns 1.1.1.1 --dns 1.0.0.1' /etc/default/docker || echo -e '\nDOCKER_OPTS="--iptables=false --dns 1.1.1.1 --dns 1.0.0.1"' | sudo tee -a /etc/default/docker
+sudo systemctl restart docker
+
+sudo ufw allow ssh/tcp
+sudo ufw allow http/tcp
+sudo ufw allow https/tcp
+sudo ufw --force enable
+
+sudo mkdir -p /captain
+sudo docker run -v /var/run/docker.sock:/var/run/docker.sock dockersaturn/captainduckduck
