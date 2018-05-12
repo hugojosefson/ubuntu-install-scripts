@@ -10,6 +10,6 @@ Happy (re-)installing!
 
 ## Easy download
 
-	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/ubuntu-gnome-17.04.tar.gz | tar xzv
-	cd ubuntu-install-scripts-ubuntu-gnome-17.04
+	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/ubuntu-18.04.tar.gz | tar xzv
+	cd ubuntu-install-scripts-ubuntu-18.04
 
