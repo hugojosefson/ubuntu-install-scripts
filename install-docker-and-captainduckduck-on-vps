@@ -1,28 +1,28 @@
 #!/bin/bash
 
 set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+pushd "${DIR}"
 
+## Install docker
+./update-ubuntu
 ./install-docker
 
-## https://www.techrepublic.com/article/how-to-fix-the-docker-and-ufw-security-flaw/
-grep 'DOCKER_OPTS="--iptables=false --dns 1.1.1.1 --dns 1.0.0.1' /etc/default/docker || echo -e '\nDOCKER_OPTS="--iptables=false --dns 1.1.1.1 --dns 1.0.0.1"' | sudo tee -a /etc/default/docker
-sudo systemctl restart docker
+## Filter incoming traffic to docker (ufw is not good enough with docker swarm)
+#sudo su - $USER -c "docker run -d --name captain-firewall --env FW_SERVICE=captain --env FW_PROTO=tcp --env FW_PORTS=22,80,443 --restart=always --cap-add=NET_ADMIN --net=host hugojosefson/docker-firewall"
 
-## Set up firewall
-sudo ufw allow ssh/tcp
-sudo ufw allow http/tcp
-sudo ufw allow https/tcp
-sudo ufw --force enable
+## Remove any existing captain password
+if [ -e /captain/config.conf ]; then
+    echo
+    echo "Removing existing captain password..."
+    sudo su - $USER -c "docker service scale captain-captain=0"
+    sudo sed /hashedPassword/d -i /captain/config.conf
+    sudo su - $USER -c "docker service scale captain-captain=1"
+fi
 
 ## Install captainduckduck
 sudo mkdir -p /captain
-sudo docker run -v /var/run/docker.sock:/var/run/docker.sock dockersaturn/captainduckduck
-
-echo
-echo "Removing any existing captain password..."
-sudo su - $USER -c "docker service scale captain-captain=0"
-sudo sed /hashedPassword/d -i /captain/config.conf
-sudo su - $USER -c "docker service scale captain-captain=1"
+sudo docker run -v /var/run/docker.sock:/var/run/docker.sock hugojosefson/captainduckduck:apex
 
 ## Change default password
 OLD_PASS="captain42"
@@ -66,16 +66,14 @@ curl -sS \
 rm ${COOKIE_JAR} || true
 
 ## Instructions
+IP="$(curl -sS https://api.ipify.org/)"
 echo
 echo
 echo "=============================================================================="
-echo "All incoming ports except 22, 80 and 443 are firewalled off. Use an ssh tunnel"
-echo "from your desktop to this server, for initial domain configuration of captain:"
-echo
-echo "ssh ${USER}@$(curl -sS https://api.ipify.org/) -L 3000:localhost:3000"
-echo
-echo "Then browse to http://localhost:3000/ and configure your domain."
+echo "Go to http://${IP}:3000/ and configure your domain."
 echo "Default captain password has been changed to ${NEW_PASS}"
 echo
 echo "See also https://github.com/githubsaturn/captainduckduck/wiki/Getting-Started"
 echo "=============================================================================="
+
+popd
