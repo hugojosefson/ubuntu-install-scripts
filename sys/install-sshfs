@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+which sshfs || sudo apt install -y sshfs

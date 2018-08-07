@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+which curl || sudo apt install -y curl
+
+cd $(mktemp -d)
+
+curl -O https://prerelease.keybase.io/keybase_amd64.deb
+sudo dpkg -i keybase_amd64.deb || sudo apt-get install -fy
+run_keybase

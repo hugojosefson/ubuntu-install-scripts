@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+#which google-chrome-stable && exit 0
+
+which gdebi || sudo apt -y install gdebi-core
+
+cd $(dirname $(mktemp))
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O google-chrome-stable_current_amd64.deb
+sudo gdebi --non-interactive google-chrome-stable_current_amd64.deb

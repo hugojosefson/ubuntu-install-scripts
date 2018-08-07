@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e
-
-gsettings set com.canonical.indicator.datetime show-week-numbers true || true
-gsettings set org.gnome.evolution.calendar show-week-numbers true || true
-gsettings set org.gnome.shell.calendar show-weekdate true || true

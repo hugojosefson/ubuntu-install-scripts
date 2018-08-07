@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+if ! which libreoffice; then
+    sudo apt install -y libreoffice ttf-mscorefonts-installer
+fi

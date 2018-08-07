@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+which curl || sudo apt install -y curl
+which unzip || sudo apt install -y unzip
+
+cd $(mktemp -d)
+
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+mkdir -p ~/bin
+./awscli-bundle/install -b ~/bin/aws
+
+curl -o ~/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
+chmod +x ~/bin/ecs-cli

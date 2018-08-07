@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+ORIGINAL_DIR="$(pwd)"
+
+if [ ! -d /opt/apache-maven/ ]; then
+  which curl || sudo apt-get install -y curl
+  which wget || sudo apt-get install -y wget
+  
+  DOWNLOAD_URL=$(curl --silent http://maven.apache.org/download.cgi | hxpipe | grep ^Ahref | grep binaries/apache-maven | grep tar.gz\$ | head -n 1 | cut -d ' ' -f 3)
+  FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
+  FILE=$(dirname $(mktemp))/$FILENAME
+  
+  wget --continue ${DOWNLOAD_URL} -O $FILE
+  DIR=$(tar tf $FILE |head -n 1|cut -d '/' -f 1)
+  
+  sudo chown $USER:$GROUP /opt
+  tar xf $FILE -C /opt
+  cd /opt
+  rm apache-maven || true
+  ln -s $DIR apache-maven
+  cd "$ORIGINAL_DIR"
+
+fi
+
+java -version || install-java
+grep -x 'export PATH=/opt/apache-maven/bin:$PATH' ~/.bashrc || echo -e '\nexport PATH=/opt/apache-maven/bin:$PATH' >> ~/.bashrc
+grep -x 'export M2_HOME=/opt/apache-maven' ~/.bashrc || echo export -e '\nM2_HOME=/opt/apache-maven' >> ~/.bashrc

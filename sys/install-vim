@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+which vim || sudo apt install -y vim
+
+grep -x 'export EDITOR=vim' ~/.bashrc || (echo -e '\nexport EDITOR=vim' >> ~/.bashrc)

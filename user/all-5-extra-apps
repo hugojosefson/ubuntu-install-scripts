@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+cd $(dirname ${0})
+
+sys/all-1-minimal-sanity
+
+./install-skype
+./install-libreoffice
+./install-crashplan

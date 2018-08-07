@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+which gitk || sudo apt install -y gitk
+
+mkdir -p ~/bin
+echo > ~/bin/gk <<\EOF
+#!/bin/bash
+arg=${1:---all}
+gitk "${arg}" &>/dev/null &
+EOF
+chmod +x ~/bin/gk

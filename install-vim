@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -e
-
-which aptitude || sudo apt-get install -y aptitude
-which vim || sudo aptitude install -y vim
-
-grep -x 'export EDITOR=vim' ~/.bashrc || (echo -e '\nexport EDITOR=vim' >> ~/.bashrc)

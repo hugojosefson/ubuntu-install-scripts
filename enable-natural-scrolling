@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -e
-
-# Ubuntu with Unity / Gnome Shell:
-gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true

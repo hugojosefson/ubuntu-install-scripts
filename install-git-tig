@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -e
-
-which aptitude || sudo apt-get install -y aptitude
-which tig || sudo aptitude install -y tig

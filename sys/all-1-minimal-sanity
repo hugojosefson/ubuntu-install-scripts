@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+cd $(dirname ${0})
+
+update-packages
+../disable-some-keyboard-shortcuts
+../enable-natural-scrolling
+../enable-week-numbers
+../user/install-tmuxinator-byobu-bash_aliases
+../user/install-vim
+../user/save-bash-history
+install-sshfs

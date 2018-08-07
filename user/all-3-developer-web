@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+cd $(dirname ${0})
+
+./all-2-developer-base
+
+./install-nvm-and-nodejs
+user/add-node_modules-bin-to-path
+./install-ruby
+./install-network-utils
+./install-chrome
+./install-dillo
+./install-webstorm

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+which dillo || sudo apt install -y dillo

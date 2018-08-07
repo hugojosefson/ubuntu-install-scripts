@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+which git-flow || sudo apt install -y git-flow

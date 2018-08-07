@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+cd $(dirname ${0})
+
+all-1-minimal-sanity
+
+install-git-tig
+install-gitk
+install-git-flow
+../user/install-git-prompt
+../user/install-github-git-plugin
+
+../user/install-vim
+install-meld

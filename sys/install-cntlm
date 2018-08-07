@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -e
+
+USERNAME="${USERNAME:-$USER}"
+DOMAIN="${DOMAIN:-$(wbinfo --own-domain)}"
+PROXY="${PROXY:-$(gsettings get org.gnome.system.proxy.http host | sed -r "s/'//g"):$(gsettings get org.gnome.system.proxy.http port | sed -r "s/'//g")}"
+NO_PROXY="${NO_PROXY:-$(gsettings get org.gnome.system.proxy ignore-hosts | sed -r "s/\[|]|'//g")}"
+
+[[ -z "$USERNAME" ]] && echo Please set env variable USERNAME. && exit 1
+[[ -z "$DOMAIN" ]] && echo Please set env variable DOMAIN. && exit 1
+[[ -z "$PROXY" ]] && echo Please set env variable PROXY. && exit 1
+[[ "$PROXY" =~ ^:$ ]] && echo Please set env variable PROXY. && exit 1
+
+dpkg -l apt 2>&1 | grep ^ii >/dev/null || sudo apt-get install -y apt
+dpkg -l cntlm 2>&1 | grep ^ii >/dev/null || sudo apt install -y cntlm
+
+mkdir -p ~/bin
+cat > ~/bin/update-proxy-password <<EOFOUTER
+#!/bin/bash
+set -e
+USERNAME="$USERNAME"
+DOMAIN="$DOMAIN"
+PROXY="$PROXY"
+NO_PROXY="$NO_PROXY"
+
+PASSWORD_1=1
+PASSWORD_2=2
+until [ "\$PASSWORD_1" == "\$PASSWORD_2" ]; do
+    read -rsp "Password for \${USERNAME}@\${DOMAIN}: " PASSWORD_1
+    echo
+    read -rsp "Same password, again: " PASSWORD_2
+    echo
+    [ "\$PASSWORD_1" == "\$PASSWORD_2" ] || (echo && echo "Typo! Please try again..." && echo)
+done
+PASSWORD_LINE=\$(echo \$PASSWORD_1 | cntlm -H -u \$USERNAME@\$DOMAIN | grep PassNTLMv2)
+
+sudo cp /etc/cntlm.conf{,.\$(date +%s).backup}
+sudo tee /etc/cntlm.conf > /dev/null <<EOF
+Username	\$USERNAME
+Domain		\$DOMAIN
+\$PASSWORD_LINE
+
+Proxy		\$PROXY
+
+NoProxy		\$NO_PROXY
+
+Listen		3128
+
+Header		User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98)
+EOF
+
+sudo chmod u=rw,go= /etc/cntlm.conf
+sudo service cntlm restart
+
+echo
+echo "Reconfigured cntlm."
+echo "    /etc/cntlm.conf"
+echo "Whenever you change password for \${USERNAME}@\${DOMAIN}, run update-proxy-password again."
+EOFOUTER
+
+chmod +x ~/bin/update-proxy-password
+echo "Installed cntlm."
+echo "    ~/bin/update-proxy-password"
+echo "Running update-proxy-password to configure your password..."
+~/bin/update-proxy-password
+

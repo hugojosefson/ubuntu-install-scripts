@@ -1,4 +1,0 @@
-echo TODO: https://askubuntu.com/questions/934381/bluetooth-speaker-not-doing-a2dp-ubuntu-gnome-17-04
-
-echo TODO: https://wiki.debian.org/BluetoothUser/a2dp#Workaround_2:_disable_pulseaudio.27s_bluetooth_in_gdm
-echo TODO: /var/lib/gdm3/.config/pulse/default.pa

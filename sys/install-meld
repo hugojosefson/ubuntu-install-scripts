@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+which meld || sudo apt install -y meld

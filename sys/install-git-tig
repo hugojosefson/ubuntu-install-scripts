@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+which tig || sudo apt install -y tig
