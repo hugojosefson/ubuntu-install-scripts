@@ -8,3 +8,6 @@ cd $(dirname ${0})
 ./install-gitk
 ./install-git-prompt
 ./install-github-git-plugin
+
+./install-awscli
+./install-docker

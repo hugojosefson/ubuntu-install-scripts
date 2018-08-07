@@ -3,5 +3,4 @@
 set -e
 cd $(dirname ${0})
 
-./install-docker
-./install-virtualbox
+./install-keybase

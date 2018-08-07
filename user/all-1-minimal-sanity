@@ -3,4 +3,5 @@
 set -e
 cd $(dirname ${0})
 
-./install-byobu-tmuxinator-bash_aliases
+./install-tmuxinator-byobu-bash_aliases
+./home-is-desktop

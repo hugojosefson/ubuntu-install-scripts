@@ -12,3 +12,5 @@ cd $(dirname ${0})
 ./user/install-github-git-plugin
 
 ./install-meld
+./install-awscli
+./install-docker
