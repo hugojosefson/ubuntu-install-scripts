@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 cd $(dirname ${0})
@@ -34,7 +34,7 @@ fi
 
 mkdir -p ~/bin
 echo > ~/bin/ws <<\EOF
-#!/bin/bash
+#!/usr/bin/env bash
 arg=${1:-.}
 webstorm "${arg}" &>/dev/null &
 EOF

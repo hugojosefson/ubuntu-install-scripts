@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -17,7 +17,7 @@ dpkg -l cntlm 2>&1 | grep ^ii >/dev/null || sudo apt install -y cntlm
 
 mkdir -p ~/bin
 cat > ~/bin/update-proxy-password <<EOFOUTER
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 USERNAME="$USERNAME"
 DOMAIN="$DOMAIN"

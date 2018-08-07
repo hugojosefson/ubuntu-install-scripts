@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -6,5 +6,6 @@ set -e
 apt-get -s -o Debug::NoLocking=true upgrade | grep -q ^Inst || exit 0
 
 sudo apt update
-sudo apt dist-upgrade --purge-unused -y
+sudo apt dist-upgrade --purge -y
+sudo apt autoremove --purge -y
 sudo apt autoclean

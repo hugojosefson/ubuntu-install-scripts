@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -6,7 +6,7 @@ which gitk || sudo apt install -y gitk
 
 mkdir -p ~/bin
 echo > ~/bin/gk <<\EOF
-#!/bin/bash
+#!/usr/bin/env bash
 arg=${1:---all}
 gitk "${arg}" &>/dev/null &
 EOF

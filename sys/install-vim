@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
 which vim || sudo apt install -y vim
 
-grep -x 'export EDITOR=vim' ~/.bashrc || (echo -e '\nexport EDITOR=vim' >> ~/.bashrc)
+grep -x 'EDITOR=vim' /etc/environment || (echo -e '\nEDITOR=vim' | sudo tee -a /etc/environment)

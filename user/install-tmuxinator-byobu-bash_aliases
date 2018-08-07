@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -45,7 +45,7 @@ EOF
 DOMAIN=${DOMAIN:-$(wbinfo --own-domain 2>/dev/null || true)}
 mkdir -p ~/bin
 cat > ~/bin/m-temp <<EOF
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## Creates and opens a new temp session
 
