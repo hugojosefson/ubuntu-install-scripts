@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
 
 ORIGINAL_DIR="$(pwd)"
 
@@ -15,11 +16,11 @@ FILE=$(dirname $(mktemp))/$FILENAME
 wget --continue ${DOWNLOAD_URL} -O $FILE
 DIR=$(tar tzf $FILE |head -n 1|cut -d '/' -f 1)
 
-sudo chown $USER:$GROUP /opt
+sudo chown $USER /opt
 tar xzf $FILE -C /opt
 cd /opt
 rm idea || true
 ln -s $DIR idea
 
 cd "$ORIGINAL_DIR"
-java -version || install-java
+java -version || ./install-java

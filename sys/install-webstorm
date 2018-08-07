@@ -23,11 +23,4 @@ rm webstorm || true
 ln -s $DIR webstorm
 
 cd "$ORIGINAL_DIR"
-java -version || install-java
-
-if [ -n "$DISPLAY" ]; then
-    which webstorm || /opt/webstorm/bin/webstorm.sh
-    sudo sed -r "s/${DIR}/webstorm/g" -i /usr/local/bin/webstorm /usr/share/applications/jetbrains-webstorm.desktop || true
-else
-    echo Skipping setting up webstorm executable, because there is no DISPLAY set.
-fi
+java -version || ./install-java

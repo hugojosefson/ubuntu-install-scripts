@@ -2,10 +2,19 @@
 
 set -e
 
+if [ -n "$DISPLAY" ]; then
+    which webstorm || /opt/webstorm/bin/webstorm.sh
+    [ -f /usr/local/bin/webstorm ] && sudo sed -r "s/\/opt\/WebStorm-[0-9.]+/\/opt\/webstorm/g" -i /usr/local/bin/webstorm
+    [ -f /usr/share/applications/jetbrains-webstorm.desktop ] && sudo sed -r "s/\/opt\/WebStorm-[0-9.]+/\/opt\/webstorm/g" -i /usr/share/applications/jetbrains-webstorm.desktop
+    [ -f ~/.local/share/applications/jetbrains-webstorm.desktop ] && sudo sed -r "s/\/opt\/WebStorm-[0-9.]+/\/opt\/webstorm/g" -i ~/.local/share/applications/jetbrains-webstorm.desktop
+else
+    echo Skipping setting up webstorm executable, because there is no DISPLAY set.
+fi
+
 mkdir -p ~/bin
-echo > ~/bin/ws <<\EOF
+cat > ~/bin/ws <<EOF
 #!/usr/bin/env bash
-arg=${1:-.}
-webstorm "${arg}" &>/dev/null &
+arg=\${1:-.}
+webstorm "\${arg}" &>/dev/null &
 EOF
 chmod +x ~/bin/ws

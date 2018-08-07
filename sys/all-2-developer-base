@@ -8,8 +8,6 @@ cd $(dirname ${0})
 ./install-git-tig
 ./install-gitk
 ./install-git-flow
-./user/install-git-prompt
-./user/install-github-git-plugin
 
 ./install-meld
 ./install-awscli

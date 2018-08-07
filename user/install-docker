@@ -2,26 +2,13 @@
 
 set -e
 
-sudo apt install -y \
-                  apt-transport-https \
-                  ca-certificates \
-                  curl \
-                  software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable nightly"
-sudo apt update
-sudo apt install -y docker-ce
-sudo groupadd -f docker
-sudo usermod -aG docker $USER
-sudo systemctl restart docker
-sleep 2
-sudo su - $USER -c "docker run hello-world"
+## https://jrruethe.github.io/blog/2016/04/15/running-docker-in-qubes/
+grep -x 'dockerd --data-root /home/user/docker' /rw/config/rc.local || echo -e '\ndockerd --data-root /home/user/docker' | sudo tee -a /rw/config/rc.local
 
 mkdir -p ~/bin
 
-curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o ~/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o ~/bin/docker-compose
 chmod +x ~/bin/docker-compose
-sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/1.21.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"
 
 cd $(mktemp -d)
 git clone https://gist.github.com/76b450a0c986e576e98b.git

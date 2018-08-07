@@ -6,9 +6,5 @@ cd $(dirname ${0})
 ./all-2-developer-base
 
 ./install-nvm-and-nodejs
-user/add-node_modules-bin-to-path
-./install-ruby
-./install-network-utils
-../sys/install-chrome
-./install-dillo
+./add-node_modules-bin-to-path
 ./install-webstorm

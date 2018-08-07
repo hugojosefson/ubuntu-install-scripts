@@ -2,4 +2,5 @@
 
 set -e
 
-sudo snap install -y firefox
+which snap || sudo apt install -y snapd
+sudo snap install firefox

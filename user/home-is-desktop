@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 cd ~
-rmdir Desktop
+rmdir Desktop 2>/dev/null || rm Desktop
 ln -s . Desktop
