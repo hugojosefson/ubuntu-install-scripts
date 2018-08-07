@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+rsync -a --progress --delete . root@captain.hugojosefson.net:/root/ubuntu-install-scripts-ubuntu-18.04

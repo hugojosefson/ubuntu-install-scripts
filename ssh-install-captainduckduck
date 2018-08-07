@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+clear; ssh root@captain.hugojosefson.net -t ./ubuntu-install-scripts-ubuntu-18.04/install-docker-and-captainduckduck-on-vps
+

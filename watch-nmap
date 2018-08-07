@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+watch -n 5 nmap -sS -n captain.hugojosefson.net -p 22,80,443,996,3000,8888,6379,2377,7946
