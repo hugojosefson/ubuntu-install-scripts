@@ -7,7 +7,8 @@ ORIGINAL_DIR="$(pwd)"
 if [ ! -d /opt/apache-maven/ ]; then
   which curl || sudo apt-get install -y curl
   which wget || sudo apt-get install -y wget
-  
+  which hxpipe || sudo apt install -y html-xml-utils
+
   DOWNLOAD_URL=$(curl --silent http://maven.apache.org/download.cgi | hxpipe | grep ^Ahref | grep binaries/apache-maven | grep tar.gz\$ | head -n 1 | cut -d ' ' -f 3)
   FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
   FILE=$(dirname $(mktemp))/$FILENAME
@@ -25,5 +26,5 @@ if [ ! -d /opt/apache-maven/ ]; then
 fi
 
 java -version || install-java
-grep -x 'export PATH=/opt/apache-maven/bin:$PATH' ~/.bashrc || echo -e '\nexport PATH=/opt/apache-maven/bin:$PATH' >> ~/.bashrc
-grep -x 'export M2_HOME=/opt/apache-maven' ~/.bashrc || echo export -e '\nM2_HOME=/opt/apache-maven' >> ~/.bashrc
+grep -x 'PATH=/opt/apache-maven/bin:$PATH' /etc/environment || echo -e '\nPATH=/opt/apache-maven/bin:$PATH' | sudo tee -a /etc/environment
+grep -x 'M2_HOME=/opt/apache-maven' /etc/environment || echo -e '\nM2_HOME=/opt/apache-maven' | sudo tee -a /etc/environment

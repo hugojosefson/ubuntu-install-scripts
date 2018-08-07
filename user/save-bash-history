@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-grep -x 'export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' ~/.bashrc || (echo -e '\nexport PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' >> ~/.bashrc)

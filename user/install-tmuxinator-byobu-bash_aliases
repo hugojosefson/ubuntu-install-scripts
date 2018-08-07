@@ -2,10 +2,6 @@
 
 set -e
 
-which byobu || sudo apt install -y byobu
-which tmuxinator || sudo apt install -y tmuxinator
-which xsel || sudo apt install -y xsel
-
 mkdir -p ~/code
 mkdir -p ~/.tmuxinator
 cat > ~/.tmuxinator/base.yml <<EOF
@@ -53,9 +49,10 @@ export SESSION_DIR=\$(readlink -f \${1:-\$(mktemp -d)})
 export SESSION_NAME="\$(echo \${SESSION_DIR} \
                      | sed -r 's/^[\\./]//g' \
                      | sed -r 's/[\\./]+/-/g' \
-                     | sed -r 's/^surviving-data-//' \
+                     | sed -r 's/^Users-/home-/' \
                      | sed -r 's/^home-${DOMAIN}-[^-]+-//' \
                      | sed -r 's/^home-${USER}-//' \
+                     | sed -r 's/^surviving-data-//' \
                      | sed -r 's/^code-//g')"
 FILE_NAME="\${SESSION_NAME}.yml"
 

@@ -3,12 +3,9 @@
 set -e
 cd $(dirname ${0})
 
-all-2-developer-base
+./all-2-developer-base
 
-../user/install-nvm-and-nodejs
-../user/add-node_modules-bin-to-path
-../install-ruby
-install-network-utils
-../user/install-chrome
-install-dillo
-install-webstorm
+./install-network-utils
+./install-chrome
+./install-dillo
+./install-webstorm

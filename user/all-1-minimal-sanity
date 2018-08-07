@@ -3,11 +3,4 @@
 set -e
 cd $(dirname ${0})
 
-./update-packages
-./disable-some-keyboard-shortcuts
-./enable-natural-scrolling
-./enable-week-numbers
-./install-tilda-byobu-tmuxinator-bash_aliases
-./install-vim
-./save-bash-history
-./install-sshfs
+./install-byobu-tmuxinator-bash_aliases

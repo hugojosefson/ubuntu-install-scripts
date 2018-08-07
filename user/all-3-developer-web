@@ -9,6 +9,6 @@ cd $(dirname ${0})
 user/add-node_modules-bin-to-path
 ./install-ruby
 ./install-network-utils
-./install-chrome
+../sys/install-chrome
 ./install-dillo
 ./install-webstorm

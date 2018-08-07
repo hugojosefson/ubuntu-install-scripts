@@ -5,10 +5,6 @@ set -e
 # Exit early if already installed
 which hub && exit 0
 
-which curl || sudo apt install -y curl
-which git || sudo apt install -y git
-sudo apt install -y bash-completion
-
 cd $(mktemp -d)
 
 DOWNLOAD_URL=$(wget -O - --quiet https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)
@@ -16,9 +12,7 @@ curl --location --tlsv1.2 ${DOWNLOAD_URL} | tar xzv
 
 cd hub*
 
-sudo mv etc/hub.bash_completion.sh /etc/bash_completion.d/
-
-sudo chown -R $USER:$GROUP /usr/local
+sudo chown -R $USER /usr/local
 mkdir -p /usr/local/man/man1
 mv share/man/man1/hub.1 /usr/local/man/
 mv bin/hub /usr/local/bin/

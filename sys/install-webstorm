@@ -16,7 +16,7 @@ FILE=$(dirname $(mktemp))/$FILENAME
 wget --continue ${DOWNLOAD_URL} -O $FILE
 DIR=$(tar tzf $FILE |head -n 1|cut -d '/' -f 1)
 
-sudo chown $USER:$GROUP /opt
+sudo chown $USER /opt
 tar xzf $FILE -C /opt
 cd /opt
 rm webstorm || true
@@ -31,11 +31,3 @@ if [ -n "$DISPLAY" ]; then
 else
     echo Skipping setting up webstorm executable, because there is no DISPLAY set.
 fi
-
-mkdir -p ~/bin
-echo > ~/bin/ws <<\EOF
-#!/usr/bin/env bash
-arg=${1:-.}
-webstorm "${arg}" &>/dev/null &
-EOF
-chmod +x ~/bin/ws

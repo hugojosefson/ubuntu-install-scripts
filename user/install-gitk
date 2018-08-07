@@ -2,8 +2,6 @@
 
 set -e
 
-which gitk || sudo apt install -y gitk
-
 mkdir -p ~/bin
 echo > ~/bin/gk <<\EOF
 #!/usr/bin/env bash

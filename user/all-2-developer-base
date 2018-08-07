@@ -3,13 +3,8 @@
 set -e
 cd $(dirname ${0})
 
-sys/all-1-minimal-sanity
+./all-1-minimal-sanity
 
-./install-git-tig
 ./install-gitk
-./install-git-flow
 ./install-git-prompt
 ./install-github-git-plugin
-
-./install-vim
-./install-meld

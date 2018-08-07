@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+which snap || sudo apt install -y snapd
+sudo snap install aws-cli --classic

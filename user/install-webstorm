@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+mkdir -p ~/bin
+echo > ~/bin/ws <<\EOF
+#!/usr/bin/env bash
+arg=${1:-.}
+webstorm "${arg}" &>/dev/null &
+EOF
+chmod +x ~/bin/ws

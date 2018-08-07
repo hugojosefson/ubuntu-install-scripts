@@ -89,8 +89,8 @@ function d() {
 }
 
 
-# npm
-which npm > /dev/null && . <(npm completion)
+# npm completion, takes about 1/4 second extra when starting every shell
+# which npm > /dev/null && . <(npm completion)
 
 # pbcopy / pbpaste
 alias pbcopy='xsel --clipboard --input'
