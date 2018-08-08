@@ -2,4 +2,4 @@
 
 set -e
 
-grep -x 'PROMPT_COMMAND="history -a; $PROMPT_COMMAND"' /etc/environment || (echo -e '\nPROMPT_COMMAND="history -a; $PROMPT_COMMAND"' | sudo tee -a /etc/environment)
+grep -x 'PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' /etc/environment || (echo -e '\nPROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' | sudo tee -a /etc/environment)
