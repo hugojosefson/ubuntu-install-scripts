@@ -7,4 +7,3 @@ cd $(dirname ${0})
 ./install-tmuxinator-byobu-bash_aliases
 ./install-vim
 ./install-sshfs
-./save-bash-history
