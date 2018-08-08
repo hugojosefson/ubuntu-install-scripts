@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+mkdir -p $HOME/bin
+grep -x 'export PATH=$HOME/bin:$PATH' ~/.bashrc || echo -e '\nexport PATH=$HOME/bin:$PATH' >> ~/.bashrc

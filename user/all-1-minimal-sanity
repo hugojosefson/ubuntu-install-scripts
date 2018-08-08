@@ -3,6 +3,7 @@
 set -e
 cd $(dirname ${0})
 
+./add-home-bin-to-path
 ./save-bash-history
 ./install-tmuxinator-byobu-bash_aliases
 ./home-is-desktop
