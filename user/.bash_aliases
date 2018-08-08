@@ -4,6 +4,11 @@
 alias ba='vim ~/.bash_aliases'
 alias .ba='. ~/.bash_aliases'
 
+# ls
+alias ls='ls -F --color'
+alias l='ls'
+alias ll='ls -l'
+
 # node
 alias nn='nodeversion=$(cat package.json | jq -r .engines.node); nvm install $nodeversion'
 
@@ -37,7 +42,8 @@ complete -F _tmuxinator m
 alias mp='make package'
 
 # Git
-. /usr/share/bash-completion/completions/git
+[ -f /usr/share/bash-completion/completions/git ] && . /usr/share/bash-completion/completions/git
+[ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
 alias gk='gitk --all &>/dev/null &'
 
 __git_complete g __git_main
@@ -93,8 +99,8 @@ function d() {
 # which npm > /dev/null && . <(npm completion)
 
 # pbcopy / pbpaste
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
+which pbcopy > /dev/null || alias pbcopy='xsel --clipboard --input'
+which pbpaste > /dev/null || alias pbpaste='xsel --clipboard --output'
 
 # temp directory
 alias t='cd $(mktemp -d)'
