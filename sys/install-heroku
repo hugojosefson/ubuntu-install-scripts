@@ -3,5 +3,3 @@
 set -e
 
 which heroku || wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-
-heroku update
