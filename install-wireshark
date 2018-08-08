@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+which wireshark || sudo DEBIAN_FRONTEND=noninteractive apt install -y wireshark

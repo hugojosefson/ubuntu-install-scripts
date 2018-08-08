@@ -3,7 +3,6 @@
 set -e
 
 which nmap || sudo apt install -y nmap
-which wireshark || sudo DEBIAN_FRONTEND=noninteractive apt install -y wireshark
 which corkscrew || sudo apt install -y corkscrew
 sudo apt install -y mtr-tiny
 sudo apt install -y netcat-traditional
