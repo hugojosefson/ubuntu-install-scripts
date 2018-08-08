@@ -68,3 +68,4 @@ chmod +x ~/bin/m-temp
 
 [[ -e ~/.bash_aliases ]] && mv ~/.bash_aliases{,.$(date +%s).backup}
 cp ./.bash_aliases ~/
+grep -x '. ~/.bash_aliases' ~/.bashrc || echo -e '\n. ~/.bash_aliases' >> ~/.bashrc
