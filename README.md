@@ -10,6 +10,6 @@ Happy (re-)installing!
 
 ## Easy download
 
-	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/debian-9.tar.gz | tar xzv
-	cd ubuntu-install-scripts-debian-9
+	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/fedora-28.tar.gz | tar xzv
+	cd ubuntu-install-scripts-fedora-28
 
