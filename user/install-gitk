@@ -3,9 +3,9 @@
 set -e
 
 mkdir -p ~/bin
-echo > ~/bin/gk <<\EOF
+cat > ~/bin/gk <<EOF
 #!/usr/bin/env bash
-arg=${1:---all}
-gitk "${arg}" &>/dev/null &
+arg=\${1:---all}
+gitk "\${arg}" &>/dev/null &
 EOF
 chmod +x ~/bin/gk
