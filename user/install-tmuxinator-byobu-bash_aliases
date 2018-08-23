@@ -10,7 +10,7 @@ name: base
 tmux_command: byobu-tmux
 
 windows:
-  - "": clear; sudo --list --non-interactive apt && (echo -n Press ENTER for dist-upgrade...; read -s;); sudo apt update && sudo apt dist-upgrade --purge-unused -y && sudo apt autoclean
+  - "": clear; dnf check-update
   - top: top
   - code: cd ~/code && ll -ltra
 EOF

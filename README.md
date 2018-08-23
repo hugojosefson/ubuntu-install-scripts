@@ -1,10 +1,10 @@
-# Ubuntu install scripts
+# Fedora install scripts
 
-_Install scripts for various things I like to install on a fresh Ubuntu._
+_Install scripts for various things I like to install on a fresh Fedora._
 
 They save some keystrokes :) Use the `./all-*` scripts to save even more!
 
-Scripts have been tested with Ubuntu GNOME 17.04 Desktop 64 bit.
+Scripts have been tested with Fedora 28.
 
 Happy (re-)installing!
 

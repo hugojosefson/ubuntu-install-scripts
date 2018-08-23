@@ -3,18 +3,15 @@
 set -e
 
 if [ -n "$DISPLAY" ]; then
-    which idea || /opt/idea/bin/idea.sh
-    [ -f /usr/local/bin/idea ] && sudo sed -r "s/\/opt\/IDEA-[0-9.]+/\/opt\/idea/g" -i /usr/local/bin/idea
-    [ -f /usr/share/applications/jetbrains-idea.desktop ] && sudo sed -r "s/\/opt\/IDEA-[0-9.]+/\/opt\/idea/g" -i /usr/share/applications/jetbrains-idea.desktop
-    [ -f ~/.local/share/applications/jetbrains-idea.desktop ] && sudo sed -r "s/\/opt\/IDEA-[0-9.]+/\/opt\/idea/g" -i ~/.local/share/applications/jetbrains-idea.desktop
+    which idea || snap run idea
 else
     echo Skipping setting up idea executable, because there is no DISPLAY set.
 fi
 
 mkdir -p ~/bin
-cat > ~/bin/idea <<EOF
+cat > ~/bin/i <<EOF
 #!/usr/bin/env bash
 arg=\${1:-.}
-/opt/idea/bin/idea.sh "\${arg}" &>/dev/null &
+idea "\${arg}" &>/dev/null &
 EOF
-chmod +x ~/bin/idea
+chmod +x ~/bin/i
