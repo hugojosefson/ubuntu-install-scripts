@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+which snap || sudo dnf install -y snapd
+[ -L /snap ] || sudo ln -s /var/lib/snapd/snap /
+grep -x 'PATH=/snap/bin:$PATH' /etc/environment || (echo -e '\nPATH=/snap/bin:$PATH' | sudo tee -a /etc/environment)

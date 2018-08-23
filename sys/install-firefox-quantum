@@ -2,5 +2,7 @@
 
 set -e
 
-which snap || sudo dnf install -y snapd
+cd $(dirname ${0})
+./install-snap
+
 sudo snap install firefox

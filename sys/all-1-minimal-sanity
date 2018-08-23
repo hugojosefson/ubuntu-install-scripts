@@ -4,6 +4,7 @@ set -e
 cd $(dirname ${0})
 
 ./update-packages
+./install-snap
 ./install-tmuxinator-byobu-bash_aliases
 ./install-vim
 ./install-sshfs

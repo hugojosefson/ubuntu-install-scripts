@@ -2,6 +2,7 @@
 
 set -e
 
-which snap || sudo dnf install -y snapd
-[ -L /snap ] || sudo ln -s /var/lib/snapd/snap /
+cd $(dirname ${0})
+./install-snap
+
 sudo snap install aws-cli --classic
