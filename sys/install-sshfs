@@ -2,4 +2,4 @@
 
 set -e
 
-which sshfs || sudo apt install -y sshfs
+which sshfs || sudo dnf install -y sshfs

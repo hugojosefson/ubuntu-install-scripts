@@ -2,7 +2,7 @@
 
 set -e
 
-which nmap || sudo apt install -y nmap
-which corkscrew || sudo apt install -y corkscrew
-sudo apt install -y mtr-tiny
-sudo apt install -y netcat-traditional
+which nmap || sudo dnf install -y nmap
+which corkscrew || sudo dnf install -y corkscrew
+sudo dnf install -y mtr-tiny
+sudo dnf install -y netcat-traditional

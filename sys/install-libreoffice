@@ -3,5 +3,5 @@
 set -e
 
 if ! which libreoffice; then
-    sudo apt install -y libreoffice ttf-mscorefonts-installer
+    sudo dnf install -y libreoffice ttf-mscorefonts-installer
 fi

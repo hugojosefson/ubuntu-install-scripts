@@ -2,6 +2,6 @@
 
 set -e
 
-which vim || sudo apt install -y vim
+which vim || sudo dnf install -y vim
 
 grep -x 'EDITOR=vim' /etc/environment || (echo -e '\nEDITOR=vim' | sudo tee -a /etc/environment)

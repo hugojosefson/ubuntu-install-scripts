@@ -5,9 +5,9 @@ set -e
 # Exit early if already installed
 which hub && exit 0
 
-which curl || sudo apt install -y curl
-which git || sudo apt install -y git
-sudo apt install -y bash-completion
+which curl || sudo dnf install -y curl
+which git || sudo dnf install -y git
+sudo dnf install -y bash-completion
 
 cd $(mktemp -d)
 

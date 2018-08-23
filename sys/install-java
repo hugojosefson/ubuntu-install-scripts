@@ -7,4 +7,4 @@ echo "deb http://ppa.launchpad.net/linuxuprising/java/ubuntu bionic main" | sudo
 sudo apt-get update
 
 echo oracle-java10-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-sudo apt install -y oracle-java10-installer
+sudo dnf install -y oracle-java10-installer

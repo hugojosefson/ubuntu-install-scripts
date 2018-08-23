@@ -2,6 +2,6 @@
 
 set -e
 
-which byobu || sudo apt install -y byobu
-which tmuxinator || sudo apt install -y tmuxinator
-which xsel || sudo apt install -y xsel
+which byobu || sudo dnf install -y byobu
+which tmuxinator || sudo dnf install -y tmuxinator
+which xsel || sudo dnf install -y xsel

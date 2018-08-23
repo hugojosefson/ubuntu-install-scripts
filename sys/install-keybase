@@ -2,9 +2,9 @@
 
 set -e
 
-which curl || sudo apt install -y curl
+which curl || sudo dnf install -y curl
 
 cd $(mktemp -d)
 
 curl -O https://prerelease.keybase.io/keybase_amd64.deb
-sudo dpkg -i keybase_amd64.deb || sudo apt-get install -fy
+sudo dpkg -i keybase_amd64.deb || sudo dnf install -fy

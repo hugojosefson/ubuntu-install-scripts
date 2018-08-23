@@ -2,5 +2,5 @@
 
 set -e
 
-which snap || sudo apt install -y snapd
+which snap || sudo dnf install -y snapd
 sudo snap install aws-cli --classic

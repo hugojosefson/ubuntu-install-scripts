@@ -5,9 +5,9 @@ set -e
 ORIGINAL_DIR="$(pwd)"
 
 if [ ! -d /opt/apache-maven/ ]; then
-  which curl || sudo apt-get install -y curl
-  which wget || sudo apt-get install -y wget
-  which hxpipe || sudo apt install -y html-xml-utils
+  which curl || sudo dnf install -y curl
+  which wget || sudo dnf install -y wget
+  which hxpipe || sudo dnf install -y html-xml-utils
 
   DOWNLOAD_URL=$(curl --silent http://maven.apache.org/download.cgi | hxpipe | grep ^Ahref | grep binaries/apache-maven | grep tar.gz\$ | head -n 1 | cut -d ' ' -f 3)
   FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)

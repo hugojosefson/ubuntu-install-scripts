@@ -2,4 +2,4 @@
 
 set -e
 
-which tig || sudo apt install -y tig
+which tig || sudo dnf install -y tig
