@@ -2,7 +2,4 @@
 
 set -e
 
-cd $(dirname ${0})
-./install-snap
-
-sudo snap install firefox
+sudo dnf install -y firefox
