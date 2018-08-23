@@ -2,6 +2,4 @@
 
 set -e
 
-if ! which libreoffice; then
-    sudo dnf install -y libreoffice ttf-mscorefonts-installer
-fi
+which libreoffice || sudo dnf install -y libreoffice
