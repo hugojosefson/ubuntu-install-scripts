@@ -3,7 +3,7 @@
 set -e
 
 # Exit early if already installed
-which hub && exit 0
+[ -f /etc/bash_completion.d/etc/hub.bash_completion.sh ] && exit 0
 
 which curl || sudo dnf install -y curl
 which git || sudo dnf install -y git

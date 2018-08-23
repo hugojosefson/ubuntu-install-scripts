@@ -13,4 +13,5 @@ sudo systemctl disable docker
 sudo groupadd -f docker
 sudo usermod -aG docker $USER
 
+sudo dnf install -y bash-completion
 sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/1.22.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"
