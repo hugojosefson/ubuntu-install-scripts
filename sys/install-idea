@@ -1,26 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-cd $(dirname ${0})
 
-ORIGINAL_DIR="$(pwd)"
-
-which curl || sudo dnf install -y curl
-which wget || sudo dnf install -y wget
-which jq || sudo dnf install -y jq
-
-DOWNLOAD_URL=${1:-$(curl --silent 'https://data.services.jetbrains.com/products/releases?code=IIU,IIC&latest=true&type=release' | jq -r .IIC[0].downloads.linux.link)}
-FILENAME=$(echo $DOWNLOAD_URL | rev | cut -d '/' -f 1 | rev)
-FILE=$(dirname $(mktemp))/$FILENAME
-
-wget --continue ${DOWNLOAD_URL} -O $FILE
-DIR=$(tar tzf $FILE |head -n 1|cut -d '/' -f 1)
-
-sudo chown $USER /opt
-tar xzf $FILE -C /opt
-cd /opt
-rm idea || true
-ln -s $DIR idea
-
-cd "$ORIGINAL_DIR"
-java -version || ./install-java
+which snap || sudo dnf install -y snapd
+sudo snap install intellij-idea-community --classic
