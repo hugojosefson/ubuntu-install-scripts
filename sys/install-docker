@@ -4,7 +4,7 @@ set -e
 
 which docker && exit 0
 
-curl -fSL https://get.docker.com/ | sudo sh -
+curl -fSL https://get.docker.com/ | sudo su - -c sh
 
 ## https://jrruethe.github.io/blog/2016/04/15/running-docker-in-qubes/
 sudo systemctl disable docker
