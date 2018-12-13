@@ -2,7 +2,5 @@
 
 set -e
 
-# Exit early if no packages seem to need upgrading
-dnf check-update --cacheonly && exit 0
-
 sudo dnf update -y
+which snap && sudo snap refresh || true

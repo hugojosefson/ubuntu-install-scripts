@@ -6,3 +6,6 @@ cd $(dirname ${0})
 ./install-snap
 
 sudo snap install aws-cli --classic
+
+which pip || sudo dnf install -y python2-pip
+sudo pip install awslogs
