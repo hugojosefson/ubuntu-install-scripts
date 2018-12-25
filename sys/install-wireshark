@@ -2,4 +2,4 @@
 
 set -e
 
-which wireshark || sudo apt install -y wireshark
+which wireshark || sudo DEBIAN_FRONTEND=noninteractive apt install -y wireshark
