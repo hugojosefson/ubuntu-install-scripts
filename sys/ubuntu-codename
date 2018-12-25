@@ -1,0 +1,2 @@
+#!/bin/bash
+cat /etc/lsb-release | awk -F '=' '/DISTRIB_CODENAME/{print $2}'
