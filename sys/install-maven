@@ -2,4 +2,4 @@
 
 set -e
 
-which mvn || sudo dnf install -y maven
+which mvn || sudo apt install -y maven

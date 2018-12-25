@@ -2,6 +2,6 @@
 
 set -e
 
-which git || sudo dnf install -y git
+which git || sudo apt install -y git
 git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt || (cd ~/.bash-git-prompt && git pull)
 grep -x '. ~/.bash-git-prompt/gitprompt.sh' ~/.bashrc || echo -e '\n. ~/.bash-git-prompt/gitprompt.sh' >> ~/.bashrc

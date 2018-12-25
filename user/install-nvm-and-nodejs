@@ -2,8 +2,8 @@
 
 set -e
 
-which git || sudo dnf install -y git
-which curl || sudo dnf install -y curl
+which git || sudo apt install -y git
+which curl || sudo apt install -y curl
 
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | PROFILE=~/.bashrc bash
 

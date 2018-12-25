@@ -2,4 +2,4 @@
 
 set -e
 
-which git-flow || sudo dnf install -y gitflow
+which git-flow || sudo apt install -y gitflow

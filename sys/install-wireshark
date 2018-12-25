@@ -2,4 +2,4 @@
 
 set -e
 
-which wireshark || sudo dnf install -y wireshark
+which wireshark || sudo apt install -y wireshark

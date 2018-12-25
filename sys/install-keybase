@@ -2,4 +2,4 @@
 
 set -e
 
-which keybase || sudo dnf install -y https://prerelease.keybase.io/keybase_amd64.rpm
+which keybase || sudo apt install -y https://prerelease.keybase.io/keybase_amd64.rpm
