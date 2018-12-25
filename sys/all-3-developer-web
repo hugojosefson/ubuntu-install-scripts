@@ -6,6 +6,7 @@ cd $(dirname ${0})
 ./all-2-developer-base
 
 ./install-network-utils
+./install-brave-browser
 ./install-chrome
 ./install-dillo
 ./install-webstorm

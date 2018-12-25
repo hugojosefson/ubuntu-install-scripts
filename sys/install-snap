@@ -3,6 +3,6 @@
 set -e
 
 which snap || sudo apt install -y snapd
-[ -L /snap ] || sudo ln -s /var/lib/snapd/snap /
+[ -L /snap ] || [ -d /snap ] || ( [ -d /var/lib/snapd/snap ] && sudo ln -s /var/lib/snapd/snap / )
 sudo service snapd start
 grep -x 'PATH=/snap/bin:$PATH' /etc/environment || (echo -e '\nPATH=/snap/bin:$PATH' | sudo tee -a /etc/environment)

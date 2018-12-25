@@ -4,5 +4,5 @@ set -e
 
 which nmap || sudo apt install -y nmap
 which corkscrew || sudo apt install -y corkscrew
-sudo apt install -y mtr
-sudo apt install -y nc
+sudo apt install -y mtr-tiny
+sudo apt install -y netcat-traditional

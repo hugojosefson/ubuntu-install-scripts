@@ -11,7 +11,7 @@ sudo apt install -y bash-completion
 
 cd $(mktemp -d)
 
-DOWNLOAD_URL=$(wget -O - --quiet https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)
+DOWNLOAD_URL=$(curl -s https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)
 curl --location --tlsv1.2 ${DOWNLOAD_URL} | tar xzv
 
 cd hub*
