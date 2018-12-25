@@ -6,5 +6,4 @@ set -e
 
 sudo dnf install -y fedora-workstation-repositories
 sudo dnf config-manager --set-enabled google-chrome
-sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub
 sudo dnf install -y google-chrome-stable
