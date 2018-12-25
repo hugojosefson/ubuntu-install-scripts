@@ -2,6 +2,8 @@
 
 set -e
 
+which apt-add-repository || sudo apt install -y software-properties-common
+
 if ! which yubikey-personalization-gui; then
     sudo apt-add-repository -y ppa:yubico/stable
     sudo apt update
