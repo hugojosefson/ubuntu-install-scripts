@@ -10,9 +10,9 @@ name: base
 tmux_command: byobu-tmux
 
 windows:
-  - "": clear; dnf check-update
-  - top: top
   - code: cd ~/code && ll -ltra
+  - top: top
+  - "": clear; sudo --list --non-interactive apt && (echo -n Press ENTER for dist-upgrade...; read -s;); sudo apt update && sudo apt dist-upgrade --purge-unused -y && sudo apt autoclean
 EOF
 
 cat > ~/.tmuxinator/temp.TEMPLATE <<\EOF

@@ -2,9 +2,6 @@
 
 set -e
 
-## https://jrruethe.github.io/blog/2016/04/15/running-docker-in-qubes/
-grep -x 'dockerd --data-root /home/user/docker' /rw/config/rc.local || echo -e '\ndockerd --data-root /home/user/docker' | sudo tee -a /rw/config/rc.local
-
 mkdir -p ~/bin
 
 curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o ~/bin/docker-compose

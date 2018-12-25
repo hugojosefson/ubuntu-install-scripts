@@ -2,4 +2,4 @@
 
 set -e
 
-which libreoffice || sudo apt install -y libreoffice
+which libreoffice || sudo apt install -y libreoffice ttf-mscorefonts-installer
