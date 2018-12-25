@@ -2,5 +2,10 @@
 
 set -e
 
-sudo dnf update -y
-which snap && sudo snap refresh || true
+# Exit early if no packages seem to need upgrading
+apt-get -s -o Debug::NoLocking=true upgrade | grep -q ^Inst || exit 0
+
+sudo apt update
+sudo apt dist-upgrade --purge -y
+sudo apt autoremove --purge -y
+sudo apt autoclean
