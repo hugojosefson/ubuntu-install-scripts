@@ -4,7 +4,7 @@ set -e
 
 #which google-chrome-stable && exit 0
 
-sudo apt install -y fedora-workstation-repositories
+sudo dnf install -y fedora-workstation-repositories
 sudo dnf config-manager --set-enabled google-chrome
 sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub
-sudo apt install -y google-chrome-stable
+sudo dnf install -y google-chrome-stable
