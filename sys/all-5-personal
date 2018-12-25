@@ -3,5 +3,5 @@
 set -e
 cd $(dirname ${0})
 
-./install-firefox-quantum
 ./install-keybase
+
