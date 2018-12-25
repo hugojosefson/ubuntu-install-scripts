@@ -9,9 +9,9 @@ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | PROFIL
 
 . ~/.nvm/nvm.sh
 
-nvm install 8
-nvm exec 8 npm install -g npm@latest
-nvm exec 8 npm install -g yarn@latest
+nvm install 10
+nvm exec 10 npm install -g npm@latest
+nvm exec 10 npm install -g yarn@latest
 
 nvm install stable
 nvm exec stable npm install -g npm@latest
