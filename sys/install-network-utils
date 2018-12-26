@@ -4,6 +4,5 @@ set -e
 
 which nmap || sudo apt install -y nmap
 which corkscrew || sudo apt install -y corkscrew
-which jwhois || sudo apt install -y jwhois
 sudo apt install -y mtr-tiny
 sudo apt install -y netcat-traditional
