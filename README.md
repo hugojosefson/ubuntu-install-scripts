@@ -4,7 +4,7 @@ _Install scripts for various things I like to install on a fresh Ubuntu._
 
 They save some keystrokes :) Use the `./all-*` scripts to save even more!
 
-Scripts have been tested with Ubuntu 18.10.
+Scripts have been tested with Ubuntu 18.10 Desktop 64-bit, but not enough.
 
 Happy (re-)installing!
 
