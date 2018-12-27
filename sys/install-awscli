@@ -3,9 +3,13 @@
 set -e
 
 cd $(dirname ${0})
+. ./common.bash
 ./install-snap
 
 sudo snap install aws-cli --classic
 
-which pip || sudo apt install -y python-pip
+ensureInstalled python-pip
 sudo pip install awslogs
+
+sudo pip uninstall urllib3 # because awslogs' version of urllib3 breaks virt-manager
+ensureInstalled python-urllib3

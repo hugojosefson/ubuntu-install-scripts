@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 set -e
+. common.bash
 
-which snap || sudo apt install -y snapd
+ensureInstalled snapd
 [ -L /snap ] || [ -d /snap ] || ( [ -d /var/lib/snapd/snap ] && sudo ln -s /var/lib/snapd/snap / )
-sudo service snapd start
-grep -x 'PATH=/snap/bin:$PATH' /etc/environment || (echo -e '\nPATH=/snap/bin:$PATH' | sudo tee -a /etc/environment)
+sudo service snapd restart
+grep -x 'export PATH=/snap/bin:$PATH' ~/.bashrc || echo -e '\nexport PATH=/snap/bin:$PATH' >> ~/.bashrc
