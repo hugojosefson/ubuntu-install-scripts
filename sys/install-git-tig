@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which tig || sudo apt install -y tig
+ensureInstalled tig

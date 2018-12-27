@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
 # Exit early if already installed
 [ -f /etc/bash_completion.d/hub.bash_completion.sh ] && exit 0
 
-which curl || sudo apt install -y curl
-which git || sudo apt install -y git
-sudo apt install -y bash-completion
+ensureInstalled curl git bash-completion
 
 cd $(mktemp -d)
 

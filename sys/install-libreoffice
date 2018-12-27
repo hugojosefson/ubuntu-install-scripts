@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which libreoffice || sudo apt install -y libreoffice ttf-mscorefonts-installer
+ensureInstalled libreoffice ttf-mscorefonts-installer

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
-. common.bash
+cd $(dirname ${0})
+. ./common.bash
 
 ensureInstalled snapd
 [ -L /snap ] || [ -d /snap ] || ( [ -d /var/lib/snapd/snap ] && sudo ln -s /var/lib/snapd/snap / )

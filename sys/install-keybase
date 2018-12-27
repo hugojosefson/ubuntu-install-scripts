@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which curl || sudo apt install -y curl
+ensureInstalled curl
 
 cd $(mktemp -d)
 

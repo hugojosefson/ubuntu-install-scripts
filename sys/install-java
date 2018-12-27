@@ -2,4 +2,7 @@
 
 set -e
 
-java -version || sudo apt install -y default-jdk
+cd $(dirname ${0})
+. ./common.bash
+
+java -version || ensureInstalled default-jdk

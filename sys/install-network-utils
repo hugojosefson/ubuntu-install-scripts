@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which nmap || sudo apt install -y nmap
-which corkscrew || sudo apt install -y corkscrew
-sudo apt install -y mtr-tiny
-sudo apt install -y netcat-traditional
+ensureInstalled nmap corkscrew mtr-tiny netcat-traditional

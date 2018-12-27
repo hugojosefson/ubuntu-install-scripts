@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which wireshark || sudo DEBIAN_FRONTEND=noninteractive apt install -y wireshark
+DEBIAN_FRONTEND=noninteractive ensureInstalled wireshark

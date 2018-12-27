@@ -2,11 +2,12 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
-which curl || sudo apt-get install -y curl
+ensureInstalled curl
 
-wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-wget -q https://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+curl -s https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
+curl -s https://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | sudo apt-key add -
 if (curl --fail --silent https://download.virtualbox.org/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
   echo "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian $(./ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 else
@@ -15,7 +16,7 @@ fi
 sudo apt update
 
 PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]'|sort -nr|cut -d ' ' -f 1|head -n 1)
-sudo apt install -y ${PKG_NAME}
+ensureInstalled ${PKG_NAME}
 
 TEMP_DIR=$(dirname $(mktemp))
 VIRTUALBOX_VERSION=$(vboxmanage --version | tail -n 1)

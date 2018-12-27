@@ -3,6 +3,7 @@
 set -e
 
 cd $(dirname ${0})
+. ./common.bash
 ./install-snap
 
 sudo snap install heroku --classic

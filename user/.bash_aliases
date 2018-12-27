@@ -96,11 +96,11 @@ function d() {
 
 
 # npm completion, takes about 1/4 second extra when starting every shell
-# which npm > /dev/null && . <(npm completion)
+# which npm > /dev/null 2>&1 && . <(npm completion)
 
 # pbcopy / pbpaste
-which pbcopy > /dev/null || alias pbcopy='xsel --clipboard --input'
-which pbpaste > /dev/null || alias pbpaste='xsel --clipboard --output'
+which pbcopy > /dev/null 2>&1 || alias pbcopy='xsel --clipboard --input'
+which pbpaste > /dev/null 2>&1 || alias pbpaste='xsel --clipboard --output'
 
 # temp directory
 alias t='cd $(mktemp -d)'

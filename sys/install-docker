@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which docker && exit 0
+isInstalled docker-ce && exit 0
+ensureInstalled curl
 
 curl -fSL https://test.docker.com/ | sudo su - -c sh
 
 # Allow current user access to docker
 sudo usermod -aG docker $USER
 
-sudo apt install -y bash-completion
+ensureInstalled bash-completion
 sudo su - -c "curl -L https://raw.githubusercontent.com/docker/compose/1.22.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"
