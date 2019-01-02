@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
 set -e
-
 cd $(dirname ${0})
 . ./common.bash
-./install-snap
 
+if insideDocker; then
+  echo "Not installing aws-cli, because snap is not available by default inside Docker." >&2
+  exit 0
+fi
+
+./install-snap
 sudo snap install heroku --classic

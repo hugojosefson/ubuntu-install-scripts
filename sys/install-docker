@@ -10,7 +10,7 @@ ensureInstalled curl
 curl -fSL https://test.docker.com/ | sudo su - -c sh
 
 # Allow current user access to docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $(id -un)
 
 ensureInstalled bash-completion
 sudo su - -c "curl -L https://raw.githubusercontent.com/docker/compose/1.22.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"

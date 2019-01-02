@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 mkdir -p ~/code
 mkdir -p ~/.tmuxinator
@@ -34,7 +36,7 @@ tmux_command: byobu-tmux
 windows:
   - mux: ls -lF
   - bin: cd ~/bin && ls -lFtr
-  - dotfiles: cd ~/.dotfiles && ls -lF
+  - dotfiles: cd ~/dotfiles && ls -lF
   - mover: byobu select-window -t :0; exit
 EOF
 
@@ -51,7 +53,7 @@ export SESSION_NAME="\$(echo \${SESSION_DIR} \
                      | sed -r 's/[\\./]+/-/g' \
                      | sed -r 's/^Users-/home-/' \
                      | sed -r 's/^home-${DOMAIN}-[^-]+-//' \
-                     | sed -r 's/^home-${USER}-//' \
+                     | sed -r 's/^home-$(id -un)-//' \
                      | sed -r 's/^surviving-data-//' \
                      | sed -r 's/^code-//g')"
 FILE_NAME="\${SESSION_NAME}.yml"

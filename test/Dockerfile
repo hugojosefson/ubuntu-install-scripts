@@ -1,5 +1,7 @@
 FROM hugojosefson/ubuntu-gnome:18.10
 
+RUN apt-get install -y apt-utils
+
 RUN mkdir -p /ubuntu-install-scripts
 COPY . /ubuntu-install-scripts
 
@@ -13,6 +15,5 @@ RUN ./user/all-1-minimal-sanity
 RUN ./user/all-2-developer-base
 RUN ./user/all-3-developer-web
 RUN ./user/all-4-developer-java
-RUN ./user/all-5-personal
 
 CMD ["bash"]

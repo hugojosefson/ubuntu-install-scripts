@@ -4,6 +4,11 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
+if insideDocker; then
+  echo "Not installing snap, because we are inside Docker." >&2
+  exit 0
+fi
+
 ensureInstalled snapd
 [ -L /snap ] || [ -d /snap ] || ( [ -d /var/lib/snapd/snap ] && sudo ln -s /var/lib/snapd/snap / )
 sudo service snapd restart

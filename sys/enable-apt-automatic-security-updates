@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
 # Install security updates automatically.
 sudo sed -r 's/APT::Periodic::Download-Upgradeable-Packages "0"/APT::Periodic::Download-Upgradeable-Packages "1"/' -i /etc/apt/apt.conf.d/10periodic

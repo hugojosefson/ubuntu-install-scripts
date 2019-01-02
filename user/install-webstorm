@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 if [ -n "$DISPLAY" ]; then
-    which webstorm || snap run webstorm
+    which webstorm || insideDocker || snap run webstorm
 else
     echo Skipping setting up webstorm executable, because there is no DISPLAY set.
 fi

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 # Exit early if already installed
 [ -f /usr/local/bin/hub ] && [ -f /usr/local/man/man1/hub.1 ] && exit 0
@@ -12,7 +14,7 @@ curl --location --tlsv1.2 ${DOWNLOAD_URL} | tar xzv
 
 cd hub*
 
-sudo chown -R $USER /usr/local
+sudo chown -R $(id -un) /usr/local
 mkdir -p /usr/local/man/man1
 mv share/man/man1/hub.1 /usr/local/man/
 mv bin/hub /usr/local/bin/

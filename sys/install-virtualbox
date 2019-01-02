@@ -13,7 +13,7 @@ if (curl --fail --silent https://download.virtualbox.org/virtualbox/debian/dists
 else
   echo "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bionic contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 fi
-sudo apt update
+sudo apt-get update
 
 PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]'|sort -nr|cut -d ' ' -f 1|head -n 1)
 ensureInstalled ${PKG_NAME}

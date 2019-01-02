@@ -7,6 +7,6 @@ cd $(dirname ${0})
 if ! isInstalled yubikey-personalization-gui; then
     ensureInstalled software-properties-common
     sudo apt-add-repository -y ppa:yubico/stable
-    sudo apt update
+    sudo apt-get update
     ensureInstalled yubikey-personalization-gui
 fi
