@@ -11,4 +11,3 @@ echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ `lsb_rele
 
 sudo apt-get update
 ensureInstalled brave-browser brave-keyring
-grep google /etc/apt/sources.list.d/brave-browser.list >/dev/null && sudo rm /etc/apt/sources.list.d/brave-browser.list
