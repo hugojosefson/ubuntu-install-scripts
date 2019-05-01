@@ -1,4 +1,4 @@
-FROM hugojosefson/ubuntu-gnome:18.10
+FROM hugojosefson/ubuntu-gnome:19.04
 
 RUN apt-get install -y apt-utils
 
