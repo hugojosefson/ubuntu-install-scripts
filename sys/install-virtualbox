@@ -4,6 +4,11 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
+if insideDocker; then
+  echo "Not installing virtualbox, because we are inside Docker." >&2
+  exit 0
+fi
+
 ensureInstalled curl
 
 curl -s https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
