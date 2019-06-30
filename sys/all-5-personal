@@ -4,7 +4,7 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-sudo apt purge --autoremove qlipper
+sudo apt purge -y --autoremove qlipper
 ./install-keybase
 ./install-yubikey
 ./install-nordvpn
