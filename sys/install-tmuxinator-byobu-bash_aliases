@@ -4,4 +4,5 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled byobu tmuxinator xsel tilda
+ensureInstalled byobu tmux tmuxinator qterminal xsel
+sudo apt-get remove -y --purge screen
