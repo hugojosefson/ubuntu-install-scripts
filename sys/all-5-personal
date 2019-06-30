@@ -9,6 +9,7 @@ cd $(dirname ${0})
 ./install-nordvpn
 ./install-insync
 ./install-xpra
+./install-rust
 
 ./install-snap
 sudo snap install signal-desktop
