@@ -8,6 +8,7 @@ cd $(dirname ${0})
 ./install-yubikey
 ./install-nordvpn
 ./install-insync
+./install-xpra
 
 ./install-snap
 sudo snap install signal-desktop
