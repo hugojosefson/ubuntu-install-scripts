@@ -4,6 +4,7 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
+sudo apt purge --autoremove qlipper
 ./install-keybase
 ./install-yubikey
 ./install-nordvpn
@@ -11,9 +12,11 @@ cd $(dirname ${0})
 ./install-xpra
 ./install-rust
 
+if insideDocker; then
+  echo "Not installing snaps, because snap is not available by default inside Docker." >&2
+  exit 0
+fi
 ./install-snap
 sudo snap install signal-desktop
 sudo snap install spotify
 sudo snap install slack --classic
-
-sudo apt purge --autoremove qlipper
