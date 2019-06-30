@@ -13,3 +13,5 @@ cd $(dirname ${0})
 sudo snap install signal-desktop
 sudo snap install spotify
 sudo snap install slack --classic
+
+sudo apt purge --autoremove qlipper
