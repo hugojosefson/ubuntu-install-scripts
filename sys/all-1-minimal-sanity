@@ -4,8 +4,8 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
+ensureInstalled aptitude flip ncdu wipe network-manager-openvpn-gnome jq solaar
+
 ./update-packages
-./install-snap
 ./install-tmuxinator-byobu-bash_aliases
 ./install-vim
-./install-sshfs

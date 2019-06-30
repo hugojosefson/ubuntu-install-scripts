@@ -4,11 +4,6 @@ set -e
 cd $(dirname ${0})
 . ../sys/common.bash
 
-mkdir -p ~/bin
-
-curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o ~/bin/docker-compose
-chmod +x ~/bin/docker-compose
-
 cd $(mktemp -d)
 git clone https://gist.github.com/76b450a0c986e576e98b.git
 cd 76b450a0c986e576e98b

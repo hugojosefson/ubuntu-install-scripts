@@ -5,4 +5,11 @@ cd $(dirname ${0})
 . ./common.bash
 
 ./install-keybase
+./install-yubikey
+./install-nordvpn
+./install-insync
 
+./install-snap
+sudo snap install signal-desktop
+sudo snap install spotify
+sudo snap install slack --classic

@@ -4,12 +4,6 @@ set -e
 cd $(dirname ${0})
 . ../sys/common.bash
 
-if [ -n "$DISPLAY" ]; then
-    which idea || insideDocker || snap run idea
-else
-    echo Skipping setting up idea executable, because there is no DISPLAY set.
-fi
-
 mkdir -p ~/bin
 cat > ~/bin/i <<EOF
 #!/usr/bin/env bash

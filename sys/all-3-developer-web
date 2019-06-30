@@ -9,5 +9,3 @@ cd $(dirname ${0})
 ./install-network-utils
 ./install-brave-browser
 ./install-chrome
-./install-dillo
-./install-webstorm

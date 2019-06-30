@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+cd $(dirname ${0})
+. ./common.bash
+
+ensureInstalled html-xml-utils
+
+download_url="$(curl -s https://nordvpn.com/download/linux/ \
+  | hxpipe 2>/dev/null \
+  | grep -E 'https://.*\.deb' \
+  | head -n 1 \
+  | cut -d ' ' -f 3)"
+
+cd "$(mktemp -d)"
+wget -O nordvpn.deb "${download_url}"
+sudo apt-get install ./nordvpn.deb

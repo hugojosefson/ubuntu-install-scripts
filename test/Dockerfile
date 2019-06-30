@@ -1,4 +1,4 @@
-FROM hugojosefson/ubuntu-gnome:19.04
+FROM hugojosefson/lubuntu:19.04
 
 RUN apt-get install -y apt-utils
 
@@ -13,7 +13,5 @@ RUN ./sys/all-4-developer-java
 RUN ./sys/all-5-personal
 RUN ./user/all-1-minimal-sanity
 RUN ./user/all-2-developer-base
-RUN ./user/all-3-developer-web
-RUN ./user/all-4-developer-java
 
 CMD ["bash"]
