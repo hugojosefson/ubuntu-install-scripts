@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
 which docker && exit 0
 
 curl -fSL https://get.docker.com/ | sudo su - -c sh
-
-## https://jrruethe.github.io/blog/2016/04/15/running-docker-in-qubes/
-sudo systemctl disable docker
+ensureInstalled docker-compose
 
 # Allow current user access to docker
-sudo groupadd -f docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$(id -un)"
 
-sudo dnf install -y bash-completion
-sudo su - -c "curl -L https://raw.githubusercontent.com/docker/compose/1.22.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"
+
+# Revert to cgroup v1, and enable on next reboot
+ensureInstalled grubby
+sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+sudo systemctl enable docker

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+cd $(dirname ${0})
+. ./common.bash
+
+ensureInstalled gcc
+
+curl https://sh.rustup.rs -sSf | sh -s -- -y

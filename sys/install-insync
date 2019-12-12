@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+cd $(dirname ${0})
+. ./common.bash
+
+sudo rpm --import https://d2t3ff60b2tol4.cloudfront.net/repomd.xml.key
+
+echo '[insync]
+name=insync repo
+baseurl=http://yum.insync.io/fedora/$releasever/
+gpgcheck=1
+gpgkey=https://d2t3ff60b2tol4.cloudfront.net/repomd.xml.key
+enabled=1
+metadata_expire=120m' | sudo tee /etc/yum.repos.d/insync.repo
+
+ensureInstalled insync

@@ -2,10 +2,10 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
 ./all-2-developer-base
 
 ./install-network-utils
+./install-brave-browser
 ./install-chrome
-./install-dillo
-./install-webstorm

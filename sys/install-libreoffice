@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-which libreoffice || sudo dnf install -y libreoffice

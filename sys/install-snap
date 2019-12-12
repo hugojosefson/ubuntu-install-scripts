@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which snap || sudo dnf install -y snapd
+if insideDocker; then
+  echo "Not installing snap, because we are inside Docker." >&2
+  exit 0
+fi
+
+ensureInstalled snapd
 [ -L /snap ] || sudo ln -s /var/lib/snapd/snap /
 sudo service snapd start
 grep -x 'PATH=/snap/bin:$PATH' /etc/environment || (echo -e '\nPATH=/snap/bin:$PATH' | sudo tee -a /etc/environment)

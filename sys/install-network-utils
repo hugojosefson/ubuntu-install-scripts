@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which nmap || sudo dnf install -y nmap
-which corkscrew || sudo dnf install -y corkscrew
-sudo dnf install -y mtr
-sudo dnf install -y nc
+ensureInstalled \
+  nmap \
+  corkscrew \
+  mtr \
+  nc

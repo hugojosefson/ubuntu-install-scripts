@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-java -version || sudo dnf install -y java
+java -version || ensureInstalled java-latest-openjdk

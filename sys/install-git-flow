@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-which git-flow || sudo dnf install -y gitflow

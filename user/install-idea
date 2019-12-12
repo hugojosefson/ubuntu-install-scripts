@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
-
-if [ -n "$DISPLAY" ]; then
-    which idea || snap run idea
-else
-    echo Skipping setting up idea executable, because there is no DISPLAY set.
-fi
+cd $(dirname ${0})
+. ../sys/common.bash
 
 mkdir -p ~/bin
 cat > ~/bin/i <<EOF

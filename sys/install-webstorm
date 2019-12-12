@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-cd $(dirname ${0})
-./install-snap
-
-sudo snap install webstorm --classic

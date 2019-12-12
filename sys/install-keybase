@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which keybase || sudo dnf install -y https://prerelease.keybase.io/keybase_amd64.rpm
+isInstalled keybase || ensureInstalled https://prerelease.keybase.io/keybase_amd64.rpm

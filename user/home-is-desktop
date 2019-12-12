@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 cd ~
-rmdir Desktop 2>/dev/null || rm Desktop
+rmdir Desktop 2>/dev/null || rm Desktop 2>/dev/null || true
 ln -s . Desktop

@@ -2,5 +2,6 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
-./install-idea
+ensureInstalled @virtualization

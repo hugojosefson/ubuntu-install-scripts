@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
-which byobu || sudo dnf install -y byobu
-which tmuxinator || sudo dnf install -y tmuxinator
-which xsel || sudo dnf install -y xsel
+ensureInstalled \
+  byobu \
+  tmuxinator\
+  wl-clipboard

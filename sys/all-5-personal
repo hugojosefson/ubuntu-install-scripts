@@ -2,6 +2,21 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
-./install-firefox-quantum
+ensureInstalled yubioath-desktop
+
 ./install-keybase
+./install-yubikey
+./install-nordvpn
+./install-insync
+./install-rust
+
+if insideDocker; then
+  echo "Not installing snaps, because snap is not available by default inside Docker." >&2
+  exit 0
+fi
+./install-snap
+sudo snap install signal-desktop
+sudo snap install spotify
+sudo snap install slack --classic

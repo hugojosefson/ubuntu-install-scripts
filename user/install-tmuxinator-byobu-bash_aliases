@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 mkdir -p ~/code
 mkdir -p ~/.tmuxinator
@@ -10,9 +12,9 @@ name: base
 tmux_command: byobu-tmux
 
 windows:
-  - "": clear; dnf check-update
-  - top: top
   - code: cd ~/code && ll -ltra
+  - top: top
+  - "": clear; dnf check-update
 EOF
 
 cat > ~/.tmuxinator/temp.TEMPLATE <<\EOF
@@ -34,7 +36,7 @@ tmux_command: byobu-tmux
 windows:
   - mux: ls -lF
   - bin: cd ~/bin && ls -lFtr
-  - dotfiles: cd ~/.dotfiles && ls -lF
+  - dotfiles: cd ~/dotfiles && ls -lF
   - mover: byobu select-window -t :0; exit
 EOF
 
@@ -47,13 +49,13 @@ cat > ~/bin/m-temp <<EOF
 
 export SESSION_DIR=\$(readlink -f \${1:-\$(mktemp -d)})
 export SESSION_NAME="\$(echo \${SESSION_DIR} \
-                     | sed -r 's/^[\\./]//g' \
-                     | sed -r 's/[\\./]+/-/g' \
-                     | sed -r 's/^Users-/home-/' \
-                     | sed -r 's/^home-${DOMAIN}-[^-]+-//' \
-                     | sed -r 's/^home-${USER}-//' \
-                     | sed -r 's/^surviving-data-//' \
-                     | sed -r 's/^code-//g')"
+                     | sed -E 's/^[\\./]//g' \
+                     | sed -E 's/[\\./]+/-/g' \
+                     | sed -E 's/^Users-/home-/' \
+                     | sed -E 's/^home-${DOMAIN}-[^-]+-//' \
+                     | sed -E 's/^home-$(id -un)-//' \
+                     | sed -E 's/^surviving-data-//' \
+                     | sed -E 's/^code-//g')"
 FILE_NAME="\${SESSION_NAME}.yml"
 
 cd ~/.tmuxinator

@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run --rm -it hugojosefson/fedora-install-scripts $*

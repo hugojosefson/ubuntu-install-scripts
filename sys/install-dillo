@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-which dillo || sudo dnf install -y dillo

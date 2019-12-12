@@ -2,6 +2,7 @@
 
 set -e
 cd $(dirname ${0})
+. ../sys/common.bash
 
 ./all-1-minimal-sanity
 
@@ -11,3 +12,6 @@ cd $(dirname ${0})
 
 ./install-awscli
 ./install-docker
+./install-idea
+./install-webstorm
+./add-node_modules-bin-to-path

@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
 
 # Exit early if already installed
 [ -f /etc/bash_completion.d/hub.bash_completion.sh ] && exit 0
 
-which curl || sudo dnf install -y curl
-which git || sudo dnf install -y git
-sudo dnf install -y bash-completion
+ensureInstalled curl git bash-completion
 
 cd $(mktemp -d)
 
-DOWNLOAD_URL=$(wget -O - --quiet https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)
+DOWNLOAD_URL=$(curl -s https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)
 curl --location --tlsv1.2 ${DOWNLOAD_URL} | tar xzv
 
 cd hub*

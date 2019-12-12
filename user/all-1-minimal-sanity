@@ -2,6 +2,7 @@
 
 set -e
 cd $(dirname ${0})
+. ../sys/common.bash
 
 ./add-home-bin-to-path
 ./save-bash-history

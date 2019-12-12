@@ -2,9 +2,15 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
 ./update-packages
-./install-snap
+
+ensureInstalled \
+  ncdu \
+  NetworkManager-openvpn-gnome \
+  jq \
+  solaar
+
 ./install-tmuxinator-byobu-bash_aliases
 ./install-vim
-./install-sshfs

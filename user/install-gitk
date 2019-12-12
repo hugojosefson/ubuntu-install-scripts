@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 mkdir -p ~/bin
 cat > ~/bin/gk <<EOF

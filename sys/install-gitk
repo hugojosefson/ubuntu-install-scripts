@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-which gitk || sudo dnf install -y gitk

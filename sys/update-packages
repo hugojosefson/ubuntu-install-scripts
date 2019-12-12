@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ./common.bash
+
+ensureInstalled which
 
 sudo dnf update -y
 which snap && sudo snap refresh || true

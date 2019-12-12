@@ -2,7 +2,7 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
 ./install-java
 ./install-idea
-./install-maven

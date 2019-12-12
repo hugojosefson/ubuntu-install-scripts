@@ -2,14 +2,13 @@
 
 set -e
 cd $(dirname ${0})
+. ./common.bash
 
 ./all-1-minimal-sanity
 
-./install-git-tig
-./install-gitk
-./install-git-flow
-./install-github-git-plugin
+ensureInstalled git gitk meld
 
-./install-meld
-./install-awscli
+./install-github-git-plugin
 ./install-docker
+./install-isolate-in-docker
+./install-virtualization

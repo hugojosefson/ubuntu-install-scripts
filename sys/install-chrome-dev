@@ -7,4 +7,4 @@ cd $(dirname ${0})
 ensureInstalled fedora-workstation-repositories 'dnf-command(config-manager)'
 
 sudo dnf config-manager --set-enabled google-chrome
-ensureInstalled google-chrome-stable
+ensureInstalled google-chrome-unstable

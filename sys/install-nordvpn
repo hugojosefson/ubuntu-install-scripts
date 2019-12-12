@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+cd $(dirname ${0})
+. ./common.bash
+if ! isInstalled nordvpn-release; then
+
+  download_url="$( \
+    curl -s https://nordvpn.com/download/linux/ \
+    | sed -E 's/"/\n/g' \
+    | grep -E '^https://repo\.nordvpn\.com/.*\.rpm$' \
+  )"
+
+  ensureInstalled "${download_url}"
+fi
+

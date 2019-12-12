@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd $(dirname ${0})
+. ../sys/common.bash
 
 grep -x 'PROMPT_COMMAND="export history -a $HOME/.bash_history; $PROMPT_COMMAND"' ~/.bashrc || (echo -e '\nexport PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' >> ~/.bashrc)
