@@ -10,7 +10,7 @@ alias l='ls'
 alias ll='ls -l'
 
 # node
-alias nn='nodeversion=$(cat package.json | jq -r .engines.node); nvm install $nodeversion'
+alias nn='nvm install $(cat package.json | jq -r .engines.node)'
 
 # tmuxinator
 alias mux=tmuxinator
@@ -42,15 +42,15 @@ complete -F _tmuxinator m
 alias mp='make package'
 
 # Git
-[ -f /usr/share/bash-completion/completions/git ] && . /usr/share/bash-completion/completions/git
-[ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
+[[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
+[[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]] && . /usr/local/etc/bash_completion.d/git-completion.bash
 alias gk='gitk --all &>/dev/null &'
 
 __git_complete g __git_main
 function g() {
     local cmd=${1-status}
     shift
-    git $cmd "$@"
+    git ${cmd} "$@"
 }
 
 __git_complete gf _git_fetch
@@ -91,16 +91,16 @@ function gpl() {
 function d() {
     local cmd=${1-ps}
     shift
-    docker $cmd "$@"
+    docker ${cmd} "$@"
 }
 
 
 # npm completion, takes about 1/4 second extra when starting every shell
-# which npm > /dev/null 2>&1 && . <(npm completion)
+# which npm >/dev/null 2>&1 && . <(npm completion)
 
 # pbcopy / pbpaste
-which pbcopy > /dev/null || alias pbcopy='wl-copy'
-which pbpaste > /dev/null || alias pbpaste='wl-paste'
+which pbcopy >/dev/null 2>&1 || alias pbcopy='wl-copy'
+which pbpaste >/dev/null 2>&1 || alias pbpaste='wl-paste'
 
 # temp directory
 alias t='cd $(mktemp -d)'
