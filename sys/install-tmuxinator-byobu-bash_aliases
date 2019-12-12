@@ -7,4 +7,5 @@ cd $(dirname ${0})
 ensureInstalled \
   byobu \
   tmuxinator\
+  guake \
   wl-clipboard
