@@ -6,6 +6,8 @@ cd $(dirname ${0})
 
 ensureInstalled \
   byobu \
-  tmuxinator\
+  gem\
   guake \
   wl-clipboard
+
+sudo gem install tmuxinator
