@@ -36,7 +36,7 @@ _tmuxinator() {
         COMPREPLY=( $(compgen -W "$completions" -- "$word") )
     fi
 }
-complete -F _tmuxinator m
+complete -F _tmuxinator tmuxinator mux m
 
 # Make
 alias mp='make package'
