@@ -8,6 +8,8 @@ alias .ba='. ~/.bash_aliases'
 alias ls='ls -F --color'
 alias l='ls'
 alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
 
 # node
 alias nn='nvm install $(cat package.json | jq -r .engines.node)'
@@ -97,10 +99,16 @@ function d() {
 
 # npm completion, takes about 1/4 second extra when starting every shell
 # which npm >/dev/null 2>&1 && . <(npm completion)
+# . ~/bin/npm-completion
 
 # pbcopy / pbpaste
-which pbcopy >/dev/null 2>&1 || alias pbcopy='wl-copy'
-which pbpaste >/dev/null 2>&1 || alias pbpaste='wl-paste'
+which pbcopy >/dev/null 2>&1 || alias pbcopy='xsel --clipboard --input'
+which pbpaste >/dev/null 2>&1 || alias pbpaste='xsel --clipboard --output'
+
+# directory
+function mkcd () {
+  mkdir -p -- "$1" && cd -- "$1"
+}
 
 # temp directory
 alias t='cd $(mktemp -d)'
