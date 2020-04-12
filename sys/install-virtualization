@@ -4,4 +4,4 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled @virtualization
+ensureInstalled @virtualization bridge-utils libvirt virt-install qemu-kvm virt-top libguestfs-tools virt-manager swtpm{,-tools}
