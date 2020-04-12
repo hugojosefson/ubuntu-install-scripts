@@ -10,5 +10,5 @@ if insideDocker; then
 fi
 
 ./install-snap
-sudo snap install intellij-idea-community --classic
-sudo snap alias intellij-idea-community idea
+echo Not running: sudo snap install intellij-idea-community --classic
+echo Not running: sudo snap alias intellij-idea-community idea

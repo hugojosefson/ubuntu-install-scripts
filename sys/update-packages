@@ -7,4 +7,4 @@ cd $(dirname ${0})
 ensureInstalled which
 
 sudo dnf update -y
-which snap && sudo snap refresh || true
+which snap && echo Not running: sudo snap refresh || true

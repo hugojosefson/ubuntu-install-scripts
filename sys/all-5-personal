@@ -17,6 +17,6 @@ if insideDocker; then
   exit 0
 fi
 ./install-snap
-sudo snap install signal-desktop
-sudo snap install spotify
-sudo snap install slack --classic
+echo Not running: sudo snap install signal-desktop
+echo Not running: sudo snap install spotify
+echo Not running: sudo snap install slack --classic
