@@ -8,6 +8,7 @@ cd $(dirname ${0})
 
 ensureInstalled git gitk meld
 
+./install-github-cli
 ./install-github-git-plugin
 ./install-docker
 ./install-isolate-in-docker

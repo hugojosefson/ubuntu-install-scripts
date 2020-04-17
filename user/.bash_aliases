@@ -47,6 +47,7 @@ alias mp='make package'
 [[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
 [[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]] && . /usr/local/etc/bash_completion.d/git-completion.bash
 alias gk='gitk --all &>/dev/null &'
+command -v gh > /dev/null && . <(gh completion)
 
 __git_complete g __git_main
 function g() {
