@@ -11,4 +11,4 @@ ensureInstalled git gitk meld
 ./install-github-git-plugin
 ./install-docker
 ./install-isolate-in-docker
-./install-virtualbox
+./install-virt-manager

@@ -27,3 +27,7 @@ function insideDocker() {
   [[ -e "/proc/self/cgroup" ]] && (grep docker /proc/self/cgroup >/dev/null) && return ${true}
   return ${false}
 }
+
+function ubuntuCodename() {
+  cat /etc/lsb-release | awk -F '=' '/DISTRIB_CODENAME/{print $2}'
+}

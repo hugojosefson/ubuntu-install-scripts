@@ -14,7 +14,7 @@ tmux_command: byobu-tmux
 windows:
   - code: cd ~/code && ll -ltra
   - top: top
-  - "": clear; sudo --list --non-interactive apt && (echo -n Press ENTER for dist-upgrade...; read -s;); sudo apt update && sudo apt dist-upgrade --purge-unused -y && sudo apt autoclean
+  - "": clear; sudo --list --non-interactive apt && (echo -n Press ENTER for full-upgrade...; read -s;); sudo apt update && sudo apt full-upgrade --auto-remove --purge -y && sudo apt autoclean
 EOF
 
 cat > ~/.tmuxinator/temp.TEMPLATE <<\EOF
@@ -42,30 +42,34 @@ EOF
 
 DOMAIN=${DOMAIN:-$(wbinfo --own-domain 2>/dev/null || true)}
 mkdir -p ~/bin
-cat > ~/bin/m-temp <<EOF
+cat > ~/bin/m-temp <<'EOF'
 #!/usr/bin/env bash
 
 ## Creates and opens a new temp session
 
-export SESSION_DIR=\$(readlink -f \${1:-\$(mktemp -d)})
-export SESSION_NAME="\$(echo \${SESSION_DIR} \
-                     | sed -E 's/^[\\./]//g' \
-                     | sed -E 's/[\\./]+/-/g' \
+export SESSION_DIR=$(readlink -f ${1:-$(mktemp -d)})
+export SESSION_NAME="$(echo ${SESSION_DIR} \
+                     | sed -E 's/^[\./]//g' \
+                     | sed -E 's/[\./]+/-/g' \
+                     | sed -E 's/[åä]/a/g' \
+                     | sed -E 's/[ÅÄ]/A/g' \
+                     | sed -E 's/[ö]/o/g' \
+                     | sed -E 's/[Ö]/O/g' \
                      | sed -E 's/^Users-/home-/' \
-                     | sed -E 's/^home-${DOMAIN}-[^-]+-//' \
-                     | sed -E 's/^home-$(id -un)-//' \
+                     | sed -E 's/^home--[^-]+-//' \
+                     | sed -E 's/^home-hugo-//' \
                      | sed -E 's/^surviving-data-//' \
                      | sed -E 's/^code-//g')"
-FILE_NAME="\${SESSION_NAME}.yml"
+FILE_NAME="${SESSION_NAME}.yml"
 
 cd ~/.tmuxinator
-envsubst < temp.TEMPLATE > "\${FILE_NAME}"
+envsubst < temp.TEMPLATE > "${FILE_NAME}"
 
-mkdir -p \${SESSION_DIR}
-tmuxinator start \${SESSION_NAME}
+mkdir -p ${SESSION_DIR}
+tmuxinator start ${SESSION_NAME}
 sleep 1
-rm "\${FILE_NAME}"
-EOF
+rm "${FILE_NAME}"
+'EOF'
 chmod +x ~/bin/m-temp
 
 [[ -e ~/.bash_aliases ]] && mv ~/.bash_aliases{,.$(date +%s).backup}

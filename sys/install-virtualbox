@@ -13,8 +13,8 @@ ensureInstalled curl
 
 curl -s https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
 curl -s https://download.oracle.com/virtualbox/debian/oracle_vbox.asc | sudo apt-key add -
-if (curl --fail --silent https://download.oracle.com/virtualbox/debian/dists/$(./ubuntu-codename)/contrib/binary-amd64/Packages >/dev/null); then
-  echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian $(./ubuntu-codename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+if (curl --fail --silent https://download.oracle.com/virtualbox/debian/dists/$(ubuntuCodename)/contrib/binary-amd64/Packages >/dev/null); then
+  echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian $(ubuntuCodename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 else
   echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian bionic contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 fi

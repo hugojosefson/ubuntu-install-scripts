@@ -4,24 +4,6 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-isInstalled docker-ce && exit 0
-ensureInstalled curl
+ensureInstalled docker.io docker-compose
 
-curl -fSL https://test.docker.com/ | sudo su - -c sh
-
-# Allow current user access to docker
-sudo usermod -aG docker $(id -un)
-
-# docker-compose
-curl -s "https://api.github.com/repos/docker/compose/releases/latest" \
-  | jq \
-    --arg PLATFORM_ARCH \
-    "$(echo $(uname -s)-$(uname -m))" \
-    -r '.assets[] | select(.name | endswith($PLATFORM_ARCH)).browser_download_url' \
-  | xargs sudo curl -L -o /usr/local/bin/docker-compose --url
-sudo chmod +x /usr/local/bin/docker-compose
-
-# docker-compose bash completion
-ensureInstalled bash-completion
-docker_compose_version=$(curl --silent "https://api.github.com/repos/docker/compose/releases/latest" | jq -r .tag_name)
-sudo su - -c "curl -L https://raw.githubusercontent.com/docker/compose/${docker_compose_version}/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"
+sudo usermod -aG docker "$(id -un)"

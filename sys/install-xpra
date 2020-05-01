@@ -5,7 +5,7 @@ cd $(dirname ${0})
 . ./common.bash
 
 curl -s https://xpra.org/gpg.asc | sudo apt-key add -
-echo deb http://xpra.org/ $(./ubuntu-codename) main | sudo tee /etc/apt/sources.list.d/xpra.list
+curl -s https://xpra.org/repos/$(ubuntuCodename)/xpra.list | sudo tee /etc/apt/sources.list.d/xpra.list
 
 sudo apt update
 sudo apt install -y xpra

@@ -4,9 +4,9 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled curl
+ensureInstalled curl gdebi-core
 
-cd $(mktemp -d)
+cd "$(mktemp -d)"
 
-curl -O https://prerelease.keybase.io/keybase_amd64.deb
-sudo dpkg -i keybase_amd64.deb || sudo apt-get install -fy
+curl -s --remote-name https://prerelease.keybase.io/keybase_amd64.deb
+sudo gdebi --non-interactive keybase_amd64.deb
