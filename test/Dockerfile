@@ -1,4 +1,4 @@
-FROM hugojosefson/lubuntu:19.04
+FROM hugojosefson/ubuntu:20.04
 
 RUN apt-get install -y apt-utils
 
