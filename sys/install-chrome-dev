@@ -4,8 +4,6 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled gdebi-core
+isInstalled google-chrome-unstable && exit 0
 
-cd $(dirname $(mktemp))
-wget https://dl.google.com/linux/direct/google-chrome-unstable_current_amd64.deb -O google-chrome-unstable_current_amd64.deb
-sudo gdebi --non-interactive google-chrome-unstable_current_amd64.deb
+ensureInstalled https://dl.google.com/linux/direct/google-chrome-unstable_current_amd64.deb

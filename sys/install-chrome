@@ -4,8 +4,6 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled gdebi-core
+isInstalled google-chrome-stable && exit 0
 
-cd $(dirname $(mktemp))
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O google-chrome-stable_current_amd64.deb
-sudo gdebi --non-interactive google-chrome-stable_current_amd64.deb
+ensureInstalled https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb

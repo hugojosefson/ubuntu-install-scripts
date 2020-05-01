@@ -8,6 +8,5 @@ cd $(dirname ${0})
 apt-get -s -o Debug::NoLocking=true upgrade | grep -q ^Inst || exit 0
 
 sudo apt-get update
-sudo apt-get dist-upgrade --purge -y
-sudo apt-get autoremove --purge -y
+sudo apt-get full-upgrade --purge -y --auto-remove
 sudo apt-get autoclean

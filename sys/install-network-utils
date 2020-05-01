@@ -4,4 +4,9 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled nmap corkscrew mtr-tiny netcat-traditional
+ensureInstalled \
+  nmap \
+  corkscrew \
+  mtr-tiny \
+  netcat-traditional \
+

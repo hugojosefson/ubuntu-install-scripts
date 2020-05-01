@@ -8,6 +8,8 @@ alias .ba='. ~/.bash_aliases'
 alias ls='ls -F --color'
 alias l='ls'
 alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
 
 # node
 alias nn='nodeversion=$(cat package.json | jq -r .engines.node); nvm install $nodeversion'
@@ -36,21 +38,22 @@ _tmuxinator() {
         COMPREPLY=( $(compgen -W "$completions" -- "$word") )
     fi
 }
-complete -F _tmuxinator m
+complete -F _tmuxinator tmuxinator mux m
 
 # Make
 alias mp='make package'
 
 # Git
-[ -f /usr/share/bash-completion/completions/git ] && . /usr/share/bash-completion/completions/git
-[ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
+[[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
+[[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]] && . /usr/local/etc/bash_completion.d/git-completion.bash
 alias gk='gitk --all &>/dev/null &'
+command -v gh > /dev/null && . <(gh completion)
 
 __git_complete g __git_main
 function g() {
     local cmd=${1-status}
     shift
-    git $cmd "$@"
+    git ${cmd} "$@"
 }
 
 __git_complete gf _git_fetch
@@ -91,16 +94,22 @@ function gpl() {
 function d() {
     local cmd=${1-ps}
     shift
-    docker $cmd "$@"
+    docker ${cmd} "$@"
 }
 
 
 # npm completion, takes about 1/4 second extra when starting every shell
-# which npm > /dev/null 2>&1 && . <(npm completion)
+# which npm >/dev/null 2>&1 && . <(npm completion)
+# . ~/bin/npm-completion
 
 # pbcopy / pbpaste
-which pbcopy > /dev/null 2>&1 || alias pbcopy='xsel --clipboard --input'
-which pbpaste > /dev/null 2>&1 || alias pbpaste='xsel --clipboard --output'
+which pbcopy >/dev/null 2>&1 || alias pbcopy='xsel --clipboard --input'
+which pbpaste >/dev/null 2>&1 || alias pbpaste='xsel --clipboard --output'
+
+# directory
+function mkcd () {
+  mkdir -p -- "$1" && cd -- "$1"
+}
 
 # temp directory
 alias t='cd $(mktemp -d)'

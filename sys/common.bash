@@ -3,11 +3,34 @@ export false=1
 
 function ensureInstalled() {
   while (( $# != 0 )); do
-    if ! isInstalled "$1"; then
-      sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y "$1"
+    local packageOrUrl="${1}"
+    if isUrl "${packageOrUrl}"; then
+      ensureInstalledUrl "${packageOrUrl}"
+    else
+      ensureInstalledPackage "${packageOrUrl}"
     fi
     shift
   done
+}
+
+function isUrl() {
+  echo "${1}" | grep / >/dev/null
+}
+
+function ensureInstalledUrl() {
+  local url="${1}"
+  local filename="$(basename "${url}")"
+  ensureInstalled gdebi wget
+  cd "$(mktemp -d)"
+  wget -O "${filename}" "${url}"
+  sudo gdebi --non-interactive "${filename}"
+}
+
+function ensureInstalledPackage() {
+  local package="${1}"
+  if ! isInstalled "${package}"; then
+    sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y "${package}"
+  fi
 }
 
 function isInstalled() {

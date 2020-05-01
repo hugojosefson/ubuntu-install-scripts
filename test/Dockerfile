@@ -12,6 +12,7 @@ COPY sys/install-vim sys/
 RUN ./sys/all-1-minimal-sanity
 
 COPY sys/all-2-developer-base sys/
+COPY sys/install-github-cli sys/
 COPY sys/install-github-git-plugin sys/
 COPY sys/install-docker sys/
 COPY sys/install-isolate-in-docker sys/

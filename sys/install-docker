@@ -6,4 +6,5 @@ cd $(dirname ${0})
 
 ensureInstalled docker.io docker-compose
 
+# Allow current user access to docker
 sudo usermod -aG docker "$(id -un)"

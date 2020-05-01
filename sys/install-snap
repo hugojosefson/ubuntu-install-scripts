@@ -10,6 +10,3 @@ if insideDocker; then
 fi
 
 ensureInstalled snapd
-[ -L /snap ] || [ -d /snap ] || ( [ -d /var/lib/snapd/snap ] && sudo ln -s /var/lib/snapd/snap / )
-sudo service snapd restart
-grep -x 'export PATH=/snap/bin:$PATH' ~/.bashrc || echo -e '\nexport PATH=/snap/bin:$PATH' >> ~/.bashrc

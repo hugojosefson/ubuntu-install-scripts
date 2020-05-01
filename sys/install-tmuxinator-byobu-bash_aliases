@@ -4,5 +4,11 @@ set -e
 cd $(dirname ${0})
 . ./common.bash
 
-ensureInstalled byobu tmux tmuxinator tilda xsel
+ensureInstalled \
+  byobu \
+  tmux \
+  tmuxinator \
+  tilda \
+  xsel \
+
 sudo apt-get remove -y --purge screen
