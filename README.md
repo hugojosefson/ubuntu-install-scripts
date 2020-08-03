@@ -1,6 +1,6 @@
 # Ubuntu install scripts, for Pop!_OS
 
-_Install scripts for various things I like to install on a fresh Pop!_OS._
+_Install scripts for various things I like to install on a fresh Pop!\_OS._
 
 They save some keystrokes :) Use the `./all-*` scripts to save even more!
 
