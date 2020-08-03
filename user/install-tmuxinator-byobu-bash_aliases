@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-cd $(dirname ${0})
+cd "$(dirname "${0}")"
 . ../sys/common.bash
 
 mkdir -p ~/code
@@ -72,6 +72,6 @@ rm "\${FILE_NAME}"
 EOF
 chmod +x ~/bin/m-temp
 
-[[ -e ~/.bash_aliases ]] && mv ~/.bash_aliases{,.$(date +%s).backup}
+[[ -e ~/.bash_aliases ]] && mv ~/.bash_aliases{,".$(date +%s).backup"}
 cp ./.bash_aliases ~/
 grep -x '. ~/.bash_aliases' ~/.bashrc || echo -e '\n. ~/.bash_aliases' >> ~/.bashrc

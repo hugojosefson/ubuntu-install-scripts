@@ -1,2 +1,2 @@
-#!/bin/bash
-docker run --rm -it hugojosefson/ubuntu-install-scripts $*
+#!/usr/bin/env bash
+docker run --rm -it hugojosefson/ubuntu-install-scripts "$@"

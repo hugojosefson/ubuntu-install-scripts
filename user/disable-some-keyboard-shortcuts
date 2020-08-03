@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
-cd $(dirname ${0})
+cd "$(dirname "${0}")"
 . ../sys/common.bash
 
 gsettings set org.gnome.desktop.wm.keybindings unmaximize "['<Primary><Super>Down', '<Super>Down']"

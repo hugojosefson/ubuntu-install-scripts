@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
-cd $(dirname ${0})
+cd "$(dirname "${0}")"
 . ./common.bash
 
 if insideDocker; then
@@ -13,22 +13,22 @@ ensureInstalled curl
 
 curl -s https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
 curl -s https://download.oracle.com/virtualbox/debian/oracle_vbox.asc | sudo apt-key add -
-if (curl --fail --silent https://download.oracle.com/virtualbox/debian/dists/$(ubuntuCodename)/contrib/binary-amd64/Packages >/dev/null); then
+if (curl --fail --silent "https://download.oracle.com/virtualbox/debian/dists/$(ubuntuCodename)/contrib/binary-amd64/Packages" >/dev/null); then
   echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian $(ubuntuCodename) contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 else
   echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian bionic contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
 fi
 sudo apt-get update
 
-PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]'|sort -nr|cut -d ' ' -f 1|head -n 1)
+PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]' | sort -nr | cut -d ' ' -f 1 | head -n 1)
 ensureInstalled ${PKG_NAME}
 
-TEMP_DIR=$(dirname $(mktemp))
-VIRTUALBOX_VERSION=$(vboxmanage --version | tail -n 1)
-EXTPACK_VERSION=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 1)
-EXTPACK_BUILD=$(echo $VIRTUALBOX_VERSION | cut -d 'r' -f 2)
+TEMP_DIR="$(dirname "$(mktemp)")"
+VIRTUALBOX_VERSION="$(vboxmanage --version | tail -n 1)"
+EXTPACK_VERSION="$(echo "${VIRTUALBOX_VERSION}" | cut -d 'r' -f 1)"
+EXTPACK_BUILD="$(echo "${VIRTUALBOX_VERSION}" | cut -d 'r' -f 2)"
 EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-${EXTPACK_VERSION}.vbox-extpack"
 EXTPACK_FILE="${TEMP_DIR}/${EXTPACK_FILENAME}"
-wget "https://download.oracle.com/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O ${EXTPACK_FILE}
+wget "https://download.oracle.com/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O "${EXTPACK_FILE}"
 #sudo VBoxManage extpack uninstall "Oracle VM VirtualBox Extension Pack"
-sudo VBoxManage extpack install ${EXTPACK_FILE} --replace --accept-license=56be48f923303c8cababb0bb4c478284b688ed23f16d775d729b89a2e8e5f9eb
+sudo VBoxManage extpack install "${EXTPACK_FILE}" --replace --accept-license=56be48f923303c8cababb0bb4c478284b688ed23f16d775d729b89a2e8e5f9eb

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-cd $(dirname ${0})
+cd "$(dirname "${0}")"
 . ./common.bash
 
 # Exit early if already installed
@@ -9,10 +9,10 @@ cd $(dirname ${0})
 
 ensureInstalled curl git bash-completion
 
-cd $(mktemp -d)
+cd "$(mktemp -d)"
 
-DOWNLOAD_URL=$(curl -s https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)
-curl --location --tlsv1.2 ${DOWNLOAD_URL} | tar xzv
+DOWNLOAD_URL="$(curl -s https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)"
+curl --location --tlsv1.2 "${DOWNLOAD_URL}" | tar xzv
 
 cd hub*
 

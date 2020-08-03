@@ -2,7 +2,25 @@
 
 # Finds the scripts here which are not listed in any of the `all-*` scripts.
 
-set -e 
-cd $(dirname ${0})
+set -e
+cd "$(dirname "${0}")"
 
-for section in sys user; do (cd $section && for i in $(find . -maxdepth 1 -type f -not -name all-\*); do (grep $i all-* > /dev/null || (echo $section/$i | sed -E 's/\/\.\//\//')); done;); done;
+function find_scripts() {
+  find . -maxdepth 1 -type f -not -name all-\*
+}
+
+function find_unlisted() {
+  local section="${1}"
+  (
+    cd "${section}"
+    for script_name in $(find_scripts); do
+      if grep "${script_name}" all-* > /dev/null; then
+        echo "${section}/${script_name}" | sed -E 's#/\./#/#'
+      fi
+    done
+  )
+}
+
+for section in sys user; do
+  find_unlisted "${section}"
+done

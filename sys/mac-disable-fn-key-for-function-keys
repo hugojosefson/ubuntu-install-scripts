@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
-cd $(dirname ${0})
+cd "$(dirname "${0}")"
 . ./common.bash
 
 sudo su -c "echo -n 0x02 > /sys/module/hid_apple/parameters/fnmode" || exit 0
-echo options hid_apple fnmode=2 | sudo tee /etc/modprobe.d/disable-fn-key-for-function-keys.conf
+echo "options hid_apple fnmode=2" | sudo tee /etc/modprobe.d/disable-fn-key-for-function-keys.conf
 sudo update-initramfs -u -k all
