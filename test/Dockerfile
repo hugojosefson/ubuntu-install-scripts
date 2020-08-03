@@ -1,5 +1,6 @@
-FROM hugojosefson/ubuntu:20.04
+FROM hugojosefson/popos:20.04
 
+RUN apt-get update
 RUN apt-get install -y apt-utils
 
 WORKDIR /ubuntu-install-scripts
