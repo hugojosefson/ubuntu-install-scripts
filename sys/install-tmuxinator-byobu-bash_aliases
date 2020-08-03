@@ -8,7 +8,9 @@ ensureInstalled \
   byobu \
   tmux \
   tmuxinator \
-  tilda \
+  alacritty \
   xsel \
 
-sudo apt-get remove -y --purge screen
+isInstalled screen && sudo apt-get purge -y --auto-remove screen
+
+./install-tabbed

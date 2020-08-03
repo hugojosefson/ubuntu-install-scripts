@@ -8,5 +8,5 @@ cd "$(dirname "${0}")"
 
 ./install-network-utils
 ./install-brave-browser
-[[ ! insideDocker ]] && ensureInstalled chromium-browser
-./install-chrome
+ensureInstalled chromium-browser
+ensureInstalled google-chrome-stable

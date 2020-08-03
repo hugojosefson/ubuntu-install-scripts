@@ -5,14 +5,14 @@ alias ba='vim ~/.bash_aliases'
 alias .ba='. ~/.bash_aliases'
 
 # ls
-alias ls='ls -F --color'
-alias l='ls'
-alias ll='ls -l'
-alias la='ls -a'
-alias lla='ls -la'
+alias ls='exa -F'
+alias l='exa -F'
+alias ll='exa -lF'
+alias la='exa -aF'
+alias lla='exa -Fla'
 
 # node
-alias nn='nodeversion=$(cat package.json | jq -r .engines.node); nvm install $nodeversion'
+alias nn='nvm install $(cat package.json | jq -r .engines.node)'
 
 # tmuxinator
 alias mux=tmuxinator
@@ -40,9 +40,6 @@ _tmuxinator() {
 }
 complete -F _tmuxinator tmuxinator mux m
 
-# Make
-alias mp='make package'
-
 # Git
 [[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
 [[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]] && . /usr/local/etc/bash_completion.d/git-completion.bash
@@ -68,6 +65,9 @@ function gc() {
 function gg() {
     git commit -m "$*"
 }
+function gam() {
+    git commit --amend -m "$*"
+}
 
 __git_complete gd _git_diff
 function gd() {
@@ -76,7 +76,7 @@ function gd() {
 
 __git_complete ga _git_add
 function ga() {
-    git add --all "$@"
+    git add "$@:---all"
 }
 
 __git_complete gp _git_push
@@ -86,7 +86,7 @@ function gp() {
 
 __git_complete gpl _git_pull
 function gpl() {
-    git pull "$@"
+    git pull --rebase "$@"
 }
 
 
@@ -103,8 +103,10 @@ function d() {
 # . ~/bin/npm-completion
 
 # pbcopy / pbpaste
-which pbcopy >/dev/null 2>&1 || alias pbcopy='xsel --clipboard --input'
-which pbpaste >/dev/null 2>&1 || alias pbpaste='xsel --clipboard --output'
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+#alias pbcopy='wl-copy'
+#alias pbpaste='wl-paste'
 
 # directory
 function mkcd () {

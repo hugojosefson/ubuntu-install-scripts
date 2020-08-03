@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+cd "$(dirname "${0}")"
+. ../sys/common.bash
+
+ensureInstalled build-essential
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+# shellcheck disable=SC1090
+. "${HOME}/.cargo/env"
+
+cargo install \
+  bat \
+  exa \
+  fd-find \
+  ripgrep \

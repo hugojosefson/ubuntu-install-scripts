@@ -4,7 +4,10 @@ set -e
 cd "$(dirname "${0}")"
 . ./common.bash
 
-ensureInstalled docker.io docker-compose
+ensureInstalled curl
+curl -s https://get.docker.com/ | sed s/\\\$ID/ubuntu/ | bash
 
 # Allow current user access to docker
 sudo usermod -aG docker "$(id -un)"
+
+ensureInstalled docker-compose

@@ -12,7 +12,7 @@ name: base
 tmux_command: byobu-tmux
 
 windows:
-  - code: cd ~/code && ll -ltra
+  - code: cd ~/code && ll -la
   - top: top
   - "": clear; sudo --list --non-interactive apt && (echo -n Press ENTER for full-upgrade...; read -s;); sudo apt update && sudo apt full-upgrade --auto-remove --purge -y && sudo apt autoclean
 EOF
@@ -47,8 +47,8 @@ cat > ~/bin/m-temp <<EOF
 
 ## Creates and opens a new temp session
 
-export SESSION_DIR=\$(readlink -f \${1:-\$(mktemp -d)})
-export SESSION_NAME="\$(echo \${SESSION_DIR} \
+export SESSION_DIR="\$(readlink -f "\${1:-"\$(mktemp -d)"}")"
+export SESSION_NAME="\$(echo "\${SESSION_DIR}" \
                      | sed -E 's/^[\\./]//g' \
                      | sed -E 's/[\\./]+/-/g' \
                      | sed -E 's/[åä]/a/g' \
@@ -65,8 +65,8 @@ FILE_NAME="\${SESSION_NAME}.yml"
 cd ~/.tmuxinator
 envsubst < temp.TEMPLATE > "\${FILE_NAME}"
 
-mkdir -p \${SESSION_DIR}
-tmuxinator start \${SESSION_NAME}
+mkdir -p "\${SESSION_DIR}"
+tmuxinator start "\${SESSION_NAME}"
 sleep 1
 rm "\${FILE_NAME}"
 EOF

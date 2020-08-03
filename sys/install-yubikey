@@ -4,4 +4,7 @@ set -e
 cd "$(dirname "${0}")"
 . ./common.bash
 
-ensureInstalled yubikey-personalization-gui yubioath-desktop
+ensureInstalled \
+  yubikey-personalization-gui \
+  yubioath-desktop \
+  yubikey-manager \
