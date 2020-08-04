@@ -7,3 +7,7 @@ cd "$(dirname "${0}")"
 ./disable-some-keyboard-shortcuts
 ./install-keybase
 ./install-rust
+
+flatpak install --or-update --user --noninteractive \
+  org.signal.Signal \
+  com.spotify.Client \
