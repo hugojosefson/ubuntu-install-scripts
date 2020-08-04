@@ -5,3 +5,5 @@ cd "$(dirname "${0}")"
 . ./common.bash
 
 java -version || ensureInstalled default-jdk
+
+ensureInstalled ca-certificates-java
