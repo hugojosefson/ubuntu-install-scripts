@@ -11,3 +11,4 @@ cd "$(dirname "${0}")"
 flatpak install --or-update --user --noninteractive \
   org.signal.Signal \
   com.spotify.Client \
+  com.slack.Slack \
