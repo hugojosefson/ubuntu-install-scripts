@@ -76,7 +76,7 @@ function gd() {
 
 __git_complete ga _git_add
 function ga() {
-    git add "$@:---all"
+    git add "${@:---all}"
 }
 
 __git_complete gp _git_push
