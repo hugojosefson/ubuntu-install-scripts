@@ -4,4 +4,6 @@ set -e
 cd "$(dirname "${0}")"
 . ../sys/common.bash
 
+./disable-some-keyboard-shortcuts
 ./install-keybase
+./install-rust
