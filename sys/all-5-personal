@@ -14,3 +14,4 @@ cd "$(dirname "${0}")"
 ensureInstalled \
   gnome-tweaks \
   arandr \
+  cheese \
