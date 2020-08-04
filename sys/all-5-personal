@@ -13,6 +13,6 @@ cd "$(dirname "${0}")"
 
 ensureInstalled \
   arandr \
-  spotify \
+  spotify-client \
   signal-desktop \
   slack-desktop \
