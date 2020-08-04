@@ -86,7 +86,7 @@ function gp() {
 
 __git_complete gpl _git_pull
 function gpl() {
-    git pull --rebase "$@"
+    git pull "$@"
 }
 
 
