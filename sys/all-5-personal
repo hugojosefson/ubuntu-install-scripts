@@ -12,7 +12,16 @@ cd "$(dirname "${0}")"
 ./install-rust
 
 ensureInstalled \
-  gnome-tweaks \
   arandr \
+  audacity \
   cheese \
+  docx2txt \
+  dosbox \
+  efibootmgr \
+  ffmpeg \
+  gimp \
+  gnome-tweaks \
+  gpick \
+  imagemagick \
+  inkscape \
   neofetch \
