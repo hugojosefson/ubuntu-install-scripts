@@ -7,6 +7,10 @@ cd "$(dirname "${0}")"
 ensureInstalled build-essential
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 
+# shellcheck disable=SC2016
+grep -x '. "${HOME}/.cargo/env"' ~/.bashrc || \
+  (echo -e '\n''. "${HOME}/.cargo/env"' >> ~/.bashrc)
+
 # shellcheck disable=SC1090
 . "${HOME}/.cargo/env"
 
