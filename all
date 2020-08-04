@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+cd "$(dirname "${0}")"
+
+./sys/all-3-developer-web
+./sys/all-4-developer-java
+./sys/all-5-personal
+
+./user/all-2-developer-base
+./user/all-5-personal
