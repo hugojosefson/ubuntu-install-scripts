@@ -13,3 +13,4 @@ cd "$(dirname "${0}")"
 ./install-idea
 ./install-webstorm
 ./add-node_modules-bin-to-path
+./install-fzf
