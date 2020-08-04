@@ -27,7 +27,6 @@ RUN ./sys/all-3-developer-web
 
 COPY sys/all-4-developer-java sys/
 COPY sys/install-java sys/
-COPY sys/install-idea sys/
 RUN ./sys/all-4-developer-java
 
 COPY sys/all-5-personal sys/
