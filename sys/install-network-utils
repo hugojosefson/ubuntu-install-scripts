@@ -5,8 +5,8 @@ cd "$(dirname "${0}")"
 . ./common.bash
 
 ensureInstalled \
-  nmap \
   corkscrew \
   mtr-tiny \
   netcat-traditional \
-
+  nmap \
+  whois \
