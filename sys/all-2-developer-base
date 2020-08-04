@@ -6,7 +6,13 @@ cd "$(dirname "${0}")"
 
 ./all-1-minimal-sanity
 
-ensureInstalled git git-revise gitk meld
+ensureInstalled \
+  git \
+  git-revise \
+  gitk \
+  meld \
+  moreutils \
+  tig \
 
 ./install-github-cli
 ./install-github-git-plugin
