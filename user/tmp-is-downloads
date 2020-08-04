@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+cd "$(dirname "${0}")"
+. ../sys/common.bash
+
+cd ~
+rmdir Downloads 2>/dev/null || rm Downloads 2>/dev/null || true
+ln -s /tmp Downloads

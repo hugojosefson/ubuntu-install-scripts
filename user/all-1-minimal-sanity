@@ -8,3 +8,4 @@ cd "$(dirname "${0}")"
 ./save-bash-history
 ./install-tmuxinator-byobu-bash_aliases
 ./home-is-desktop
+./tmp-is-downloads

@@ -44,6 +44,7 @@ COPY user/save-bash-history user/
 COPY user/.bash_aliases user/
 COPY user/install-tmuxinator-byobu-bash_aliases user/
 COPY user/home-is-desktop user/
+COPY user/tmp-is-downloads user/
 RUN ./user/all-1-minimal-sanity
 
 COPY user/all-2-developer-base user/
