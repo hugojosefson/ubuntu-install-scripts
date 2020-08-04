@@ -5,4 +5,5 @@ cd "$(dirname "${0}")"
 . ../sys/common.bash
 
 # shellcheck disable=SC2016
-grep -x 'PROMPT_COMMAND="export history -a $HOME/.bash_history; $PROMPT_COMMAND"' ~/.bashrc || (echo -e '\n''export PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' >> ~/.bashrc)
+grep -x 'export PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' ~/.bashrc || \
+  (echo -e '\n''export PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' >> ~/.bashrc)
