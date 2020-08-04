@@ -9,10 +9,12 @@ cd "$(dirname "${0}")"
 ensureInstalled \
   aptitude \
   flip \
+  jq \
   ncdu \
   network-manager-openvpn-gnome \
-  jq \
   solaar \
+  ssh \
+  tree \
 
 ./install-tmuxinator-byobu-bash_aliases
 ./install-vim
