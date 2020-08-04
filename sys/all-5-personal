@@ -12,5 +12,6 @@ cd "$(dirname "${0}")"
 ./install-rust
 
 ensureInstalled \
+  gnome-tweaks \
   arandr \
   slack-desktop \
