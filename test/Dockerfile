@@ -9,6 +9,7 @@ COPY sys/all-1-minimal-sanity sys/
 COPY sys/common.bash sys/
 COPY sys/update-packages sys/
 COPY sys/install-tmuxinator-byobu-bash_aliases sys/
+COPY sys/install-tabbed sys/
 COPY sys/install-vim sys/
 RUN ./sys/all-1-minimal-sanity
 
