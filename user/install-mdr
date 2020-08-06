@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+cd "$(dirname "${0}")"
+. ../sys/common.bash
+
+# Exit early if already installed
+[ -f /usr/local/bin/mdr ] && exit 0
+
+sudo chown -R "$(id -un)" /usr/local
+githubDownload MichaelMure/mdr > /usr/local/bin/mdr
+chmod +x /usr/local/bin/mdr

@@ -14,3 +14,4 @@ cd "$(dirname "${0}")"
 ./install-webstorm
 ./add-node_modules-bin-to-path
 ./install-fzf
+./install-mdr
