@@ -3,6 +3,7 @@ FROM hugojosefson/popos:20.04
 RUN apt-get update
 RUN apt-get install -y apt-utils
 RUN apt-get purge -y --auto-remove gnome-initial-setup
+RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
 WORKDIR /ubuntu-install-scripts
 
