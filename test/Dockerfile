@@ -1,15 +1,11 @@
 FROM hugojosefson/popos:20.04
 
-RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get purge -y --auto-remove gnome-initial-setup
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
-
 WORKDIR /ubuntu-install-scripts
 
 COPY sys/all-1-minimal-sanity sys/
 COPY sys/common.bash sys/
 COPY sys/update-packages sys/
+RUN sed -E 's/ -y / -y --allow-downgrades /' -i sys/update-packages
 COPY sys/install-tmuxinator-byobu-bash_aliases sys/
 COPY sys/install-tabbed sys/
 COPY sys/install-vim sys/
@@ -21,6 +17,7 @@ COPY sys/install-github-git-plugin sys/
 COPY sys/install-docker sys/
 COPY sys/install-isolate-in-docker sys/
 COPY sys/install-virt-manager sys/
+RUN apt-get -o Dpkg::Options::="--force-confnew" --fix-broken -y upgrade --auto-remove --purge --allow-downgrades --allow-remove-essential --allow-change-held-packages
 RUN ./sys/all-2-developer-base
 
 COPY sys/all-3-developer-web sys/
