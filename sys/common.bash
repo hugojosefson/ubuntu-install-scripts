@@ -54,3 +54,18 @@ function insideDocker() {
 function ubuntuCodename() {
   cat /etc/lsb-release | awk -F '=' '/DISTRIB_CODENAME/{print $2}'
 }
+
+function githubDownloadUrl() {
+  local repo="${1}"
+
+  ensureInstalled curl jq
+  curl -s "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.assets[]|.browser_download_url' | grep linux.amd64
+}
+
+function githubDownload() {
+  local repo="${1}"
+  shift
+
+  ensureInstalled curl
+  curl --location --tlsv1.2 "$(githubDownloadUrl "${repo}")" "$@"
+}

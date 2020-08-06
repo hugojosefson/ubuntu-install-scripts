@@ -7,13 +7,10 @@ cd "$(dirname "${0}")"
 # Exit early if already installed
 [ -f /etc/bash_completion.d/hub.bash_completion.sh ] && exit 0
 
-ensureInstalled curl git bash-completion
+ensureInstalled git bash-completion
 
 cd "$(mktemp -d)"
-
-DOWNLOAD_URL="$(curl -s https://api.github.com/repos/github/hub/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4)"
-curl --location --tlsv1.2 "${DOWNLOAD_URL}" | tar xzv
+githubDownload github/hub | tar xzv
 
 cd hub*
-
 sudo mv etc/hub.bash_completion.sh /etc/bash_completion.d/

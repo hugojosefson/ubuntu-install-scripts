@@ -8,12 +8,9 @@ cd "$(dirname "${0}")"
 [ -f /usr/local/bin/hub ] && [ -f /usr/local/man/man1/hub.1 ] && exit 0
 
 cd "$(mktemp -d)"
-
-DOWNLOAD_URL=$(wget -O - --quiet "https://api.github.com/repos/github/hub/releases/latest" | grep "browser_download_url" | grep "linux-amd64" | cut -d '"' -f 4)
-curl --location --tlsv1.2 "${DOWNLOAD_URL}" | tar xzv
+githubDownload github/hub | tar xzv
 
 cd hub*
-
 sudo chown -R "$(id -un)" /usr/local
 mkdir -p /usr/local/man/man1
 mv share/man/man1/hub.1 /usr/local/man/
