@@ -2,6 +2,7 @@ FROM hugojosefson/popos:20.04
 
 RUN apt-get update
 RUN apt-get install -y apt-utils
+RUN apt-get purge -y --auto-remove gnome-initial-setup
 
 WORKDIR /ubuntu-install-scripts
 
