@@ -5,7 +5,7 @@ cd "$(dirname "${0}")"
 . ../sys/common.bash
 
 # Not installing package locally. Using webstorm via isolate-in-docker.
-# flatpak install --or-update --user --noninteractive com.jetbrains.WebStorm
+# flatpak install --no-deploy --or-update --noninteractive "flathub" "com.jetbrains.WebStorm"
 
 mkdir -p ~/bin
 

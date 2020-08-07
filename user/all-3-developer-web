@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+cd "$(dirname "${0}")"
+. ../sys/common.bash
+
+./all-2-developer-base
+
+./install-webstorm
+./add-node_modules-bin-to-path

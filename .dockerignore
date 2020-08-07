@@ -1,6 +1,4 @@
-.git
-.gitignore
+/.*
 test
-.*.swp
 README.md
-
+.*.swp

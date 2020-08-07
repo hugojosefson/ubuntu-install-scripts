@@ -51,9 +51,17 @@ COPY user/all-2-developer-base user/
 COPY user/install-gitk user/
 COPY user/install-git-prompt user/
 COPY user/install-github-git-plugin user/
-COPY user/install-idea user/
+COPY user/install-fzf user/
+COPY user/install-mdr user/
+RUN ./user/all-2-developer-base
+
+COPY user/all-3-developer-web user/
 COPY user/install-webstorm user/
 COPY user/add-node_modules-bin-to-path user/
-RUN ./user/all-2-developer-base
+RUN ./user/all-3-developer-web
+
+COPY user/all-4-developer-java user/
+COPY user/install-idea user/
+RUN ./user/all-4-developer-java
 
 CMD ["bash"]

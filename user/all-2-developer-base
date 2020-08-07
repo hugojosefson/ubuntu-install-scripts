@@ -9,9 +9,5 @@ cd "$(dirname "${0}")"
 ./install-gitk
 ./install-git-prompt
 ./install-github-git-plugin
-
-./install-idea
-./install-webstorm
-./add-node_modules-bin-to-path
 ./install-fzf
 ./install-mdr
