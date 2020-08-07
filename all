@@ -7,5 +7,6 @@ cd "$(dirname "${0}")"
 ./sys/all-4-developer-java
 ./sys/all-5-personal
 
-./user/all-2-developer-base
+./user/all-3-developer-web
+./user/all-4-developer-java
 ./user/all-5-personal
