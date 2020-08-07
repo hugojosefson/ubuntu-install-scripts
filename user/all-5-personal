@@ -8,7 +8,7 @@ cd "$(dirname "${0}")"
 ./install-keybase
 ./install-rust
 
-flatpak install --no-deploy --or-update --noninteractive "flathub" \
+ensureInstalledFlatpak \
   org.signal.Signal \
   com.spotify.Client \
   com.slack.Slack \

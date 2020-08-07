@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "${0}")"
 . ../sys/common.bash
 
-flatpak install --no-deploy --or-update --noninteractive "flathub" "com.jetbrains.IntelliJ-IDEA-Community"
+ensureInstalledFlatpak "com.jetbrains.IntelliJ-IDEA-Community"
 
 mkdir -p ~/bin
 

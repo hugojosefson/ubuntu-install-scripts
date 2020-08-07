@@ -33,6 +33,14 @@ function ensureInstalledPackage() {
   fi
 }
 
+function ensureInstalledFlatpak() {
+  if insideDocker; then
+    flatpak install --or-update --noninteractive --no-deploy "flathub" "${@}"
+  else
+    flatpak install --or-update --noninteractive "flathub" "${@}"
+  fi
+}
+
 function isInstalled() {
   if (( $# != 1 )); then
     echo "isInstalled must be called with one argument" >&2
