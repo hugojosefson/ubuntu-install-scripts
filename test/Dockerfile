@@ -17,7 +17,6 @@ COPY sys/install-github-git-plugin sys/
 COPY sys/install-docker sys/
 COPY sys/install-isolate-in-docker sys/
 COPY sys/install-virt-manager sys/
-RUN apt-get -o Dpkg::Options::="--force-confnew" --fix-broken -y upgrade --auto-remove --purge --allow-downgrades --allow-remove-essential --allow-change-held-packages
 RUN ./sys/all-2-developer-base
 
 COPY sys/all-3-developer-web sys/
