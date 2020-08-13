@@ -6,7 +6,7 @@ cd "$(dirname "${0}")"
 
 if [[ $1 != "--force" ]]; then
   # Exit early if no packages seem to need upgrading
-  apt-get -s -o Debug::NoLocking=true upgrade | grep -q ^Inst || exit 0
+  apt-get upgrade -s -o Debug::NoLocking=true | grep -q ^Inst || exit 0
 fi
 
 sudo apt-get update
