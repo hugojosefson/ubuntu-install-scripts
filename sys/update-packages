@@ -8,7 +8,8 @@ if [[ $1 != "--force" ]]; then
   # Exit early if no packages seem to need upgrading
   apt-get upgrade -s -o Debug::NoLocking=true | grep -q ^Inst || exit 0
 fi
+shift
 
 sudo apt-get update
-sudo apt-get full-upgrade --purge -y --auto-remove
+sudo apt-get full-upgrade --purge -y --auto-remove "$@"
 sudo apt-get autoclean
