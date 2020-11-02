@@ -1,3 +1,18 @@
+#!/usr/bin/env bash
+(return 2>/dev/null) && isSourced=1 || isSourced=0
+CURRENT_SCRIPT="${BASH_SOURCE[0]}"
+
+if ! ((isSourced)); then
+  if [[ $# -eq 0 ]]; then
+    echo "${CURRENT_SCRIPT} should be sourced from bash scripts, to set up functions." >&2
+    echo "Alternatively, you may execute ${CURRENT_SCRIPT} with arguments directly, and it will execute those arguments (which may be functions from this file). For example: ${CURRENT_SCRIPT} ensureInstalled curl" >&2
+    exit 1
+  fi
+  . "${CURRENT_SCRIPT}"
+  "$@"
+  exit $?
+fi
+
 export true=0
 export false=1
 
@@ -60,7 +75,8 @@ function insideDocker() {
 }
 
 function ubuntuCodename() {
-  cat /etc/lsb-release | awk -F '=' '/DISTRIB_CODENAME/{print $2}'
+  ensureInstalled lsb-release
+  lsb_release -cs
 }
 
 function githubDownloadUrl() {
@@ -76,4 +92,15 @@ function githubDownload() {
 
   ensureInstalled curl
   curl --location --tlsv1.2 "$(githubDownloadUrl "${repo}")" "$@"
+}
+
+function existsUrl() {
+  local url="${1}"
+  curl -sL /dev/null --fail "${url}" >/dev/null
+}
+
+function existsAptRepo() {
+  local repo="${1}"
+  local dist="${2:-"$(ubuntuCodename)"}"
+  existsUrl "${repo}/dists/${dist}/Release"
 }
