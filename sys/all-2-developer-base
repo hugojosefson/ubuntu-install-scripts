@@ -6,8 +6,9 @@ cd "$(dirname "${0}")"
 
 ./all-1-minimal-sanity
 
+./install-git
+
 ensureInstalled \
-  git \
   git-revise \
   gitk \
   meld \
