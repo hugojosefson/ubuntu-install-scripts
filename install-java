@@ -4,4 +4,6 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-run_keybase
+java -version || ensureInstalled default-jdk
+
+ensureInstalled ca-certificates-java

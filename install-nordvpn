@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+isInstalled nordvpn-release && exit 0
+
+download_url="$( \
+  curl -s https://nordvpn.com/download/linux/ \
+  | sed -E 's/"/\n/g' \
+  | grep -E '^https://repo\.nordvpn\.com/.*\.deb' \
+  | head -n 1 \
+)"
+
+ensureInstalled "${download_url}"

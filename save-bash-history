@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+# shellcheck disable=SC2016
+grep -x 'export PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' ~/.bashrc || \
+  (echo -e '\n''export PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"' >> ~/.bashrc)

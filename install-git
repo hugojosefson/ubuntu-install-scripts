@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+ensureInstalled software-properties-common
+$SUDO add-apt-repository -y ppa:git-core/ppa
+
+ensureInstalled git

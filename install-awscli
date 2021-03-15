@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+mkdir -p ~/bin
+curl -o ~/bin/ecs-cli "https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest"
+chmod +x ~/bin/ecs-cli

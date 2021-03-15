@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+gsettings set org.gnome.desktop.wm.keybindings unmaximize "['<Primary><Super>Down', '<Super>Down']"
+gsettings set org.gnome.desktop.wm.keybindings toggle-shaded "['']"
+gsettings set org.gnome.desktop.wm.keybindings begin-resize "['']"
+gsettings set org.gnome.desktop.wm.keybindings begin-move "['']"
+gsettings set org.gnome.desktop.wm.keybindings cycle-group "['']"

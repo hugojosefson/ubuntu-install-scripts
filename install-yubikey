@@ -4,4 +4,7 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-run_keybase
+ensureInstalled \
+  yubikey-personalization-gui \
+  yubioath-desktop \
+  yubikey-manager \

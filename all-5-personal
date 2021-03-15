@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+./install-keybase
+./install-yubikey
+./install-nordvpn
+./install-insync
+./install-xpra
+./install-rust
+
+ensureInstalled \
+  arandr \
+  audacity \
+  cheese \
+  docx2txt \
+  dosbox \
+  efibootmgr \
+  ffmpeg \
+  gimp \
+  gnome-tweaks \
+  gpick \
+  imagemagick \
+  inkscape \
+  neofetch \

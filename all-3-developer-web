@@ -6,5 +6,7 @@ cd "$(dirname "${0}")"
 
 ./all-2-developer-base
 
-./install-webstorm
-./add-node_modules-bin-to-path
+./install-network-utils
+./install-brave-browser
+ensureInstalled chromium-browser
+ensureInstalled google-chrome-stable

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+ensureInstalled git
+
+if [[ -d ~/.fzf ]]; then
+  cd ~/.fzf
+  git pull --rebase --autostash
+else
+  git clone --depth 1 "https://github.com/junegunn/fzf.git" ~/.fzf
+fi
+
+~/.fzf/install --all

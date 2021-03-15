@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+if insideDocker; then
+  echo "Not installing virtualbox, because we are inside Docker." >&2
+  exit 0
+fi
+
+ensureInstalled curl
+
+curl -s https://www.virtualbox.org/download/oracle_vbox_2016.asc | $SUDO apt-key add -
+curl -s https://download.oracle.com/virtualbox/debian/oracle_vbox.asc | $SUDO apt-key add -
+if (curl --fail --silent "https://download.oracle.com/virtualbox/debian/dists/$(ubuntuCodename)/contrib/binary-amd64/Packages" >/dev/null); then
+  echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian $(ubuntuCodename) contrib" | $SUDO tee /etc/apt/sources.list.d/virtualbox.list
+else
+  echo "deb [arch=amd64] https://download.oracle.com/virtualbox/debian bionic contrib" | $SUDO tee /etc/apt/sources.list.d/virtualbox.list
+fi
+$SUDO apt-get update
+
+PKG_NAME=$(apt-cache search '^virtualbox-[0-9]\.[0-9]' | sort -nr | cut -d ' ' -f 1 | head -n 1)
+ensureInstalled ${PKG_NAME}
+
+TEMP_DIR="$(dirname "$(mktemp)")"
+VIRTUALBOX_VERSION="$(vboxmanage --version | tail -n 1)"
+EXTPACK_VERSION="$(echo "${VIRTUALBOX_VERSION}" | cut -d 'r' -f 1)"
+EXTPACK_BUILD="$(echo "${VIRTUALBOX_VERSION}" | cut -d 'r' -f 2)"
+EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-${EXTPACK_VERSION}.vbox-extpack"
+EXTPACK_FILE="${TEMP_DIR}/${EXTPACK_FILENAME}"
+wget "https://download.oracle.com/virtualbox/${EXTPACK_VERSION}/${EXTPACK_FILENAME}" -O "${EXTPACK_FILE}"
+#$SUDO VBoxManage extpack uninstall "Oracle VM VirtualBox Extension Pack"
+$SUDO VBoxManage extpack install "${EXTPACK_FILE}" --replace --accept-license=56be48f923303c8cababb0bb4c478284b688ed23f16d775d729b89a2e8e5f9eb

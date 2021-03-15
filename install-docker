@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+ensureInstalled \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg-agent \
+  software-properties-common \
+  lsb-release
+
+apt-key fingerprint 0EBFCD88 2>/dev/null | grep '0EBF CD88' >/dev/null \
+|| curl -fsSL https://download.docker.com/linux/ubuntu/gpg | $SUDO apt-key add -
+
+repo="https://download.docker.com/linux/ubuntu"
+dist="$(ubuntuCodename)"
+
+existsAptRepo "${repo}" "${dist}" && $SUDO add-apt-repository -y "deb [arch=amd64] ${repo} ${dist} stable" \
+|| existsAptRepo "${repo}" "focal" && $SUDO add-apt-repository -y "deb [arch=amd64] ${repo} focal stable" \
+|| exit 1
+
+ensureInstalled \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-compose
+
+# Allow current user access to docker
+$SUDO usermod -aG docker "$(id -un)"

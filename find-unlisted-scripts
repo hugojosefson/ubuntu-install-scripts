@@ -2,7 +2,12 @@
 
 # Finds the scripts here which are not listed in any of the `all-*` scripts.
 
-set -e
+set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 
-for section in sys user; do (cd "${section}" && for i in $(find . -maxdepth 1 -type f -not -name all-\*); do (grep "${i}" all-* >/dev/null || (echo "${section}/${i}" | sed -E 's/\/\.\//\//')); done); done
+find . \
+  -maxdepth 1 \
+  -type f \
+  -perm /u+x \
+  -not -name all-\* \
+  -exec sh -c 'grep "${1}" all-* >/dev/null || echo "${1}"' _ {} \;

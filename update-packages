@@ -4,4 +4,4 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-run_keybase
+$SUDO pacman -Syu --noconfirm

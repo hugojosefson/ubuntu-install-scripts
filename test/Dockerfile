@@ -1,6 +1,6 @@
-FROM hugojosefson/popos:20.04
+FROM manjarolinux/base
 
-WORKDIR /ubuntu-install-scripts
+WORKDIR /app
 
 COPY sys/all-1-minimal-sanity sys/
 COPY sys/common.bash sys/

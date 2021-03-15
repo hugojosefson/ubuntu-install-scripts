@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+./update-packages
+
+ensureInstalled \
+  dos2unix \
+  jq \
+  ncdu \
+  networkmanager-openvpn \
+  solaar \
+  openssh \
+  tree \
+
+./install-tmuxinator-byobu-bash_aliases
+./install-vim
+
+./add-home-bin-to-path
+./save-bash-history
+./home-is-desktop
+./tmp-is-downloads

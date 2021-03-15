@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+$SUDO su - -c "( \
+  cd /usr/local/bin \
+    && curl https://raw.githubusercontent.com/hugojosefson/isolate-in-docker/master/isolate-in-docker -o isolate-in-docker \
+    && chmod +x isolate-in-docker \
+    && ln -sf isolate-in-docker node \
+    && ln -sf isolate-in-docker npm \
+    && ln -sf isolate-in-docker npx \
+    && ln -sf isolate-in-docker yarn \
+    && ln -sf isolate-in-docker heroku \
+    && ln -sf isolate-in-docker webstorm \
+    && ln -sf isolate-in-docker webstorm-install-rust \
+    && ln -sf isolate-in-docker goland \
+    && ln -sf isolate-in-docker clion \
+    && ln -sf isolate-in-docker jetbrains-toolbox \
+    && ln -sf isolate-in-docker aws \
+    && ln -sf isolate-in-docker firefox40 \
+)"

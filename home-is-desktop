@@ -4,4 +4,6 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-run_keybase
+cd ~
+rmdir Desktop 2>/dev/null || rm Desktop 2>/dev/null || true
+ln -s . Desktop

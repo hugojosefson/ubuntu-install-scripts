@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+# Exit early if already installed
+[ -f /usr/local/bin/mdr ] && exit 0
+
+$SUDO chown -R "$(id -un)" /usr/local
+githubDownload MichaelMure/mdr > /usr/local/bin/mdr
+chmod +x /usr/local/bin/mdr

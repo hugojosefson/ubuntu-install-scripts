@@ -4,4 +4,6 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-run_keybase
+cd ~
+rmdir Downloads 2>/dev/null || rm Downloads 2>/dev/null || true
+ln -s /tmp Downloads

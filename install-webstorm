@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "${0}")"
+. ./common.bash
+
+# Not installing package locally. Using webstorm via isolate-in-docker.
+# ensureInstalledFlatpak "com.jetbrains.WebStorm"
+
+mkdir -p ~/bin
+
+cat > ~/bin/ws <<EOF
+#!/usr/bin/env bash
+arg=\${1:-.}
+webstorm "\${arg}" &>/dev/null &
+EOF
+
+chmod +x ~/bin/ws

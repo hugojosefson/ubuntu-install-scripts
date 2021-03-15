@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-set -e
+set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 
-./sys/all-3-developer-web
-./sys/all-4-developer-java
-./sys/all-5-personal
-
-./user/all-3-developer-web
-./user/all-4-developer-java
-./user/all-5-personal
+./all-3-developer-web
+./all-4-developer-java
+./all-5-personal

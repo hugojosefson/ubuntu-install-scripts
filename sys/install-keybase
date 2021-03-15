@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-cd "$(dirname "${0}")"
-. ./common.bash
-
-isInstalled keybase && exit 0
-
-ensureInstalled https://prerelease.keybase.io/keybase_amd64.deb

@@ -4,4 +4,6 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-run_keybase
+isInstalled keybase && exit 0
+
+ensureInstalled https://prerelease.keybase.io/keybase_amd64.deb

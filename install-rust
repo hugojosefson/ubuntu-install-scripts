@@ -4,14 +4,10 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-ensureInstalled build-essential
+ensureInstalled curl base-devel
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-# shellcheck disable=SC2016
-grep -x '. "${HOME}/.cargo/env"' ~/.bashrc || \
-  (echo -e '\n''. "${HOME}/.cargo/env"' >> ~/.bashrc)
-
-# shellcheck disable=SC1090
+ensureInFile ~/.bashrc '. "${HOME}/.cargo/env"'
 . "${HOME}/.cargo/env"
 
 cargo install \

@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-cd "$(dirname "${0}")"
-. ../sys/common.bash
-
-mkdir -p "$HOME/bin"
-# shellcheck disable=SC2016
-grep -x 'export PATH=$HOME/bin:$PATH' ~/.bashrc || echo -e '\n''export PATH=$HOME/bin:$PATH' >> ~/.bashrc
