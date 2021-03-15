@@ -8,7 +8,6 @@ ensureInstalled curl base-devel
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 ensureInFile ~/.bashrc '. "${HOME}/.cargo/env"'
-. "${HOME}/.cargo/env"
 
 cargo install \
   bat \

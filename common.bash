@@ -15,18 +15,21 @@ fi
 
 set -o errexit -o nounset -o pipefail
 
-if [[ $(id -u) -eq 0 ]]; then
-  SUDO=""
-else
-  SUDO="sudo"
-fi
-
 function ensureInstalled() {
   while (( $# != 0 )); do
     local package="${1}"
     ensureInstalledPackage "${package}"
     shift
   done
+}
+
+function installAurPackage() {
+  ./install-rua
+  if insideDocker; then
+    su - user rua install "${@}"
+  else
+    rua install "${@}"
+  fi
 }
 
 function ensureUninstalled() {
@@ -103,3 +106,17 @@ function ensureInFile() {
   echo >> "${file}"
   echo "${line}" >> "${file}"
 }
+
+
+if [[ $(id -u) -eq 0 ]]; then
+  SUDO=""
+  if insideDocker; then
+    ensureInstalled sudo
+    echo "user    ALL=(ALL:ALL) ALL" > /etc/sudoers.d/user
+    getent passwd user >/dev/null 2>&1 || useradd --user-group --create-home user
+  fi
+else
+  SUDO="sudo"
+fi
+
+PATH="${HOME}/.cargo/bin:${PATH}"
