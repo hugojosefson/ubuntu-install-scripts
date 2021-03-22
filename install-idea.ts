@@ -1,16 +1,17 @@
 import dropFile from "./lib/drop-file.ts";
 import { ensureAllOk } from "./lib/ensure-ok.ts";
 import ensureLineInFile from "./lib/ensure-line-in-file.ts";
+import { ensureInstalledFlatpak } from "./lib/ensure-installed.ts";
 
-const ws = `#!/usr/bin/env bash
+const i = `#!/usr/bin/env bash
 arg=\${1:-.}
-webstorm "\${arg}" &>/dev/null &
+idea "\${arg}" &>/dev/null &
 `;
 
 export default (): Promise<void> => {
   return ensureAllOk([
-    // ensureInstalledFlatpak(["com.jetbrains.WebStorm"]), // Not installing package locally. Using webstorm via isolate-in-docker.
-    dropFile(ws)("~/bin/ws", 0o775),
+    ensureInstalledFlatpak(["com.jetbrains.IntelliJ-IDEA-Community"]),
+    dropFile(i)("~/bin/i", 0o775),
     ensureLineInFile('export PATH="~/bin:$PATH"')("~/.bashrc"),
   ]);
 };

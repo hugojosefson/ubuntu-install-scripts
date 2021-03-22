@@ -19,8 +19,8 @@ export const ensureSuccessful = async (
 ): Promise<void> => {
   const process: Deno.Process = await Deno.run({
     stdin: "null",
-    stdout: "null",
-    stderr: "null",
+    stdout: "piped",
+    stderr: "piped",
     cmd,
   });
   const wasSuccessful = (await process.status()).success;

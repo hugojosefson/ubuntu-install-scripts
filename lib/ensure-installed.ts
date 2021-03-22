@@ -1,13 +1,15 @@
+import { ensureSuccessful } from "./exec.ts";
 import { complement, prop } from "./fn.ts";
 import installPackages from "./install-packages.ts";
 import isInstalled from "./is-installed.ts";
+import isInsideDocker from "./is-inside-docker.ts";
 
 interface PkgInstalled {
   pkg: string;
   isInstalled: boolean;
 }
 
-export default async (packages: Array<string>): Promise<void> => {
+const ensureInstalled = async (packages: Array<string>): Promise<void> => {
   const promises: Array<Promise<PkgInstalled>> = packages
     .map(
       async (pkg) => ({ pkg, isInstalled: await isInstalled(pkg) }),
@@ -22,4 +24,20 @@ export default async (packages: Array<string>): Promise<void> => {
   console.dir({ packagesToInstall });
 
   return installPackages(packagesToInstall);
+};
+export default ensureInstalled;
+
+export const ensureInstalledFlatpak = async (
+  flatPackages: Array<string>,
+): Promise<void> => {
+  await ensureInstalled(["flatpak"]);
+  await ensureSuccessful([
+    "flatpak",
+    "install",
+    "--or-update",
+    "--noninteractive",
+    ...((await isInsideDocker()) ? ["--no-deploy"] : []),
+    "flathub",
+    ...flatPackages,
+  ]);
 };
