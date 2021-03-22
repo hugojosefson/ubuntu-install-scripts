@@ -7,7 +7,7 @@ interface PkgInstalled {
   isInstalled: boolean;
 }
 
-export default async (...packages: Array<string>): Promise<void> => {
+export default async (packages: Array<string>): Promise<void> => {
   const promises: Array<Promise<PkgInstalled>> = packages
     .map(
       async (pkg) => ({ pkg, isInstalled: await isInstalled(pkg) }),

@@ -1,3 +1,3 @@
 import ensureInstalled from "./lib/ensure-installed.ts";
 
-export default (): Promise<void> => ensureInstalled("yq");
+export default (): Promise<void> => ensureInstalled(["yq"]);

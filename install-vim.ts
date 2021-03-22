@@ -4,6 +4,6 @@ import { ensureAllOk } from "./lib/ensure-ok.ts";
 
 export default (): Promise<void> =>
   ensureAllOk([
-    ensureInstalled("vim"),
+    ensureInstalled(["vim"]),
     ensureLineInFile("EDITOR=vim")("/etc/environment"),
   ]);
