@@ -24,10 +24,10 @@ function ensureInstalled() {
 }
 
 function installAurPackage() {
-  ./install-rua
   if insideDocker; then
-    su - user rua install "${@}"
+    su - user bash -c "/app/install-rua && . /home/user/.cargo/env && rua install ${*}"
   else
+    ./install-rua
     rua install "${@}"
   fi
 }
@@ -112,7 +112,7 @@ if [[ $(id -u) -eq 0 ]]; then
   SUDO=""
   if insideDocker; then
     ensureInstalled sudo
-    echo "user    ALL=(ALL:ALL) ALL" > /etc/sudoers.d/user
+    echo "user    ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/user
     getent passwd user >/dev/null 2>&1 || useradd --user-group --create-home user
   fi
 else

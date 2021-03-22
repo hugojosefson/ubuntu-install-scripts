@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -o errexit -o nounset -o pipefail
-cd "$(dirname "${0}")"
-. ./common.bash
-
-ensureInstalled vim
-
-grep -x 'EDITOR=vim' /etc/environment || (echo -e '\nEDITOR=vim' | $SUDO tee -a /etc/environment)

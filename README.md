@@ -10,6 +10,5 @@ Happy (re-)installing!
 
 ## Easy download
 
-	wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/popos-20.04.tar.gz | tar xzv
-	cd ubuntu-install-scripts-popos-20.04
-
+    wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/popos-20.04.tar.gz | tar xzv
+    cd ubuntu-install-scripts-popos-20.04
