@@ -1,4 +1,4 @@
-import dropFile from "./lib/drop-file.ts";
+import { dropExecutable } from "./lib/drop-file.ts";
 import { ensureAllOk } from "./lib/ensure-ok.ts";
 import ensureLineInFile from "./lib/ensure-line-in-file.ts";
 
@@ -10,7 +10,7 @@ webstorm "\${arg}" &>/dev/null &
 export default (): Promise<void> => {
   return ensureAllOk([
     // ensureInstalledFlatpak(["com.jetbrains.WebStorm"]), // Not installing package locally. Using webstorm via isolate-in-docker.
-    dropFile(contents)("~/bin/ws", 0o775),
+    dropExecutable(contents)("~/bin/ws"),
     ensureLineInFile('export PATH="~/bin:$PATH"')("~/.bashrc"),
   ]);
 };

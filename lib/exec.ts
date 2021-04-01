@@ -11,6 +11,21 @@ export const ensureSuccessful = async (
   return wasSuccessful ? Promise.resolve() : Promise.reject(process);
 };
 
+export const ensureSuccessfulStdOut = async (
+  cmd: Array<string>,
+): Promise<string> => {
+  const process: Deno.Process = await Deno.run({
+    stdin: "null",
+    stdout: "piped",
+    // stderr: "piped", // verbose error output while developing
+    cmd,
+  });
+  const wasSuccessful = (await process.status()).success;
+  return wasSuccessful
+    ? Promise.resolve(new TextDecoder().decode(await process.output()))
+    : Promise.reject(process);
+};
+
 export const isSuccessful = async (cmd: Array<string>): Promise<boolean> =>
   ensureSuccessful(cmd).then(
     () => Promise.resolve(true),

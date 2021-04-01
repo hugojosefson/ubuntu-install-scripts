@@ -1,7 +1,5 @@
-import { ensureSuccessful } from "./exec.ts";
+import { ensureSuccessful, isSuccessful } from "./exec.ts";
 import { complement, prop } from "./fn.ts";
-import installPackages from "./install-packages.ts";
-import isInstalled from "./is-installed.ts";
 import isInsideDocker from "./is-inside-docker.ts";
 
 interface PkgInstalled {
@@ -9,7 +7,14 @@ interface PkgInstalled {
   isInstalled: boolean;
 }
 
-const ensureInstalled = async (packages: Array<string>): Promise<void> => {
+type InstallQueue = Record<string, Array<Promise<void>>>;
+
+const packageQueue: InstallQueue = {};
+const flatpakQueue: InstallQueue = {};
+
+export const ensureInstalled = async (
+  packages: Array<string>,
+): Promise<void> => {
   const promises: Array<Promise<PkgInstalled>> = packages
     .map(
       async (pkg) => ({ pkg, isInstalled: await isInstalled(pkg) }),
@@ -25,7 +30,6 @@ const ensureInstalled = async (packages: Array<string>): Promise<void> => {
 
   return installPackages(packagesToInstall);
 };
-export default ensureInstalled;
 
 export const ensureInstalledFlatpak = async (
   flatPackages: Array<string>,
@@ -41,3 +45,18 @@ export const ensureInstalledFlatpak = async (
     ...flatPackages,
   ]);
 };
+
+const isInstalled = async (packageName: string): Promise<boolean> =>
+  isSuccessful(["pacman", "-Qi", packageName]);
+
+const installPackages = (packages: Array<string> = []): Promise<void> =>
+  !!packages.length
+    ? ensureSuccessful([
+      "sudo",
+      "pacman",
+      "-Sy",
+      "--noconfirm",
+      "--needed",
+      ...packages,
+    ])
+    : Promise.resolve();

@@ -1,4 +1,4 @@
-import ensureInstalled from "./lib/ensure-installed.ts";
+import { ensureInstalled } from "./lib/installer.ts";
 import ensureLineInFile from "./lib/ensure-line-in-file.ts";
 import { ensureAllOk } from "./lib/ensure-ok.ts";
 

@@ -1,4 +1,4 @@
-import ensureInstalled from "./lib/ensure-installed.ts";
+import { ensureInstalled } from "./lib/installer.ts";
 
 ensureInstalled([
   "yubikey-personalization-gui",
