@@ -17,28 +17,32 @@ export class OsPackage extends AbstractCommand {
   }
 }
 
-export class DropFile extends AbstractCommand {
-  readonly type: "DropFile";
+export abstract class AbstractFileCommand extends AbstractCommand {
   readonly path: string;
-  readonly contents: string;
   readonly mode?: number;
-
-  constructor(path: string, contents: string, mode?: number) {
+  protected constructor(path: string, mode?: number) {
     super();
     this.path = path;
-    this.contents = contents;
     this.mode = mode;
   }
 }
 
-export class LineInFile extends AbstractCommand {
+export class DropFile extends AbstractFileCommand {
+  readonly type: "DropFile";
+  readonly contents: string;
+
+  constructor(path: string, contents: string, mode?: number) {
+    super(path, mode);
+    this.contents = contents;
+  }
+}
+
+export class LineInFile extends AbstractFileCommand {
   readonly type: "LineInFile";
-  readonly path: string;
   readonly line: string;
 
   constructor(path: string, line: string) {
-    super();
-    this.path = path;
+    super(path);
     this.line = line;
   }
 }
