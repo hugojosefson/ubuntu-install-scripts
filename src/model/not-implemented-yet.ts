@@ -1,3 +1,6 @@
-export const notImplementedYet = (method: string) =>
-  () =>
-    Promise.reject(new Error(`${this.type}.${method} not implemented yet.`));
+import { Command } from "./command.ts";
+
+export const notImplementedYet = function (context: Command, method: string) {
+  return () =>
+    Promise.reject(new Error(`${context.type}.${method} not implemented yet.`));
+};

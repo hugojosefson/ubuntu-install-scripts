@@ -10,7 +10,7 @@ import { createProgressStream, Progress } from "./progress.ts";
  * A command in the queue, Promise:ing run and finish.
  */
 export class Enqueued<T extends Command> extends Promise<CommandResult> {
-  readonly type: "Enqueued";
+  readonly type: "Enqueued" = "Enqueued";
   readonly command: T;
   readonly progress: ReadableStream<Progress>;
   readonly outgoingProgresses: Array<Progress>;
@@ -33,19 +33,19 @@ export class Enqueued<T extends Command> extends Promise<CommandResult> {
 
 export class Queue {
   private readonly queue: Array<Enqueued<Command>> = [];
-  readonly enqueued: ReadableStream<Enqueued<Command>>;
-  readonly wholeQueue: ReadableStream<Array<Enqueued<Command>>>;
+  // readonly enqueued: ReadableStream<Enqueued<Command>>;
+  // readonly wholeQueue: ReadableStream<Array<Enqueued<Command>>>;
 
   /**
    * Will run the command immediately.
    * @param command
    */
-  enqueue<T>(command: T): Enqueued<T> {
+  enqueue<C extends Command>(command: C): Enqueued<C> {
     const enqueued = new Enqueued(
       command,
-      command.run(this, (progress: Progress) => {
-        enqueued.outgoingProgresses.push(progress);
-      }),
+      command.run((progress: Progress) => {
+        setTimeout(() => enqueued.outgoingProgresses.push(progress), 0);
+      }, this),
     );
     this.queue.push(enqueued);
     return enqueued;

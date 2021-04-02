@@ -18,42 +18,41 @@ export abstract class AbstractStringWritten<T extends Device>
   abstract readonly type: ProgressType;
   abstract readonly device: T;
   readonly string: string;
+
+  constructor(string: string) {
+    this.string = string;
+  }
 }
 
 export class StdoutWritten extends AbstractStringWritten<"stdout"> {
   readonly type = "StdoutWritten";
-  readonly device: "stdout";
-  constructor(string: string) {
-    super();
-    this.string = string;
-  }
+  readonly device: "stdout" = "stdout";
 }
 
 export class StderrWritten extends AbstractStringWritten<"stderr"> {
   readonly type = "StderrWritten";
-  readonly device: "stderr";
-  constructor(string: string) {
-    super();
-    this.string = string;
-  }
+  readonly device: "stderr" = "stderr";
 }
 
-export class ChildEnqueued<T extends Command> implements Progress {
-  readonly type: "ChildEnqueued";
-  readonly enqueued: Enqueued<T>;
+export class ChildEnqueued<C extends Command> implements Progress {
+  readonly type: "ChildEnqueued" = "ChildEnqueued";
+  readonly enqueued: Enqueued<C>;
 
-  constructor(enqueued: Enqueued<T>) {
+  constructor(enqueued: Enqueued<C>) {
     this.enqueued = enqueued;
   }
 }
 
 export class CommandStarted<T extends Command> implements Progress {
-  readonly type: "CommandStarted";
+  readonly type: "CommandStarted" = "CommandStarted";
   readonly command: T;
   constructor(command: T) {
     this.command = command;
   }
 }
+
+const isUndefined = <T>(t: T | undefined): t is undefined =>
+  typeof t === "undefined";
 
 export const createProgressStream: () => {
   progress: ReadableStream<Progress>;
@@ -63,9 +62,11 @@ export const createProgressStream: () => {
   const pull: ReadableStreamDefaultControllerCallback<Progress> = (
     controller: ReadableStreamDefaultController<Progress>,
   ) => {
-    if (outgoingProgresses.length) {
-      controller.enqueue(outgoingProgresses.shift());
+    const chunk: Progress | undefined = outgoingProgresses.shift();
+    if (isUndefined(chunk)) {
+      return;
     }
+    controller.enqueue(chunk);
   };
   const underlyingSource: UnderlyingSource<Progress> = { pull };
   const progress: ReadableStream<Progress> = new ReadableStream<Progress>(

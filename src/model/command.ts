@@ -1,6 +1,6 @@
 import dropFile from "../../lib/drop-file.ts";
 import ensureLineInFile from "../../lib/ensure-line-in-file.ts";
-import { installAptPackage } from "../../lib/install-apt-packages";
+import { installAptPackage } from "../../lib/install-apt-packages.ts";
 import { notImplementedYet } from "./not-implemented-yet.ts";
 import { CommandStarted, Progress } from "./progress.ts";
 import { Enqueued, Queue } from "./queue.ts";
@@ -73,9 +73,9 @@ export class ParallelCommand implements Command {
 }
 
 export class OsPackage implements Command {
-  readonly type: "OsPackage";
+  readonly type: "OsPackage" = "OsPackage";
   readonly packageName: string;
-  readonly cancel = notImplementedYet("cancel");
+  readonly cancel = notImplementedYet(this, "cancel");
 
   constructor(packageName: string) {
     this.packageName = packageName;
@@ -107,7 +107,7 @@ export abstract class AbstractFileCommand implements Command {
 
   readonly path: string;
   readonly mode?: number;
-  readonly cancel = notImplementedYet("cancel");
+  readonly cancel = notImplementedYet(this, "cancel");
 
   protected constructor(path: string, mode?: number) {
     this.path = path;
@@ -129,7 +129,7 @@ export abstract class AbstractFileCommand implements Command {
 }
 
 export class DropFile extends AbstractFileCommand {
-  readonly type: "DropFile";
+  readonly type: "DropFile" = "DropFile";
   readonly contents: string;
 
   constructor(path: string, contents: string, mode?: number) {
@@ -160,7 +160,7 @@ export class DropExecutable extends DropFile {
   }
 }
 export class LineInFile extends AbstractFileCommand {
-  readonly type: "LineInFile";
+  readonly type: "LineInFile" = "LineInFile";
   readonly line: string;
 
   constructor(path: string, line: string) {
