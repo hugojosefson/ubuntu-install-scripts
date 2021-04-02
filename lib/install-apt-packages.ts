@@ -43,7 +43,7 @@ const installPending = debounce(
 export default (...packageNames: Array<string>) =>
   Promise.all(packageNames.map(installAptPackage));
 
-const installAptPackage = (name: string): Promise<void> => {
+export const installAptPackage = (name: string): Promise<void> => {
   if (installed[name]) {
     return installed[name].promise;
   } else {
