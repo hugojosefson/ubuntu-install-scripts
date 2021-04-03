@@ -5,7 +5,7 @@ import { Command } from "./model/command.ts";
 import { Queue } from "./model/queue.ts";
 
 const availableCommands: { awscli: Command; gitk: Command; brave: Command } =
-  await import("./model/commands.ts");
+  await import("./commands/index.ts");
 type CommandString = "awscli" | "gitk" | "brave";
 
 const run = (commandStrings: Array<string>): Promise<any> => {

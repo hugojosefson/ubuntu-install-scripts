@@ -1,9 +1,4 @@
-import {
-  Command,
-  CommandResult,
-  CommandResultPromiseExecutor,
-} from "./command.ts";
-
+import { Command, CommandResult } from "./command.ts";
 import { createProgressStream, Progress } from "./progress.ts";
 
 /**

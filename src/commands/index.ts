@@ -1,10 +1,12 @@
 import {
   Command,
-  DropExecutable,
-  LineInFile,
-  OsPackage,
-  ParallelCommand,
-} from "./command.ts";
+
+
+
+} from "../model/command.ts";
+import {DropExecutable, LineInFile} from "./common/file-commands.ts";
+import { OsPackage } from "./common/os-package.ts";
+import {ParallelCommand} from "./common/parallel-command.ts";
 
 export const awscli: Command = new OsPackage("aws-cli");
 export const brave: Command = new OsPackage("brave");
