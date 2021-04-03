@@ -28,7 +28,7 @@ export interface Command {
   readonly run: (
     emitProgress: (progress: Progress) => void,
     queue: Queue,
-  ) => CommandResultPromiseExecutor;
+  ) => Promise<CommandResult>;
   readonly cancel: () => Promise<void>;
   readonly toString: () => string;
 }
@@ -47,27 +47,25 @@ export class ParallelCommand implements Command {
     await Promise.all(cancellations);
   }
 
-  run(
+  async run(
     emitProgress: (progress: Progress) => void,
     queue: Queue,
-  ): CommandResultPromiseExecutor {
-    const commandsEnqueued: Promise<void>[] = this.commands.map(
+  ): Promise<CommandResult> {
+    const commandsEnqueued: Array<Promise<CommandResult>> = this.commands.map(
       async (command) => {
         const commandEnqueued: Enqueued<Command> = queue.enqueue(command);
         emitProgress(new CommandStarted(command));
-        await commandEnqueued;
+        return commandEnqueued.promise;
       },
     );
-    return (resolve, reject) => {
-      emitProgress(new CommandStarted(this));
-      Promise.all(commandsEnqueued).then(() => {
-        resolve({
-          stdout: "",
-          stderr: "",
-          all: "",
-          status: { success: true, code: 0 },
-        });
-      }, reject);
+
+    emitProgress(new CommandStarted(this));
+    const results = await Promise.all(commandsEnqueued);
+    return {
+      stdout: results.map((result) => result.stdout).join("\n"),
+      stderr: results.map((result) => result.stderr).join("\n"),
+      all: results.map((result) => result.all).join("\n"),
+      status: { success: true, code: 0 },
     };
   }
 }
@@ -85,19 +83,16 @@ export class OsPackage implements Command {
     return JSON.stringify({ type: this.type, packageName: this.packageName });
   }
 
-  run(
+  async run(
     emitProgress: (progress: Progress) => void,
-  ): CommandResultPromiseExecutor {
-    return (resolve, reject) => {
-      emitProgress(new CommandStarted(this));
-      installAptPackage(this.packageName).then(() => {
-        resolve({
-          stdout: "",
-          stderr: "",
-          all: "",
-          status: { success: true, code: 0 },
-        });
-      }, reject);
+  ): Promise<CommandResult> {
+    emitProgress(new CommandStarted(this));
+    const result: void = await installAptPackage(this.packageName);
+    return {
+      stdout: `Installed package ${this.packageName}.`,
+      stderr: "",
+      all: "",
+      status: { success: true, code: 0 },
     };
   }
 }
@@ -125,7 +120,7 @@ export abstract class AbstractFileCommand implements Command {
   abstract run(
     emitProgress: (progress: Progress) => void,
     queue: Queue,
-  ): CommandResultPromiseExecutor;
+  ): Promise<CommandResult>;
 }
 
 export class DropFile extends AbstractFileCommand {
@@ -137,19 +132,16 @@ export class DropFile extends AbstractFileCommand {
     this.contents = contents;
   }
 
-  run(
+  async run(
     emitProgress: (progress: Progress) => void,
-  ): CommandResultPromiseExecutor {
-    return (resolve, reject) => {
-      emitProgress(new CommandStarted(this));
-      dropFile(this.mode)(this.contents)(this.path).then(() => {
-        resolve({
-          stdout: "",
-          stderr: "",
-          all: "",
-          status: { success: true, code: 0 },
-        });
-      }, reject);
+  ): Promise<CommandResult> {
+    emitProgress(new CommandStarted(this));
+    const result: void = await dropFile(this.mode)(this.contents)(this.path);
+    return {
+      stdout: `Dropped file ${this.toString()}.`,
+      stderr: "",
+      all: "",
+      status: { success: true, code: 0 },
     };
   }
 }
@@ -167,19 +159,16 @@ export class LineInFile extends AbstractFileCommand {
     super(path);
     this.line = line;
   }
-  run(
+  async run(
     emitProgress: (progress: Progress) => void,
-  ): CommandResultPromiseExecutor {
-    return (resolve, reject) => {
-      emitProgress(new CommandStarted(this));
-      ensureLineInFile(this.line)(this.path).then(() => {
-        resolve({
-          stdout: "",
-          stderr: "",
-          all: "",
-          status: { success: true, code: 0 },
-        });
-      }, reject);
+  ): Promise<CommandResult> {
+    emitProgress(new CommandStarted(this));
+    const result = ensureLineInFile(this.line)(this.path);
+    return {
+      stdout: `Line ensured in file ${this.toString()}.`,
+      stderr: "",
+      all: "",
+      status: { success: true, code: 0 },
     };
   }
 }

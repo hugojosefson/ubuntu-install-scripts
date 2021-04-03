@@ -1,5 +1,4 @@
 import { ensureSuccessful, isSuccessful } from "./exec.ts";
-import { complement, prop } from "./fn.ts";
 import isInsideDocker from "./is-inside-docker.ts";
 
 interface PkgInstalled {
@@ -22,11 +21,9 @@ export const ensureInstalled = async (
 
   const pkgInstalleds: Array<PkgInstalled> = await Promise.all(promises);
 
-  console.dir({ pkgInstalleds });
   const packagesToInstall: Array<string> = pkgInstalleds
-    .filter(complement(prop("isInstalled")))
-    .map(prop("pkg"));
-  console.dir({ packagesToInstall });
+    .filter((pkgInstalled) => !pkgInstalled.isInstalled)
+    .map((pkgInstalled) => pkgInstalled.pkg);
 
   return installPackages(packagesToInstall);
 };

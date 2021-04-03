@@ -1,8 +1,5 @@
-export const prop = <K extends string | number | symbol, V>(p: K) =>
-  (a: Record<K, V>): V => a[p];
-
-export const complement = (fn: (...args: Array<any>) => boolean) =>
-  (...args: Array<any>) => !fn(...args);
+export const complement = <T>(fn: (t: T) => boolean): (t: T) => boolean =>
+  (t: T) => !fn(t);
 
 export const toObject = <K extends string | number | symbol, V>() =>
   (
