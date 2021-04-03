@@ -9,25 +9,23 @@ const installed: Record<string, Deferred<void>> = {};
 let currentBatch: Promise<void> | undefined;
 const installPending = debounce(
   () => {
-    if (currentBatch) {
-      currentBatch.then(installPending);
-    } else {
-      if (waiting.length) {
-        currentBatch = new Promise((resolve, reject) => {
-          const aptPromise = ensureInstalled(waiting);
-          waiting.forEach((name) =>
-            aptPromise.then(installed[name].resolve, installed[name].reject)
-          );
-          aptPromise.then(resolve, reject);
-          waiting = [];
-        });
-
-        currentBatch.then(() => {
-          currentBatch = undefined;
-          installPending();
-        });
-      }
+    if (!waiting.length) {
+      return;
     }
+
+    currentBatch = new Promise((resolve, reject) => {
+      const aptPromise = ensureInstalled(waiting);
+      waiting.forEach((name) =>
+        aptPromise.then(installed[name].resolve, installed[name].reject)
+      );
+      aptPromise.then(resolve, reject);
+      waiting = [];
+    });
+
+    currentBatch.then(() => {
+      currentBatch = undefined;
+      installPending();
+    });
   },
   0,
   {},

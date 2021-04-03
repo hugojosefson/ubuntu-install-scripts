@@ -2,13 +2,12 @@ import { Command } from "../model/command.ts";
 import { OsPackage } from "./common/os-package.ts";
 import { gitk } from "./gitk.ts";
 
-export type CommandName =
-  | "gitk"
-  | "awscli"
-  | "brave";
-
-export const availableCommands: Record<CommandName, Command> = {
+const commands: Record<string, Command> = {
   gitk,
   awscli: new OsPackage("aws-cli"),
-  brave: new OsPackage("brave"),
 };
+
+export const getCommand = (name: string): Command =>
+  commands[name] || new OsPackage(name);
+
+export const availableCommands: Array<string> = Object.keys(commands);
