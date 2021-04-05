@@ -1,10 +1,12 @@
 import { Command } from "../model/command.ts";
 import { OsPackage } from "./common/os-package.ts";
+import { saveBashHistory } from "./save-bash-history.ts";
 import { vim } from "./vim.ts";
 import { gitk } from "./gitk.ts";
 
 const commands: Record<string, Command> = {
   gitk,
+  saveBashHistory,
   vim,
   awscli: new OsPackage("aws-cli"),
   libreoffice: OsPackage.multi([
