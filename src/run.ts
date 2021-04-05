@@ -3,9 +3,10 @@
 
 import { error, success, warning } from "https://deno.land/x/colorlog/mod.ts";
 
-import { availableCommands, getCommand } from "./commands/index.ts";
+import { getCommand } from "./commands/index.ts";
 import { Command, CommandResult } from "./model/command.ts";
 import { Enqueued, Queue } from "./model/queue.ts";
+import { usageAndExit } from "./usage.ts";
 
 const run = async (
   commandStrings: Array<string>,
@@ -24,25 +25,6 @@ const run = async (
   return commandResults;
 };
 export default run;
-
-const usageAndExit = (code: number = 1, message?: string): never => {
-  if (message) {
-    console.error(error(message));
-  }
-  console.error(`
-Usage:   ./run.ts <command...>
-
-         Available commands:
-${
-    availableCommands.map((name) => `            ${name}`)
-      .join("\n")
-  }
-
-         ...or any valid OS-level package.
-  `);
-  Deno.exit(code);
-  throw new Error(); // not really, because we already exited, but just to appease the compiler about "never" returning.
-};
 
 if (import.meta.main) {
   if (!Deno.args.length) {
