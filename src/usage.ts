@@ -6,7 +6,7 @@ export const usageAndExit = (code: number = 1, message?: string): never => {
     console.error(error(message));
   }
   console.error(`
-Usage:   ./run.ts <command...>
+Usage:   ./cli.ts <command...>
 
          Available commands:
 ${
