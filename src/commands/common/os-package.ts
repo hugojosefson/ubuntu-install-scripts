@@ -2,6 +2,7 @@ import { installAptPackage } from "../../../lib/install-apt-packages.ts";
 import { Command, CommandResult } from "../../model/command.ts";
 import { notImplementedYet } from "../../model/not-implemented-yet.ts";
 import { CommandStarted, Progress } from "../../model/progress.ts";
+import { ParallelCommand } from "./parallel-command.ts";
 
 export class OsPackage implements Command {
   readonly type: "OsPackage" = "OsPackage";
@@ -10,6 +11,12 @@ export class OsPackage implements Command {
 
   constructor(packageName: string) {
     this.packageName = packageName;
+  }
+
+  static multi(packageNames: Array<string>): Command {
+    return new ParallelCommand(
+      packageNames.map((packageName) => new OsPackage(packageName)),
+    );
   }
 
   toString() {

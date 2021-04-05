@@ -3,7 +3,7 @@ import { DropExecutable, LineInFile } from "./common/file-commands.ts";
 import { OsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
 
-export const gitk: Command = new ParallelCommand(
+export const gitk: Command = new ParallelCommand([
   new OsPackage("git"),
   new DropExecutable(
     "~/bin/gk",
@@ -13,4 +13,4 @@ gitk "\${arg}" &>/dev/null &
 `,
   ),
   new LineInFile("~/.bashrc", 'export PATH="~/bin:$PATH"'),
-);
+]);

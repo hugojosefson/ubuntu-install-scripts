@@ -5,6 +5,11 @@ import { gitk } from "./gitk.ts";
 const commands: Record<string, Command> = {
   gitk,
   awscli: new OsPackage("aws-cli"),
+  libreoffice: OsPackage.multi([
+    "libreoffice-fresh",
+    "libreoffice-fresh-en-gb",
+    "libreoffice-fresh-sv",
+  ]),
 };
 
 export const getCommand = (name: string): Command =>

@@ -6,7 +6,7 @@ export class ParallelCommand implements Command {
   readonly type: CommandType = "ParallelCommand";
   readonly commands: Array<Command>;
 
-  constructor(...commands: Array<Command>) {
+  constructor(commands: Array<Command>) {
     this.commands = commands;
   }
 
