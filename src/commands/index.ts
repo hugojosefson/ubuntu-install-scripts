@@ -23,6 +23,10 @@ const commands: Record<string, Command> = {
     "/tmp",
     `${HOME}/Downloads`,
   ),
+  desktopIsHome: new SymlinkElsewhere(
+    ".",
+    `${HOME}/Desktop`,
+  ),
 };
 
 export const getCommand = (name: string): Command =>
