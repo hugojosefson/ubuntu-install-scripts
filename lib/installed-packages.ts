@@ -7,13 +7,13 @@ import { toObject } from "./fn.ts";
  */
 export default ensureSuccessfulStdOut(["pacman", "-Qqe"]).then((
   stdout: string,
-): Record<string, boolean> =>
+): Record<string, true> =>
   stdout
     .trim()
     .split("\n")
-    .map((pkg: string): [string, boolean] => [pkg, true])
+    .map((pkg: string): [string, true] => [pkg, true])
     .reduce(
-      toObject<string, boolean>(),
+      toObject<string, true>(),
       {},
     )
 );
