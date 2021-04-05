@@ -1,9 +1,12 @@
 import { Command } from "../model/command.ts";
+import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { OsPackage } from "./common/os-package.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { UpdateOsPackages } from "./update-os-packages.ts";
 import { vim } from "./vim.ts";
 import { gitk } from "./gitk.ts";
+
+const HOME: string = Deno.env.get("HOME")!!;
 
 const commands: Record<string, Command> = {
   updateOsPackages: new UpdateOsPackages(),
@@ -16,6 +19,10 @@ const commands: Record<string, Command> = {
     "libreoffice-fresh-en-gb",
     "libreoffice-fresh-sv",
   ]),
+  downloadsIsTmp: new SymlinkElsewhere(
+    "/tmp",
+    `${HOME}/Downloads`,
+  ),
 };
 
 export const getCommand = (name: string): Command =>
