@@ -82,3 +82,71 @@ export class LineInFile extends AbstractFileCommand {
     };
   }
 }
+
+async function isDirectoryEmpty(directory: string) {
+  return (await (Deno.readDirSync(directory))
+    [Symbol.iterator]()
+    .next()).done;
+}
+
+export class SymlinkElsewhere extends AbstractFileCommand {
+  readonly type: "SymlinkElsewhere" = "SymlinkElsewhere";
+  readonly target: string;
+
+  constructor(target: string, directory: string) {
+    super(directory);
+    this.target = target;
+  }
+
+  private result(partialCommandResult: Partial<CommandResult>): CommandResult {
+    return {
+      stdout: "",
+      stderr: "",
+      all: "",
+      status: { success: true, code: 0 },
+      ...partialCommandResult,
+    };
+  }
+
+  async run(
+    emitProgress: (progress: Progress) => void,
+  ): Promise<CommandResult> {
+    emitProgress(new CommandStarted(this));
+    const ifExists = async (pathStat: Deno.FileInfo) => {
+      if (
+        pathStat.isSymlink && await Deno.readLink(this.path) === this.target
+      ) {
+        return this.result({
+          stdout: `"${this.path}" is already a symlink to "${this.target}".`,
+        });
+      }
+
+      if (pathStat.isDirectory && await isDirectoryEmpty(this.path)) {
+        await Deno.remove(this.path);
+        await Deno.symlink(this.target, this.path);
+        return this.result({
+          stdout:
+            `Replaced empty directory "${this.path}" with a symlink to "${this.target}".`,
+        });
+      }
+
+      const newpath = `${this.path}-${Math.ceil(Math.random() * 10e5)}`;
+      await Deno.rename(this.path, newpath);
+
+      await Deno.symlink(this.target, this.path);
+      return this.result({
+        stdout:
+          `Renamed existing "${this.path}" to "${newpath}", then replaced it with a symlink to "${this.target}".`,
+      });
+    };
+
+    const ifNotExists = async () => {
+      await Deno.symlink(this.target, this.path);
+      return this.result({
+        stdout: `Created "${this.path}" as a symlink to "${this.target}".`,
+      });
+    };
+
+    return await Deno.lstat(this.path).then(ifExists, ifNotExists);
+  }
+}

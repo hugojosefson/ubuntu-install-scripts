@@ -11,6 +11,7 @@ export interface CommandResult {
 export type CommandType =
   | "OsPackage"
   | "UpdateOsPackages"
+  | "SymlinkElsewhere"
   | "DropFile"
   | "LineInFile"
   | "ParallelCommand";
