@@ -1,4 +1,4 @@
-import { exists } from "https://deno.land/std@0.91.0/fs/mod.ts";
+import { exists } from "../src/deps.ts";
 import { isSuccessful } from "./exec.ts";
 
 export default async (): Promise<boolean> =>

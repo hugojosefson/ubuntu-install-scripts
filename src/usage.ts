@@ -1,9 +1,9 @@
-import { error } from "https://deno.land/x/colorlog/mod.ts";
+import { colorlog } from "./deps.ts";
 import { availableCommands } from "./commands/index.ts";
 
 export const usageAndExit = (code: number = 1, message?: string): never => {
   if (message) {
-    console.error(error(message));
+    console.error(colorlog.error(message));
   }
   console.error(`
 Usage:   ./cli.ts <command...>

@@ -1,4 +1,4 @@
-import debounce from "https://cdn.skypack.dev/lodash.debounce@v4.0.8";
+import { debounce } from "../src/deps.ts";
 import defer, { Deferred } from "./defer.ts";
 import installedPackages from "./installed-packages.ts";
 import { ensureInstalled } from "./installer.ts";

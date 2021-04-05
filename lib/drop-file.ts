@@ -1,4 +1,4 @@
-import { dirname } from "https://deno.land/std@0.91.0/path/mod.ts";
+import { dirname } from "../src/deps.ts";
 import resolvePath from "./resolve-path.ts";
 
 const dropFile = (mode?: number) =>
