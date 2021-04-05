@@ -2,4 +2,4 @@
 
 set -e
 
-exec docker run --rm -it -v "$(pwd)":"$(pwd)":ro -w "$(pwd)" manjarolinux/base
+exec docker run --net=host --rm -it -v "$(pwd)":"$(pwd)":ro -w "$(pwd)" manjarolinux/base
