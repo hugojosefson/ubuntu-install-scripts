@@ -1,7 +1,7 @@
 import { installAptPackage } from "../../../lib/install-apt-packages.ts";
 import { Command, CommandResult } from "../../model/command.ts";
 import { notImplementedYet } from "../../model/not-implemented-yet.ts";
-import { CommandStarted, Progress } from "../../model/progress.ts";
+import { Progress, Started } from "../../model/progress.ts";
 import { ParallelCommand } from "./parallel-command.ts";
 
 export class OsPackage implements Command {
@@ -26,7 +26,7 @@ export class OsPackage implements Command {
   async run(
     emitProgress: (progress: Progress) => void,
   ): Promise<CommandResult> {
-    emitProgress(new CommandStarted(this));
+    emitProgress(new Started(this));
     const result: void = await installAptPackage(this.packageName);
     return {
       stdout: `Installed package ${this.packageName}.`,

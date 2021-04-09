@@ -2,7 +2,7 @@ import dropFile from "../../../lib/drop-file.ts";
 import ensureLineInFile from "../../../lib/ensure-line-in-file.ts";
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
 import { notImplementedYet } from "../../model/not-implemented-yet.ts";
-import { CommandStarted, Progress } from "../../model/progress.ts";
+import { Progress, Started } from "../../model/progress.ts";
 import { Queue } from "../../model/queue.ts";
 
 export abstract class AbstractFileCommand implements Command {
@@ -43,7 +43,7 @@ export class DropFile extends AbstractFileCommand {
   async run(
     emitProgress: (progress: Progress) => void,
   ): Promise<CommandResult> {
-    emitProgress(new CommandStarted(this));
+    emitProgress(new Started(this));
     const result: void = await dropFile(this.mode)(this.contents)(this.path);
     return {
       stdout: `Dropped file ${this.toString()}.`,
@@ -72,7 +72,7 @@ export class LineInFile extends AbstractFileCommand {
   async run(
     emitProgress: (progress: Progress) => void,
   ): Promise<CommandResult> {
-    emitProgress(new CommandStarted(this));
+    emitProgress(new Started(this));
     const result = ensureLineInFile(this.line)(this.path);
     return {
       stdout: `Line ensured in file ${this.toString()}.`,
@@ -111,7 +111,7 @@ export class SymlinkElsewhere extends AbstractFileCommand {
   async run(
     emitProgress: (progress: Progress) => void,
   ): Promise<CommandResult> {
-    emitProgress(new CommandStarted(this));
+    emitProgress(new Started(this));
     const ifExists = async (pathStat: Deno.FileInfo) => {
       if (
         pathStat.isSymlink && await Deno.readLink(this.path) === this.target

@@ -1,5 +1,5 @@
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
-import { CommandStarted, Progress } from "../../model/progress.ts";
+import { Progress, Started } from "../../model/progress.ts";
 import { Enqueued, Queue } from "../../model/queue.ts";
 
 export class ParallelCommand implements Command {
@@ -24,12 +24,12 @@ export class ParallelCommand implements Command {
     const commandsEnqueued: Array<Promise<CommandResult>> = this.commands.map(
       async (command) => {
         const commandEnqueued: Enqueued<Command> = queue.enqueue(command);
-        emitProgress(new CommandStarted(command));
+        emitProgress(new Started(command));
         return commandEnqueued.promise;
       },
     );
 
-    emitProgress(new CommandStarted(this));
+    emitProgress(new Started(this));
     const results = await Promise.all(commandsEnqueued);
     return {
       stdout: results.map((result) => result.stdout).join("\n"),

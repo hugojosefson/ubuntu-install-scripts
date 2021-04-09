@@ -1,7 +1,7 @@
 import { ensureSuccessful } from "../../lib/exec.ts";
 import { Command, CommandResult } from "../model/command.ts";
 import { notImplementedYet } from "../model/not-implemented-yet.ts";
-import { CommandStarted, Progress } from "../model/progress.ts";
+import { Started, Progress } from "../model/progress.ts";
 
 export class UpdateOsPackages implements Command {
   readonly type: "UpdateOsPackages" = "UpdateOsPackages";
@@ -14,7 +14,7 @@ export class UpdateOsPackages implements Command {
   async run(
     emitProgress: (progress: Progress) => void,
   ): Promise<CommandResult> {
-    emitProgress(new CommandStarted(this));
+    emitProgress(new Started(this));
     const result: void = await ensureSuccessful([
       "pacman",
       "-Syu",

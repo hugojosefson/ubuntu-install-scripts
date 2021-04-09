@@ -5,49 +5,63 @@ export type ProgressType =
   | "StdoutWritten"
   | "StderrWritten"
   | "ChildEnqueued"
-  | "CommandStarted";
+  | "Started";
 
 export interface Progress {
+  readonly command: Command;
   readonly type: ProgressType;
+}
+
+abstract class AbstractProgress implements Progress {
+  readonly command: Command;
+  readonly type: ProgressType;
+
+  protected constructor(command: Command, type: ProgressType) {
+    this.command = command;
+    this.type = type;
+  }
 }
 
 export type Device = "stdout" | "stderr";
 
 export abstract class AbstractStringWritten<T extends Device>
-  implements Progress {
-  abstract readonly type: ProgressType;
+  extends AbstractProgress {
   abstract readonly device: T;
   readonly string: string;
 
-  constructor(string: string) {
+  protected constructor(command: Command, type: ProgressType, string: string) {
+    super(command, type);
     this.string = string;
   }
 }
 
 export class StdoutWritten extends AbstractStringWritten<"stdout"> {
-  readonly type = "StdoutWritten";
   readonly device: "stdout" = "stdout";
+
+  constructor(command: Command, string: string) {
+    super(command, "StdoutWritten", string);
+  }
 }
 
 export class StderrWritten extends AbstractStringWritten<"stderr"> {
-  readonly type = "StderrWritten";
   readonly device: "stderr" = "stderr";
-}
 
-export class ChildEnqueued<C extends Command> implements Progress {
-  readonly type: "ChildEnqueued" = "ChildEnqueued";
+  constructor(command: Command, string: string) {
+    super(command, "StderrWritten", string);
+  }
+}
+export class ChildEnqueued<C extends Command> extends AbstractProgress {
   readonly enqueued: Enqueued<C>;
 
-  constructor(enqueued: Enqueued<C>) {
+  constructor(command: Command, enqueued: Enqueued<C>) {
+    super(command, "ChildEnqueued");
     this.enqueued = enqueued;
   }
 }
 
-export class CommandStarted<T extends Command> implements Progress {
-  readonly type: "CommandStarted" = "CommandStarted";
-  readonly command: T;
+export class Started<T extends Command> extends AbstractProgress {
   constructor(command: T) {
-    this.command = command;
+    super(command, "Started");
   }
 }
 
