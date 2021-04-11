@@ -43,7 +43,7 @@ export const ensureInstalledFlatpak = async (
   ]);
 };
 
-const isInstalled = async (packageName: string): Promise<boolean> =>
+const isInstalled = (packageName: string): Promise<boolean> =>
   isSuccessful(["pacman", "-Qi", packageName]);
 
 const installPackages = (packages: Array<string> = []): Promise<void> =>
