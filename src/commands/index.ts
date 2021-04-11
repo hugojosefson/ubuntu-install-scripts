@@ -1,3 +1,4 @@
+import { requireEnv } from "../../lib/fn.ts";
 import { Command } from "../model/command.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { OsPackage } from "./common/os-package.ts";
@@ -6,7 +7,7 @@ import { UpdateOsPackages } from "./update-os-packages.ts";
 import { vim } from "./vim.ts";
 import { gitk } from "./gitk.ts";
 
-const HOME: string = Deno.env.get("HOME")!!;
+const HOME: string = requireEnv("HOME");
 
 const commands: Record<string, Command> = {
   updateOsPackages: new UpdateOsPackages(),

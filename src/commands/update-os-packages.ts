@@ -1,7 +1,7 @@
 import { ensureSuccessful } from "../../lib/exec.ts";
 import { Command, CommandResult } from "../model/command.ts";
 import { notImplementedYet } from "../model/not-implemented-yet.ts";
-import { Started, Progress } from "../model/progress.ts";
+import { Progress, Started } from "../model/progress.ts";
 
 export class UpdateOsPackages implements Command {
   readonly type: "UpdateOsPackages" = "UpdateOsPackages";
