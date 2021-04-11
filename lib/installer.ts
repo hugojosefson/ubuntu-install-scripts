@@ -47,7 +47,7 @@ const isInstalled = async (packageName: string): Promise<boolean> =>
   isSuccessful(["pacman", "-Qi", packageName]);
 
 const installPackages = (packages: Array<string> = []): Promise<void> =>
-  !!packages.length
+  packages.length
     ? ensureSuccessful([
       "sudo",
       "pacman",
