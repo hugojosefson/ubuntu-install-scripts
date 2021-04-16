@@ -2,4 +2,4 @@
 
 set -e
 
-deno fmt client lib src
+deno fmt lib src
