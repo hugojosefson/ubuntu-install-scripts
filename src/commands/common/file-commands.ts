@@ -2,7 +2,6 @@ import dropFile from "../../../lib/drop-file.ts";
 import ensureLineInFile from "../../../lib/ensure-line-in-file.ts";
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
 import { notImplementedYet } from "../../model/not-implemented-yet.ts";
-import { Progress, Started } from "../../model/progress.ts";
 import { Queue } from "../../model/queue.ts";
 
 export abstract class AbstractFileCommand implements Command {
@@ -25,10 +24,7 @@ export abstract class AbstractFileCommand implements Command {
     });
   }
 
-  abstract run(
-    emitProgress: (progress: Progress) => void,
-    queue: Queue,
-  ): Promise<CommandResult>;
+  abstract run(queue: Queue): Promise<CommandResult>;
 }
 
 export class DropFile extends AbstractFileCommand {
@@ -40,10 +36,7 @@ export class DropFile extends AbstractFileCommand {
     this.contents = contents;
   }
 
-  async run(
-    emitProgress: (progress: Progress) => void,
-  ): Promise<CommandResult> {
-    emitProgress(new Started(this));
+  async run(): Promise<CommandResult> {
     const result: void = await dropFile(this.mode)(this.contents)(this.path);
     return {
       stdout: `Dropped file ${this.toString()}.`,
@@ -69,24 +62,19 @@ export class LineInFile extends AbstractFileCommand {
     this.line = line;
   }
 
-  async run(
-    emitProgress: (progress: Progress) => void,
-  ): Promise<CommandResult> {
-    emitProgress(new Started(this));
+  run(): Promise<CommandResult> {
     const result = ensureLineInFile(this.line)(this.path);
-    return {
+    return Promise.resolve({
       stdout: `Line ensured in file ${this.toString()}.`,
       stderr: "",
       all: "",
       status: { success: true, code: 0 },
-    };
+    });
   }
 }
 
 async function isDirectoryEmpty(directory: string) {
-  return (await (Deno.readDirSync(directory))
-    [Symbol.iterator]()
-    .next()).done;
+  return (await (Deno.readDirSync(directory))[Symbol.iterator]().next()).done;
 }
 
 export class SymlinkElsewhere extends AbstractFileCommand {
@@ -108,10 +96,7 @@ export class SymlinkElsewhere extends AbstractFileCommand {
     };
   }
 
-  async run(
-    emitProgress: (progress: Progress) => void,
-  ): Promise<CommandResult> {
-    emitProgress(new Started(this));
+  async run(): Promise<CommandResult> {
     const ifExists = async (pathStat: Deno.FileInfo) => {
       if (
         pathStat.isSymlink && await Deno.readLink(this.path) === this.target

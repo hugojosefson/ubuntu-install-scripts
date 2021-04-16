@@ -1,4 +1,3 @@
-import { Progress } from "./progress.ts";
 import { Queue } from "./queue.ts";
 
 export interface CommandResult {
@@ -18,10 +17,7 @@ export type CommandType =
 
 export interface Command {
   readonly type: CommandType;
-  readonly run: (
-    emitProgress: (progress: Progress) => void,
-    queue: Queue,
-  ) => Promise<CommandResult>;
+  readonly run: (queue: Queue) => Promise<CommandResult>;
   readonly cancel: () => Promise<void>;
   readonly toString: () => string;
 }
