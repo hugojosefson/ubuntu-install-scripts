@@ -1,7 +1,7 @@
-import { dropExecutable } from "./lib/drop-file.ts";
+import { dropExecutable } from "./lib/create-file.ts";
 import { ensureAllOk } from "./lib/ensure-ok.ts";
 import ensureLineInFile from "./lib/ensure-line-in-file.ts";
-import { ensureInstalledFlatpak } from "./lib/installer.ts";
+import { ensureInstalledFlatpak } from "./lib/install-flatpak-package.ts";
 
 const contents = `#!/usr/bin/env bash
 arg=\${1:-.}

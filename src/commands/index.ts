@@ -1,5 +1,5 @@
-import { requireEnv } from "../../lib/fn.ts";
 import { Command } from "../model/command.ts";
+import { requireEnv } from "../os/require-env.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { OsPackage } from "./common/os-package.ts";
 import { saveBashHistory } from "./save-bash-history.ts";

@@ -1,4 +1,4 @@
-import { installAptPackage } from "../../../lib/install-apt-packages.ts";
+import { ensureInstalledOsPackage } from "../../os/install-os-package.ts";
 import { Command, CommandResult } from "../../model/command.ts";
 import { notImplementedYet } from "../../model/not-implemented-yet.ts";
 import { ParallelCommand } from "./parallel-command.ts";
@@ -23,7 +23,9 @@ export class OsPackage implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await installAptPackage(this.packageName);
+    const result: void = await ensureInstalledOsPackage(
+      this.packageName,
+    );
     return {
       stdout: `Installed package ${this.packageName}.`,
       stderr: "",

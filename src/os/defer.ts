@@ -12,7 +12,7 @@ export interface Deferred<T> {
   reject: RejectFn;
 }
 
-export default <T>(): Deferred<T> => {
+export const defer = <T>(): Deferred<T> => {
   let resolve: ResolveFn<T>;
   let reject: RejectFn;
 
@@ -27,4 +27,10 @@ export default <T>(): Deferred<T> => {
   // and reject variables have been initialised by the time we get here.
   // @ts-ignore
   return { promise, resolve, reject };
+};
+
+export const resolvedVoidDefer = (): Deferred<void> => {
+  const deferred = defer<void>();
+  deferred.resolve();
+  return deferred;
 };

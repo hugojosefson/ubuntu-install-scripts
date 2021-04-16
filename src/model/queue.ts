@@ -30,7 +30,6 @@ export class Queue {
    */
   enqueue<C extends Command>(command: C): Enqueued<C> {
     const commandResultPromise = command.run(
-      () => {},
       this,
     );
     const enqueued: Enqueued<C> = new Enqueued<C>(

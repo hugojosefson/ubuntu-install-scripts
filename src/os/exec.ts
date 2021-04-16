@@ -3,8 +3,8 @@ export const ensureSuccessful = async (
 ): Promise<void> => {
   const process: Deno.Process = await Deno.run({
     stdin: "null",
-    // stdout: "piped", // verbose output while developing
-    // stderr: "piped", // verbose error output while developing
+    // stdout: "piped", // commented out = verbose output while developing
+    // stderr: "piped", // commented out = verbose error output while developing
     cmd,
   });
   const wasSuccessful = (await process.status()).success;
@@ -17,7 +17,7 @@ export const ensureSuccessfulStdOut = async (
   const process: Deno.Process = await Deno.run({
     stdin: "null",
     stdout: "piped",
-    // stderr: "piped", // verbose error output while developing
+    // stderr: "piped", // commented out = verbose error output while developing
     cmd,
   });
   const wasSuccessful = (await process.status()).success;

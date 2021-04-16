@@ -1,5 +1,6 @@
-import dropFile from "../../../lib/drop-file.ts";
-import ensureLineInFile from "../../../lib/ensure-line-in-file.ts";
+import { isSuccessful } from "../../os/exec.ts";
+import resolvePath from "../../os/resolve-path.ts";
+import { dirname } from "../../deps.ts";
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
 import { notImplementedYet } from "../../model/not-implemented-yet.ts";
 import { Queue } from "../../model/queue.ts";
@@ -27,8 +28,18 @@ export abstract class AbstractFileCommand implements Command {
   abstract run(queue: Queue): Promise<CommandResult>;
 }
 
-export class DropFile extends AbstractFileCommand {
-  readonly type: "DropFile" = "DropFile";
+const createFile = (mode?: number) =>
+  (contents: string) =>
+    async (path: string) => {
+      const resolvedPath: string = resolvePath(path);
+      const options: Deno.WriteFileOptions = mode ? { mode } : {};
+      const data: Uint8Array = new TextEncoder().encode(contents);
+      await Deno.mkdir(dirname(resolvedPath), { recursive: true });
+      await Deno.writeFile(resolvedPath, data, options);
+    };
+
+export class CreateFile extends AbstractFileCommand {
+  readonly type: "CreateFile" = "CreateFile";
   readonly contents: string;
 
   constructor(path: string, contents: string, mode?: number) {
@@ -37,9 +48,9 @@ export class DropFile extends AbstractFileCommand {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await dropFile(this.mode)(this.contents)(this.path);
+    const result: void = await createFile(this.mode)(this.contents)(this.path);
     return {
-      stdout: `Dropped file ${this.toString()}.`,
+      stdout: `Created file ${this.toString()}.`,
       stderr: "",
       all: "",
       status: { success: true, code: 0 },
@@ -47,11 +58,31 @@ export class DropFile extends AbstractFileCommand {
   }
 }
 
-export class DropExecutable extends DropFile {
+export class CreateExecutable extends CreateFile {
   constructor(path: string, contents: string) {
     super(path, contents, 0o775);
   }
 }
+
+export class DropExecutable extends CreateFile {
+  constructor(path: string, contents: string) {
+    super(path, contents, 0o775);
+  }
+}
+const ensureLineInFile = (line: string, endWithNewline = true) =>
+  async (file: string): Promise<void> => {
+    const resolvedPath = resolvePath(file);
+    if (await isSuccessful(["grep", line, resolvedPath])) {
+      return;
+    }
+    const prefix = "\n";
+    const suffix = endWithNewline ? "\n" : "";
+    const data = new TextEncoder().encode(prefix + line + suffix);
+    return Deno.writeFile(resolvedPath, data, {
+      append: true,
+      create: true,
+    });
+  };
 
 export class LineInFile extends AbstractFileCommand {
   readonly type: "LineInFile" = "LineInFile";

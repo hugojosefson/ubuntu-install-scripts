@@ -1,4 +1,4 @@
-import { ensureInstalled } from "./lib/installer.ts";
+import { ensureInstalled } from "./lib/install-flatpak-package.ts";
 
 ensureInstalled([
   "yubikey-personalization-gui",

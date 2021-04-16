@@ -1,4 +1,4 @@
-import { exists } from "../src/deps.ts";
+import { exists } from "../deps.ts";
 import { isSuccessful } from "./exec.ts";
 
 export default async (): Promise<boolean> =>

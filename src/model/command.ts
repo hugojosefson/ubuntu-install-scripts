@@ -11,7 +11,7 @@ export type CommandType =
   | "OsPackage"
   | "UpdateOsPackages"
   | "SymlinkElsewhere"
-  | "DropFile"
+  | "CreateFile"
   | "LineInFile"
   | "ParallelCommand";
 

@@ -4,8 +4,20 @@ export { dirname };
 import { exists } from "https://deno.land/std@0.93.0/fs/mod.ts";
 export { exists };
 
-import debounce from "https://cdn.skypack.dev/lodash.debounce@v4.0.8";
-export { debounce };
+import _debounce from "https://cdn.skypack.dev/lodash.debounce@v4.0.8";
+export const debounce = (
+  func: Function,
+  wait: number = 0,
+  options: { leading?: boolean; trailing?: boolean; maxWait?: number } = {
+    leading: false,
+    trailing: true,
+  },
+) =>
+  _debounce(func, wait, {
+    leading: false,
+    trailing: true,
+    ...options,
+  });
 
 import {
   error,
