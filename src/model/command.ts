@@ -14,7 +14,8 @@ export type CommandType =
   | "SymlinkElsewhere"
   | "CreateFile"
   | "LineInFile"
-  | "ParallelCommand";
+  | "ParallelCommand"
+  | "SequentialCommand";
 
 export interface Command {
   readonly type: CommandType;
