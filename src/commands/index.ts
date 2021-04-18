@@ -1,5 +1,6 @@
 import { Command } from "../model/command.ts";
 import { requireEnv } from "../os/require-env.ts";
+import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { OsPackage } from "./common/os-package.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
@@ -9,10 +10,19 @@ import { gitk } from "./gitk.ts";
 
 const HOME: string = requireEnv("HOME");
 
+const desktopIsHome = new SymlinkElsewhere(
+  ".",
+  `${HOME}/Desktop`,
+);
+const downloadsIsTmp = new SymlinkElsewhere(
+  "/tmp",
+  `${HOME}/Downloads`,
+);
 const commands: Record<string, Command> = {
   updateOsPackages: new UpdateOsPackages(),
   gitk,
   saveBashHistory,
+  addHomeBinToPath,
   vim,
   awscli: new OsPackage("aws-cli"),
   libreoffice: OsPackage.multi([
@@ -20,14 +30,8 @@ const commands: Record<string, Command> = {
     "libreoffice-fresh-en-gb",
     "libreoffice-fresh-sv",
   ]),
-  downloadsIsTmp: new SymlinkElsewhere(
-    "/tmp",
-    `${HOME}/Downloads`,
-  ),
-  desktopIsHome: new SymlinkElsewhere(
-    ".",
-    `${HOME}/Desktop`,
-  ),
+  downloadsIsTmp,
+  desktopIsHome,
 };
 
 export const getCommand = (name: string): Command =>

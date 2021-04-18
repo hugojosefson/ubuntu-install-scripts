@@ -1,5 +1,6 @@
 import { Command } from "../model/command.ts";
-import { DropExecutable, LineInFile } from "./common/file-commands.ts";
+import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
+import { DropExecutable } from "./common/file-commands.ts";
 import { OsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
 
@@ -12,5 +13,5 @@ arg=\${1:---all}
 gitk "\${arg}" &>/dev/null &
 `,
   ),
-  new LineInFile("~/.bashrc", 'export PATH="~/bin:$PATH"'),
+  addHomeBinToPath,
 ]);
