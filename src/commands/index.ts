@@ -2,9 +2,9 @@ import { Command } from "../model/command.ts";
 import { requireEnv } from "../os/require-env.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
-import { OsPackage } from "./common/os-package.ts";
+import { InstallOsPackage } from "./common/os-package.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
-import { UpdateOsPackages } from "./update-os-packages.ts";
+import { UpgradeOsPackages } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { gitk } from "./gitk.ts";
 
@@ -19,13 +19,13 @@ const downloadsIsTmp = new SymlinkElsewhere(
   `${HOME}/Downloads`,
 );
 const commands: Record<string, Command> = {
-  updateOsPackages: new UpdateOsPackages(),
+  upgradeOsPackages: new UpgradeOsPackages(),
   gitk,
   saveBashHistory,
   addHomeBinToPath,
   vim,
-  awscli: new OsPackage("aws-cli"),
-  libreoffice: OsPackage.multi([
+  awscli: new InstallOsPackage("aws-cli"),
+  libreoffice: InstallOsPackage.multi([
     "libreoffice-fresh",
     "libreoffice-fresh-en-gb",
     "libreoffice-fresh-sv",
@@ -35,6 +35,6 @@ const commands: Record<string, Command> = {
 };
 
 export const getCommand = (name: string): Command =>
-  commands[name] || new OsPackage(name);
+  commands[name] || new InstallOsPackage(name);
 
 export const availableCommands: Array<string> = Object.keys(commands);

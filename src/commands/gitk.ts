@@ -1,11 +1,11 @@
 import { Command } from "../model/command.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { DropExecutable } from "./common/file-commands.ts";
-import { OsPackage } from "./common/os-package.ts";
+import { InstallOsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
 
 export const gitk: Command = new ParallelCommand([
-  new OsPackage("git"),
+  new InstallOsPackage("git"),
   new DropExecutable(
     "~/bin/gk",
     `#!/usr/bin/env bash

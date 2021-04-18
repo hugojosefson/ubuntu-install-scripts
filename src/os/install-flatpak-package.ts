@@ -1,6 +1,6 @@
 import { ensureSuccessful } from "./exec.ts";
-import { ensureInstalledOsPackage } from "./install-os-package.ts";
 import isInsideDocker from "./is-inside-docker.ts";
+import { ensureInstalledOsPackage } from "./os-package-operations.ts";
 
 export type FlatpackageName = string;
 

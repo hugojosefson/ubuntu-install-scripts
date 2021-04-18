@@ -8,8 +8,9 @@ export interface CommandResult {
 }
 
 export type CommandType =
-  | "OsPackage"
-  | "UpdateOsPackages"
+  | "InstallOsPackage"
+  | "RemoveOsPackage"
+  | "UpgradeOsPackages"
   | "SymlinkElsewhere"
   | "CreateFile"
   | "LineInFile"
