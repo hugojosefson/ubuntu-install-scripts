@@ -1,29 +1,51 @@
 import { colorlog, PasswdEntry } from "../deps.ts";
+import { CommandResult } from "../model/command.ts";
 import { ROOT } from "./user/target-user.ts";
+
+export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env">;
 
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
   cmd: Array<string>,
-): Promise<void> => {
+  options: ExecOptions = {},
+): Promise<CommandResult> => {
   const effectiveCmd = [
     ...(asUser === ROOT
       ? []
       : ["sudo", `--user=${asUser.username}`, "--non-interactive", "--"]),
     ...cmd,
   ];
-  console.warn(colorlog.warning(JSON.stringify(effectiveCmd)));
-
-  const process: Deno.Process = await Deno.run({
+  console.error(
+    colorlog.warning(
+      JSON.stringify({ options, user: asUser.username, cmd, effectiveCmd }),
+    ),
+  );
+  const process: Deno.Process = Deno.run({
     stdin: "null",
-    // stdout: "piped", // commented out = verbose output while developing
-    // stderr: "piped", // commented out = verbose error output while developing
+    stdout: "piped",
+    stderr: "piped",
     cmd: effectiveCmd,
+    ...options,
   });
-  const wasSuccessful = (await process.status()).success;
-  return wasSuccessful ? Promise.resolve() : Promise.reject(process);
+  try {
+    const status: Deno.ProcessStatus = await process.status();
+    if (status.success) {
+      return {
+        status,
+        stdout: new TextDecoder().decode(await process.output()),
+        stderr: new TextDecoder().decode(await process.stderrOutput()),
+      };
+    }
+  } catch (e) {
+  }
+  return Promise.reject(process);
 };
 
-export const symlink = (owner: PasswdEntry, target: string, path: string) =>
+export const symlink = (
+  owner: PasswdEntry,
+  target: string,
+  path: string,
+): Promise<CommandResult> =>
   ensureSuccessful(owner, [
     "ln",
     "-s",
@@ -32,25 +54,18 @@ export const symlink = (owner: PasswdEntry, target: string, path: string) =>
   ]);
 
 export const ensureSuccessfulStdOut = async (
+  asUser: PasswdEntry,
   cmd: Array<string>,
-): Promise<string> => {
-  const process: Deno.Process = await Deno.run({
-    stdin: "null",
-    stdout: "piped",
-    // stderr: "piped", // commented out = verbose error output while developing
-    cmd,
-  });
-  const wasSuccessful = (await process.status()).success;
-  return wasSuccessful
-    ? Promise.resolve(new TextDecoder().decode(await process.output()))
-    : Promise.reject(process);
-};
+  options: ExecOptions = {},
+): Promise<string> =>
+  (await ensureSuccessful(asUser, cmd, options)).stdout.trim();
 
 export const isSuccessful = async (
   asUser: PasswdEntry,
   cmd: Array<string>,
+  options: ExecOptions = {},
 ): Promise<boolean> =>
-  ensureSuccessful(asUser, cmd).then(
+  ensureSuccessful(asUser, cmd, options).then(
     () => Promise.resolve(true),
     () => Promise.resolve(false),
   );

@@ -13,7 +13,6 @@ export class UpgradeOsPackages implements Command {
     return {
       stdout: `Updated OS packages.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     };
   }

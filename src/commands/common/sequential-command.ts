@@ -10,19 +10,16 @@ export class SequentialCommand implements Command {
   }
 
   async run(queue: Queue): Promise<CommandResult> {
-    const commandsEnqueued: Array<Promise<CommandResult>> = this.commands.map(
-      async (command) => {
-        const commandEnqueued: Enqueued<Command> = queue.enqueue(command);
-        const result = await commandEnqueued.promise;
-        return result;
-      },
-    );
+    const results: Array<CommandResult> = [];
+    for (const command of this.commands) {
+      const commandEnqueued: Enqueued<Command> = queue.enqueue(command);
+      const commandResult: CommandResult = await commandEnqueued.promise;
+      results.push(commandResult);
+    }
 
-    const results = await Promise.all(commandsEnqueued);
     return {
       stdout: results.map((result) => result.stdout).join("\n"),
       stderr: results.map((result) => result.stderr).join("\n"),
-      all: results.map((result) => result.all).join("\n"),
       status: { success: true, code: 0 },
     };
   }

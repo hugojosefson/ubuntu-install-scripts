@@ -1,10 +1,11 @@
 import { parsePasswd, PasswdEntry } from "../../deps.ts";
+import { defer, Deferred } from "../defer.ts";
 import { ensureSuccessfulStdOut } from "../exec.ts";
 
 const byUid = (a: PasswdEntry, b: PasswdEntry) => a?.uid - b?.uid;
 
 const getUsers = async () =>
-  parsePasswd(await ensureSuccessfulStdOut(["getent", "passwd"]))
+  parsePasswd(await ensureSuccessfulStdOut(ROOT, ["getent", "passwd"]))
     .sort(byUid);
 
 export const ENV_TARGET_USER = "TARGET_USER";
@@ -20,7 +21,14 @@ export const ROOT: PasswdEntry = {
   homedir: "/root",
 };
 
+let targetUserDeferred: undefined | Deferred<PasswdEntry>;
+
 export const getTargetUser = async (): Promise<PasswdEntry> => {
+  if (targetUserDeferred) {
+    return targetUserDeferred.promise;
+  }
+  targetUserDeferred = defer();
+
   const users: Array<PasswdEntry> = await getUsers();
   const requestedTargetUserName: string | undefined = Deno.env.get(
     ENV_TARGET_USER,
@@ -31,7 +39,8 @@ export const getTargetUser = async (): Promise<PasswdEntry> => {
     ) => username === requestedTargetUserName);
 
     if (requestedTargetUser) {
-      return requestedTargetUser;
+      targetUserDeferred.resolve(requestedTargetUser);
+      return targetUserDeferred.promise;
     }
     throw new Error(
       `ERROR: Could not find requested ${ENV_TARGET_USER} "${requestedTargetUserName}".`,
@@ -44,7 +53,8 @@ export const getTargetUser = async (): Promise<PasswdEntry> => {
     gid >= GID_MIN_INCLUSIVE && gid < GID_MAX_EXCLUSIVE
   );
   if (firstWithSensibleUidGid) {
-    return firstWithSensibleUidGid;
+    targetUserDeferred.resolve(firstWithSensibleUidGid);
+    return targetUserDeferred.promise;
   }
   throw new Error(
     `ERROR: No target user found. Create a user with ${UID_MIN_INCLUSIVE} >= uid > ${UID_MAX_EXCLUSIVE} && ${GID_MIN_INCLUSIVE} >= gid > ${GID_MAX_EXCLUSIVE}, or override with env variable ${ENV_TARGET_USER}.`,

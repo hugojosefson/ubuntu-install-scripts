@@ -7,6 +7,7 @@ import { InstallOsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { tmuxinatorByobuBash_aliases } from "./tmuxinator_byobu_bash_aliases.ts";
+import { tabbed } from "./tabbed.ts";
 import { UpgradeOsPackages } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { gitk } from "./gitk.ts";
@@ -50,6 +51,7 @@ const commands: Record<string, Command> = {
   downloadsIsTmp,
   addHomeBinToPath,
   tmuxinatorByobuBash_aliases,
+  tabbed: await tabbed(),
   awscli: new InstallOsPackage("aws-cli"),
   libreoffice: InstallOsPackage.multi([
     "libreoffice-fresh",

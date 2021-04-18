@@ -100,7 +100,6 @@ export class CreateFile extends AbstractFileCommand {
     return {
       stdout: `Created file ${this.toString()}.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     };
   }
@@ -141,7 +140,6 @@ export class LineInFile extends AbstractFileCommand {
     return Promise.resolve({
       stdout: `Line ensured in file ${this.toString()}.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     });
   }
@@ -164,7 +162,6 @@ export class SymlinkElsewhere extends AbstractFileCommand {
     return {
       stdout: "",
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
       ...partialCommandResult,
     };

@@ -148,7 +148,7 @@ class InstallOsPackageOperation
     if (await isInstalledOsPackages(this.packageNames)) {
       return;
     }
-    return await ensureSuccessful(ROOT, [
+    await ensureSuccessful(ROOT, [
       "pacman",
       "--sync",
       "--refresh",
@@ -187,8 +187,7 @@ class RemoveOsPackageOperation
     if (!await isInstalledOsPackages(this.packageNames)) {
       return;
     }
-
-    return await ensureSuccessful(ROOT, [
+    await ensureSuccessful(ROOT, [
       "pacman",
       "--remove",
       "--noconfirm",
@@ -215,7 +214,7 @@ class InstallAurPackageOperation
 
   async run(): Promise<void> {
     await installOsPackagesImmediately(["base-devel", "yay"]);
-    return await ensureSuccessful(await getTargetUser(), [
+    await ensureSuccessful(await getTargetUser(), [
       "yay",
       "--sync",
       "--refresh",
@@ -236,7 +235,7 @@ class RemoveAurPackageOperation
     if (!await isInstalledAurPackages(this.packageNames)) {
       return;
     }
-    return await ensureSuccessful(await getTargetUser(), [
+    await ensureSuccessful(await getTargetUser(), [
       "yay",
       "--remove",
       "--nosave",

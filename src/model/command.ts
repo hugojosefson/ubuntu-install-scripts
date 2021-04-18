@@ -4,7 +4,6 @@ export interface CommandResult {
   status: Deno.ProcessStatus;
   stdout: string;
   stderr: string;
-  all: string;
 }
 
 export type CommandType =
@@ -16,6 +15,7 @@ export type CommandType =
   | "SymlinkElsewhere"
   | "CreateFile"
   | "LineInFile"
+  | "Exec"
   | "ParallelCommand"
   | "SequentialCommand";
 

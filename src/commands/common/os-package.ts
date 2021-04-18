@@ -34,7 +34,6 @@ export class InstallOsPackage implements Command {
     return {
       stdout: `Installed package ${this.packageName}.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     };
   }
@@ -65,7 +64,6 @@ export class RemoveOsPackage implements Command {
     return {
       stdout: `Removed package ${this.packageName}.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     };
   }
@@ -96,7 +94,6 @@ export class InstallAurPackage implements Command {
     return {
       stdout: `Installed AUR package ${this.packageName}.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     };
   }
@@ -127,7 +124,6 @@ export class RemoveAurPackage implements Command {
     return {
       stdout: `Removed AUR package ${this.packageName}.`,
       stderr: "",
-      all: "",
       status: { success: true, code: 0 },
     };
   }
