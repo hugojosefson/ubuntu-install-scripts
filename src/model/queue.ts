@@ -15,10 +15,6 @@ export class Enqueued<T extends Command> {
     this.promise = commandResultPromise;
     this.command = command;
   }
-
-  cancel(): Promise<void> {
-    return this.command.cancel();
-  }
 }
 
 export class Queue {

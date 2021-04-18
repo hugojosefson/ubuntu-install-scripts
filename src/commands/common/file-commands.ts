@@ -2,7 +2,6 @@ import { isSuccessful } from "../../os/exec.ts";
 import resolvePath from "../../os/resolve-path.ts";
 import { dirname } from "../../deps.ts";
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
-import { notImplementedYet } from "../../model/not-implemented-yet.ts";
 import { Queue } from "../../model/queue.ts";
 
 export abstract class AbstractFileCommand implements Command {
@@ -10,7 +9,6 @@ export abstract class AbstractFileCommand implements Command {
 
   readonly path: string;
   readonly mode?: number;
-  readonly cancel = notImplementedYet(this, "cancel");
 
   protected constructor(path: string, mode?: number) {
     this.path = path;

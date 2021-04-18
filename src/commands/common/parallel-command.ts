@@ -9,13 +9,6 @@ export class ParallelCommand implements Command {
     this.commands = commands;
   }
 
-  async cancel(): Promise<void> {
-    const cancellations: Promise<void>[] = this.commands.map((command) =>
-      command.cancel()
-    );
-    await Promise.all(cancellations);
-  }
-
   async run(queue: Queue): Promise<CommandResult> {
     const commandsEnqueued: Array<Promise<CommandResult>> = this.commands.map(
       async (command) => {

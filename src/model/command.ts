@@ -18,6 +18,5 @@ export type CommandType =
 export interface Command {
   readonly type: CommandType;
   readonly run: (queue: Queue) => Promise<CommandResult>;
-  readonly cancel: () => Promise<void>;
   readonly toString: () => string;
 }

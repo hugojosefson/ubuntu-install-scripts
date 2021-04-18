@@ -1,18 +1,19 @@
-import { ensureInstalledOsPackage } from "../../os/install-os-package.ts";
+import {
+  ensureInstalledOsPackage,
+  OsPackageName,
+} from "../../os/install-os-package.ts";
 import { Command, CommandResult } from "../../model/command.ts";
-import { notImplementedYet } from "../../model/not-implemented-yet.ts";
 import { ParallelCommand } from "./parallel-command.ts";
 
 export class OsPackage implements Command {
   readonly type: "OsPackage" = "OsPackage";
-  readonly packageName: string;
-  readonly cancel = notImplementedYet(this, "cancel");
+  readonly packageName: OsPackageName;
 
-  constructor(packageName: string) {
+  constructor(packageName: OsPackageName) {
     this.packageName = packageName;
   }
 
-  static multi(packageNames: Array<string>): Command {
+  static multi(packageNames: Array<OsPackageName>): Command {
     return new ParallelCommand(
       packageNames.map((packageName) => new OsPackage(packageName)),
     );
