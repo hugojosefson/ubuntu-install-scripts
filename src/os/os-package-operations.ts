@@ -1,5 +1,6 @@
 import { defer, Deferred } from "./defer.ts";
 import { ensureSuccessful } from "./exec.ts";
+import { getTargetUser, ROOT } from "./user/target-user.ts";
 
 export type PackageOperationType =
   | "noop"
@@ -144,8 +145,7 @@ class InstallOsPackageOperation
   }
 
   async run(): Promise<void> {
-    return await ensureSuccessful([
-      "sudo",
+    return await ensureSuccessful(ROOT, [
       "pacman",
       "--sync",
       "--refresh",
@@ -162,8 +162,7 @@ class RemoveOsPackageOperation
     super(waitUntilAfter, "os_remove");
   }
   async run(): Promise<void> {
-    return await ensureSuccessful([
-      "sudo",
+    return await ensureSuccessful(ROOT, [
       "pacman",
       "--remove",
       "--noconfirm",
@@ -179,8 +178,8 @@ class InstallAurPackageOperation
   }
 
   async run(): Promise<void> {
-    return await ensureSuccessful([
-      "sudo",
+    // TODO: install yay first
+    return await ensureSuccessful(await getTargetUser(), [
       "yay",
       "--sync",
       "--refresh",
@@ -197,8 +196,8 @@ class RemoveAurPackageOperation
     super(waitUntilAfter, "aur_remove");
   }
   async run(): Promise<void> {
-    return await ensureSuccessful([
-      "sudo",
+    // TODO: install yay first
+    return await ensureSuccessful(await getTargetUser(), [
       "yay",
       "--remove",
       "--noconfirm",

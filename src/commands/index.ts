@@ -1,5 +1,6 @@
 import { Command } from "../model/command.ts";
 import { requireEnv } from "../os/require-env.ts";
+import { getTargetUser } from "../os/user/target-user.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
@@ -13,12 +14,14 @@ import { gitk } from "./gitk.ts";
 const HOME: string = requireEnv("HOME");
 
 const desktopIsHome = new SymlinkElsewhere(
+  await getTargetUser(),
+  `~/Desktop`,
   ".",
-  `${HOME}/Desktop`,
 );
 const downloadsIsTmp = new SymlinkElsewhere(
+  await getTargetUser(),
+  `~/Downloads`,
   "/tmp",
-  `${HOME}/Downloads`,
 );
 const commands: Record<string, Command> = {
   ["all-1-minimal-sanity"]: new ParallelCommand([

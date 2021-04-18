@@ -1,5 +1,6 @@
-export default (path: string): string =>
-  path.replace(
-    "~",
-    () => Deno.env.get("HOME") || "~",
-  );
+import { PasswdEntry } from "../deps.ts";
+
+export const resolvePath = (
+  user: PasswdEntry,
+  path: string,
+): string => path.replace("~", user.homedir);

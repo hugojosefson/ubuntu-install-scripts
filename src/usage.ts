@@ -1,12 +1,15 @@
-import { colorlog } from "./deps.ts";
 import { availableCommands } from "./commands/index.ts";
+import { colorlog } from "./deps.ts";
 
-export const usageAndExit = (code: number = 1, message?: string): never => {
+export const usageAndExit = async (
+  code: number = 1,
+  message?: string,
+): Promise<never> => {
   if (message) {
     console.error(colorlog.error(message));
   }
   console.error(`
-Usage:   ./cli.ts <command...>
+Usage:   sudo ./cli.ts <command...>
 
          Available commands:
 ${

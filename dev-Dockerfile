@@ -1,7 +1,18 @@
 FROM manjarolinux/base
+
 RUN pacman --sync --refresh --noconfirm --needed sudo
-RUN useradd --create-home --user-group --groups wheel user
 RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel-nopasswd
+
+RUN useradd --create-home --user-group --groups wheel user
 USER user
 RUN id
 RUN sudo id
+
+WORKDIR /home/user
+COPY src/cli.ts .
+RUN head -n 2 cli.ts > download-deno.ts
+RUN echo 'console.log(`Deno version ${Deno.version.deno} downloaded successfully.`)' >> download-deno.ts
+RUN tail -n 2 cli.ts | head -n 1 >> download-deno.ts
+RUN rm cli.ts
+RUN chmod +x download-deno.ts
+RUN ./download-deno.ts
