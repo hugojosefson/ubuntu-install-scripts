@@ -1,53 +1,69 @@
 import { defer, Deferred } from "./defer.ts";
 import { ensureSuccessful } from "./exec.ts";
 
-export type OsPackageOperationType = "noop" | "install" | "remove";
+export type PackageOperationType =
+  | "noop"
+  | "os_install"
+  | "os_remove"
+  | "aur_install"
+  | "aur_remove";
 const RUN_DELAY = 10;
 
 export type OsPackageName = string;
+export type AurPackageName = string;
+export type PackageName = OsPackageName | AurPackageName;
 
 export const ensureInstalledOsPackage = (
   name: OsPackageName,
-): Promise<void> => enqueue("install", name);
+): Promise<void> => enqueue("os_install", name);
 
 export const ensureRemovedOsPackage = (
   name: OsPackageName,
-): Promise<void> => enqueue("remove", name);
+): Promise<void> => enqueue("os_remove", name);
+
+export const ensureInstalledAurPackage = (
+  name: AurPackageName,
+): Promise<void> => enqueue("aur_install", name);
+
+export const ensureRemovedAurPackage = (
+  name: AurPackageName,
+): Promise<void> => enqueue("aur_remove", name);
 
 export const upgradeOsPackages = () => ensureInstalledOsPackage("--sysupgrade");
 
-class OsPackageOperationQueue {
-  private pendingOperation: OsPackageOperation<any> =
-    new NoopOsPackageOperation();
-  private canAppendType(type: OsPackageOperationType): boolean {
+class PackageOperationQueue {
+  private pendingOperation: PackageOperation<any> = new NoopPackageOperation();
+
+  private canAppendType(type: PackageOperationType): boolean {
     return this.pendingOperation.isAppendable &&
       this.pendingOperation.type === type;
   }
-  enqueue<T extends OsPackageOperationType>(
+
+  enqueue<T extends PackageOperationType>(
     type: T,
-    osPackageName: OsPackageName,
+    packageName: PackageName,
   ): Promise<void> {
     if (!this.canAppendType(type)) {
-      this.pendingOperation = createOsPackageOperation(
+      this.pendingOperation = createPackageOperation(
         this.pendingOperation.deferred.promise,
         type,
       );
     }
-    this.pendingOperation.append(osPackageName);
+    this.pendingOperation.append(packageName);
     return this.pendingOperation.deferred.promise;
   }
 }
 
-interface OsPackageOperation<T extends OsPackageOperationType> {
+interface PackageOperation<T extends PackageOperationType> {
   readonly deferred: Deferred<void>;
   readonly type: T;
   isAppendable: boolean;
-  append(packageName: OsPackageName): void;
+  append(packageName: PackageName): void;
   run(): Promise<void>;
 }
 
-abstract class AbstractOsPackageOperation<T extends OsPackageOperationType>
-  implements OsPackageOperation<T> {
+abstract class AbstractPackageOperation<T extends PackageOperationType>
+  implements PackageOperation<T> {
   protected timeoutId?: number;
   protected waitUntilAfter: Promise<void>;
 
@@ -68,16 +84,16 @@ abstract class AbstractOsPackageOperation<T extends OsPackageOperationType>
   }
 
   abstract run(): Promise<void>;
-  abstract append(packageName: OsPackageName): void;
+  abstract append(packageName: PackageName): void;
 
   toString() {
-    return `AbstractOsPackageOperation<${this.type}>{` + JSON.stringify({
+    return `AbstractPackageOperation<${this.type}>{` + JSON.stringify({
       isAppendable: this.isAppendable,
     }) + "}";
   }
 }
 
-class NoopOsPackageOperation extends AbstractOsPackageOperation<"noop"> {
+class NoopPackageOperation extends AbstractPackageOperation<"noop"> {
   constructor() {
     super(Promise.resolve(), "noop");
     this.deferred.resolve();
@@ -86,23 +102,23 @@ class NoopOsPackageOperation extends AbstractOsPackageOperation<"noop"> {
   async run(): Promise<void> {
   }
 
-  append(packageName: OsPackageName): void {
+  append(packageName: PackageName): void {
   }
 }
 
-abstract class AbstractActiveOsPackageOperation<
-  T extends Exclude<OsPackageOperationType, "noop">,
-> extends AbstractOsPackageOperation<T> {
-  protected readonly osPackageNames: Array<OsPackageName> = [];
+abstract class AbstractActivePackageOperation<
+  T extends Exclude<PackageOperationType, "noop">,
+> extends AbstractPackageOperation<T> {
+  protected readonly packageNames: Array<PackageName> = [];
 
-  append(packageName: OsPackageName) {
+  append(packageName: PackageName) {
     if (!this.isAppendable) {
       throw new Error(
         `ERROR: Could not append ${packageName} to ${this.toString()}`,
       );
     }
     this.clearTimeout();
-    this.osPackageNames.push(packageName);
+    this.packageNames.push(packageName);
     const handler = () => {
       this.isAppendable = false;
       this.waitUntilAfter.then(
@@ -114,17 +130,17 @@ abstract class AbstractActiveOsPackageOperation<
   }
 
   toString() {
-    return `OsPackageOperation<${this.type}>{` + JSON.stringify({
+    return `PackageOperation<${this.type}>{` + JSON.stringify({
       isAppendable: this.isAppendable,
-      packageNames: this.osPackageNames,
+      packageNames: this.packageNames,
     }) + "}";
   }
 }
 
 class InstallOsPackageOperation
-  extends AbstractActiveOsPackageOperation<"install"> {
+  extends AbstractActivePackageOperation<"os_install"> {
   constructor(waitUntilAfter: Promise<void>) {
-    super(waitUntilAfter, "install");
+    super(waitUntilAfter, "os_install");
   }
 
   async run(): Promise<void> {
@@ -135,15 +151,15 @@ class InstallOsPackageOperation
       "--refresh",
       "--noconfirm",
       "--needed",
-      ...this.osPackageNames,
+      ...this.packageNames,
     ]);
   }
 }
 
 class RemoveOsPackageOperation
-  extends AbstractActiveOsPackageOperation<"remove"> {
+  extends AbstractActivePackageOperation<"os_remove"> {
   constructor(waitUntilAfter: Promise<void>) {
-    super(waitUntilAfter, "remove");
+    super(waitUntilAfter, "os_remove");
   }
   async run(): Promise<void> {
     return await ensureSuccessful([
@@ -151,28 +167,73 @@ class RemoveOsPackageOperation
       "pacman",
       "--remove",
       "--noconfirm",
-      ...this.osPackageNames,
+      ...this.packageNames,
     ]);
   }
 }
 
-const createOsPackageOperation = <T extends OsPackageOperationType>(
+class InstallAurPackageOperation
+  extends AbstractActivePackageOperation<"aur_install"> {
+  constructor(waitUntilAfter: Promise<void>) {
+    super(waitUntilAfter, "aur_install");
+  }
+
+  async run(): Promise<void> {
+    return await ensureSuccessful([
+      "sudo",
+      "yay",
+      "--sync",
+      "--refresh",
+      "--noconfirm",
+      "--needed",
+      ...this.packageNames,
+    ]);
+  }
+}
+
+class RemoveAurPackageOperation
+  extends AbstractActivePackageOperation<"aur_remove"> {
+  constructor(waitUntilAfter: Promise<void>) {
+    super(waitUntilAfter, "aur_remove");
+  }
+  async run(): Promise<void> {
+    return await ensureSuccessful([
+      "sudo",
+      "yay",
+      "--remove",
+      "--noconfirm",
+      ...this.packageNames,
+    ]);
+  }
+}
+
+const createPackageOperation = <T extends PackageOperationType>(
   waitUntilAfter: Promise<void>,
   type: T,
 ):
-  | NoopOsPackageOperation
+  | NoopPackageOperation
   | InstallOsPackageOperation
-  | RemoveOsPackageOperation => {
-  if (type === "noop") return new NoopOsPackageOperation();
-  if (type === "install") return new InstallOsPackageOperation(waitUntilAfter);
-  if (type === "remove") return new RemoveOsPackageOperation(waitUntilAfter);
+  | RemoveOsPackageOperation
+  | InstallAurPackageOperation
+  | RemoveAurPackageOperation => {
+  if (type === "noop") return new NoopPackageOperation();
+  if (type === "os_install") {
+    return new InstallOsPackageOperation(waitUntilAfter);
+  }
+  if (type === "os_remove") return new RemoveOsPackageOperation(waitUntilAfter);
+  if (type === "aur_install") {
+    return new InstallAurPackageOperation(waitUntilAfter);
+  }
+  if (type === "aur_remove") {
+    return new RemoveAurPackageOperation(waitUntilAfter);
+  }
   throw new Error(
     `ERROR: Unknown OsPackageOperationType ${type}. Can't construct it.`,
   );
 };
 
-const queueInstance: OsPackageOperationQueue = new OsPackageOperationQueue();
-export const enqueue = <T extends OsPackageOperationType>(
+const queueInstance: PackageOperationQueue = new PackageOperationQueue();
+export const enqueue = <T extends PackageOperationType>(
   type: T,
   osPackageName: OsPackageName,
 ): Promise<void> => queueInstance.enqueue(type, osPackageName);

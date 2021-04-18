@@ -1,6 +1,9 @@
 import { Command, CommandResult } from "../../model/command.ts";
 import {
+  AurPackageName,
+  ensureInstalledAurPackage,
   ensureInstalledOsPackage,
+  ensureRemovedAurPackage,
   ensureRemovedOsPackage,
   OsPackageName,
 } from "../../os/os-package-operations.ts";
@@ -61,6 +64,68 @@ export class RemoveOsPackage implements Command {
     );
     return {
       stdout: `Removed package ${this.packageName}.`,
+      stderr: "",
+      all: "",
+      status: { success: true, code: 0 },
+    };
+  }
+}
+
+export class InstallAurPackage implements Command {
+  readonly type: "InstallAurPackage" = "InstallAurPackage";
+  readonly packageName: AurPackageName;
+
+  constructor(packageName: AurPackageName) {
+    this.packageName = packageName;
+  }
+
+  static multi(packageNames: Array<AurPackageName>): Command {
+    return new ParallelCommand(
+      packageNames.map((packageName) => new InstallAurPackage(packageName)),
+    );
+  }
+
+  toString() {
+    return JSON.stringify({ type: this.type, packageName: this.packageName });
+  }
+
+  async run(): Promise<CommandResult> {
+    const result: void = await ensureInstalledAurPackage(
+      this.packageName,
+    );
+    return {
+      stdout: `Installed AUR package ${this.packageName}.`,
+      stderr: "",
+      all: "",
+      status: { success: true, code: 0 },
+    };
+  }
+}
+
+export class RemoveAurPackage implements Command {
+  readonly type: "RemoveAurPackage" = "RemoveAurPackage";
+  readonly packageName: AurPackageName;
+
+  constructor(packageName: AurPackageName) {
+    this.packageName = packageName;
+  }
+
+  static multi(packageNames: Array<AurPackageName>): Command {
+    return new ParallelCommand(
+      packageNames.map((packageName) => new RemoveAurPackage(packageName)),
+    );
+  }
+
+  toString() {
+    return JSON.stringify({ type: this.type, packageName: this.packageName });
+  }
+
+  async run(): Promise<CommandResult> {
+    const result: void = await ensureRemovedAurPackage(
+      this.packageName,
+    );
+    return {
+      stdout: `Removed AUR package ${this.packageName}.`,
       stderr: "",
       all: "",
       status: { success: true, code: 0 },

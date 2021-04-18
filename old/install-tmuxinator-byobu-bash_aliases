@@ -4,11 +4,6 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-ensureInstalled \
-  byobu \
-  tmux \
-  alacritty \
-  xsel
 
 ensureInstalledAur tmuxinator
 ensureUninstalled screen

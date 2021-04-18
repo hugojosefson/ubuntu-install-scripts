@@ -11,6 +11,8 @@ export type CommandType =
   | "InstallOsPackage"
   | "RemoveOsPackage"
   | "UpgradeOsPackages"
+  | "InstallAurPackage"
+  | "RemoveAurPackage"
   | "SymlinkElsewhere"
   | "CreateFile"
   | "LineInFile"
