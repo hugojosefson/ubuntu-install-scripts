@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -o errexit -o nounset -o pipefail
-cd "$(dirname "${0}")"
-. ./common.bash
-
-mkdir -p "$HOME/bin"
-# shellcheck disable=SC2016
-grep -x 'export PATH=$HOME/bin:$PATH' ~/.bashrc || echo -e '\n''export PATH=$HOME/bin:$PATH' >> ~/.bashrc
