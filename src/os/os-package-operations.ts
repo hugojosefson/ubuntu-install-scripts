@@ -1,5 +1,5 @@
 import { defer, Deferred } from "./defer.ts";
-import { ensureSuccessful } from "./exec.ts";
+import { ensureSuccessful, isSuccessful } from "./exec.ts";
 import { getTargetUser, ROOT } from "./user/target-user.ts";
 
 export type PackageOperationType =
@@ -145,6 +145,9 @@ class InstallOsPackageOperation
   }
 
   async run(): Promise<void> {
+    if (await isInstalledOsPackages(this.packageNames)) {
+      return;
+    }
     return await ensureSuccessful(ROOT, [
       "pacman",
       "--sync",
@@ -156,12 +159,35 @@ class InstallOsPackageOperation
   }
 }
 
+const isInstalledOsPackages = async (
+  packageNames: Array<OsPackageName>,
+): Promise<boolean> =>
+  await isSuccessful(await getTargetUser(), [
+    "pacman",
+    "--query",
+    "--info",
+    ...packageNames,
+  ]);
+const isInstalledAurPackages = async (
+  packageNames: Array<AurPackageName>,
+): Promise<boolean> =>
+  await isSuccessful(await getTargetUser(), [
+    "yay",
+    "--query",
+    "--info",
+    ...packageNames,
+  ]);
+
 class RemoveOsPackageOperation
   extends AbstractActivePackageOperation<"os_remove"> {
   constructor(waitUntilAfter: Promise<void>) {
     super(waitUntilAfter, "os_remove");
   }
   async run(): Promise<void> {
+    if (!await isInstalledOsPackages(this.packageNames)) {
+      return;
+    }
+
     return await ensureSuccessful(ROOT, [
       "pacman",
       "--remove",
@@ -171,6 +197,16 @@ class RemoveOsPackageOperation
   }
 }
 
+const installOsPackagesImmediately = (osPackageNames: Array<OsPackageName>) => {
+  const installOsPackageOperation = new InstallOsPackageOperation(
+    Promise.resolve(),
+  );
+  osPackageNames.forEach((osPackageName) =>
+    installOsPackageOperation.append(osPackageName)
+  );
+  return installOsPackageOperation.deferred.promise;
+};
+
 class InstallAurPackageOperation
   extends AbstractActivePackageOperation<"aur_install"> {
   constructor(waitUntilAfter: Promise<void>) {
@@ -178,7 +214,7 @@ class InstallAurPackageOperation
   }
 
   async run(): Promise<void> {
-    // TODO: install yay first
+    await installOsPackagesImmediately(["base-devel", "yay"]);
     return await ensureSuccessful(await getTargetUser(), [
       "yay",
       "--sync",
@@ -196,10 +232,14 @@ class RemoveAurPackageOperation
     super(waitUntilAfter, "aur_remove");
   }
   async run(): Promise<void> {
-    // TODO: install yay first
+    await installOsPackagesImmediately(["base-devel", "yay"]);
+    if (!await isInstalledAurPackages(this.packageNames)) {
+      return;
+    }
     return await ensureSuccessful(await getTargetUser(), [
       "yay",
       "--remove",
+      "--nosave",
       "--noconfirm",
       ...this.packageNames,
     ]);
