@@ -2,6 +2,7 @@ import { Command } from "../model/command.ts";
 import { requireEnv } from "../os/require-env.ts";
 import { getTargetUser } from "../os/user/target-user.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
+import { addNodeModulesBinToPath } from "./add-node_modules-bin-to-path.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
@@ -50,6 +51,7 @@ const commands: Record<string, Command> = {
   desktopIsHome,
   downloadsIsTmp,
   addHomeBinToPath,
+  addNodeModulesBinToPath,
   tmuxinatorByobuBash_aliases,
   tabbed: await tabbed(),
   awscli: new InstallOsPackage("aws-cli"),
