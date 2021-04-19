@@ -78,8 +78,14 @@ const mkdirp = async (
   await Deno.chown(asPath(dirSegments), owner.uid, owner.gid);
 };
 
-const backupFile = async (filePath: string): Promise<string | undefined> => {
+const backupFileUnlessContentAlready = async (
+  filePath: string,
+  contents: string,
+): Promise<string | undefined> => {
   if (!await existsPath(asPathSegments(filePath))) {
+    return undefined;
+  }
+  if ((await Deno.readTextFile(filePath)) == contents) {
     return undefined;
   }
 
@@ -105,7 +111,7 @@ const createFile = async (
   const options: Deno.WriteFileOptions = mode ? { mode } : {};
 
   const backupFilePath: string | undefined = shouldBackupAnyExistingFile
-    ? await backupFile(resolvedPath)
+    ? await backupFileUnlessContentAlready(resolvedPath, contents)
     : undefined;
 
   await Deno.writeFile(resolvedPath, data, options);
