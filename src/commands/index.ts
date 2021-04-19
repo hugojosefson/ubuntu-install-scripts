@@ -31,6 +31,7 @@ const commands: Record<string, Command> = {
   ["all-1-minimal-sanity"]: new ParallelCommand([
     new UpgradeOsPackages(),
     InstallOsPackage.multi([
+      "bmenu",
       "dos2unix",
       "jq",
       "ncdu",
