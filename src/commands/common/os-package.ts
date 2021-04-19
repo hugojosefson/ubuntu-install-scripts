@@ -28,7 +28,7 @@ export class InstallOsPackage implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await ensureInstalledOsPackage(
+    await ensureInstalledOsPackage(
       this.packageName,
     );
     return {
@@ -58,7 +58,7 @@ export class RemoveOsPackage implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await ensureRemovedOsPackage(
+    await ensureRemovedOsPackage(
       this.packageName,
     );
     return {
@@ -88,7 +88,7 @@ export class InstallAurPackage implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await ensureInstalledAurPackage(
+    await ensureInstalledAurPackage(
       this.packageName,
     );
     return {
@@ -118,7 +118,7 @@ export class RemoveAurPackage implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await ensureRemovedAurPackage(
+    await ensureRemovedAurPackage(
       this.packageName,
     );
     return {

@@ -50,13 +50,20 @@ const mkdirp = async (
   dirSegments: Array<string>,
 ): Promise<void> => {
   if (await existsDir(dirSegments)) {
+    await Deno.chown(asPath(dirSegments), owner.uid, owner.gid);
     return;
   }
   if (dirSegments.length === 0) {
     return;
   }
   await mkdirp(owner, getParentDirSegments(dirSegments));
-  await Deno.mkdir(asPath(dirSegments));
+  await Deno.mkdir(asPath(dirSegments)).then(
+    () => {},
+    (reason) =>
+      reason?.name === "AlreadyExists"
+        ? Promise.resolve()
+        : Promise.reject(reason),
+  );
   await Deno.chown(asPath(dirSegments), owner.uid, owner.gid);
 };
 
@@ -91,7 +98,7 @@ export class CreateFile extends AbstractFileCommand {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await createFile(
+    await createFile(
       this.owner,
       this.path,
       this.contents,
@@ -99,6 +106,42 @@ export class CreateFile extends AbstractFileCommand {
     );
     return {
       stdout: `Created file ${this.toString()}.`,
+      stderr: "",
+      status: { success: true, code: 0 },
+    };
+  }
+}
+
+const createDir = async (
+  owner: PasswdEntry,
+  path: string,
+) => {
+  const resolvedPath: string = resolvePath(owner, path);
+  await mkdirp(owner, resolvedPath.split("/"));
+};
+
+export class CreateDir implements Command {
+  readonly type: "CreateDir" = "CreateDir";
+  readonly owner: PasswdEntry;
+  readonly path: string;
+
+  constructor(owner: PasswdEntry, path: string) {
+    this.owner = owner;
+    this.path = path;
+  }
+
+  toString() {
+    return JSON.stringify({
+      owner: this.owner,
+      type: this.type,
+      path: this.path,
+    });
+  }
+
+  async run(): Promise<CommandResult> {
+    await createDir(this.owner, this.path);
+    return {
+      stdout: `Created dir ${this.toString()}.`,
       stderr: "",
       status: { success: true, code: 0 },
     };

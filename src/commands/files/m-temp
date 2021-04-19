@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+## Creates and opens a new temp session
+
+export SESSION_DIR="$(readlink -f "${1:-"$(mktemp -d)"}")"
+export SESSION_NAME="$(echo "${SESSION_DIR}" \
+                     | sed -E 's/^[\./]//g' \
+                     | sed -E 's/[\./]+/-/g' \
+                     | sed -E 's/[åä]/a/g' \
+                     | sed -E 's/[ÅÄ]/A/g' \
+                     | sed -E 's/[ö]/o/g' \
+                     | sed -E 's/[Ö]/O/g' \
+                     | sed -E 's/^Users-/home-/' \
+                     | sed -E 's/^home-[^-]+-//' \
+                     | sed -E 's/^surviving-data-//' \
+                     | sed -E 's/^code-//g')"
+FILE_NAME="${SESSION_NAME}.yml"
+
+cd ~/.tmuxinator
+envsubst < temp.TEMPLATE > "${FILE_NAME}"
+
+mkdir -p "${SESSION_DIR}"
+tmuxinator start "${SESSION_NAME}"
+sleep 1
+rm "${FILE_NAME}"

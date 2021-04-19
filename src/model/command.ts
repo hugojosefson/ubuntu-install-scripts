@@ -14,6 +14,7 @@ export type CommandType =
   | "RemoveAurPackage"
   | "SymlinkElsewhere"
   | "CreateFile"
+  | "CreateDir"
   | "LineInFile"
   | "Exec"
   | "ParallelCommand"

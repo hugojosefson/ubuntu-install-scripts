@@ -9,9 +9,9 @@ export class UpgradeOsPackages implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    const result: void = await upgradeOsPackages();
+    await upgradeOsPackages();
     return {
-      stdout: `Updated OS packages.`,
+      stdout: `Upgraded OS packages.`,
       stderr: "",
       status: { success: true, code: 0 },
     };
