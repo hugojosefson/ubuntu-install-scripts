@@ -1,14 +1,16 @@
-# Ubuntu install scripts, for Pop!_OS
+# Install scripts, for Manjaro
 
-_Install scripts for various things I like to install on a fresh Pop!\_OS._
+_Install scripts for various things I like to install on a fresh Manjaro._
 
-They save some keystrokes :) Use the `./all-*` scripts to save even more!
+They save some keystrokes :) Use the `./all-*` commands to save even more!
 
-Scripts have been tested with Pop!_OS 20.04.
+Still Work-in-progress. Happy testing!
 
-Happy (re-)installing!
+## Run directly
 
-## Easy download
+This will show you the usage/help text:
 
-    wget -O- https://github.com/hugojosefson/ubuntu-install-scripts/archive/popos-20.04.tar.gz | tar xzv
-    cd ubuntu-install-scripts-popos-20.04
+```bash
+curl https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts | sudo sh -s
+```
+

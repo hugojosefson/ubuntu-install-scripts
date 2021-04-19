@@ -9,7 +9,10 @@ export const usageAndExit = async (
     console.error(colorlog.error(message));
   }
   console.error(`
-Usage:   sudo ./cli.ts <command...>
+Usage:   sudo ./src/cli.ts <command...>
+
+Usage:   curl https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts \
+         | sudo sh -s <command...>
 
          Available commands:
 ${
