@@ -11,7 +11,7 @@ export const usageAndExit = async (
   console.error(`
 Usage:   sudo ./src/cli.ts <command...>
 
-Usage:   curl https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts \
+Usage:   curl https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts \\
          | sudo sh -s <command...>
 
          Available commands:
