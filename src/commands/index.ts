@@ -1,8 +1,8 @@
 import { Command } from "../model/command.ts";
-import { requireEnv } from "../os/require-env.ts";
-import { getTargetUser } from "../os/user/target-user.ts";
+import { targetUser } from "../os/user/target-user.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { addNodeModulesBinToPath } from "./add-node_modules-bin-to-path.ts";
+import { bashAliases } from "./bash-aliases.ts";
 import { SymlinkElsewhere } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
@@ -17,15 +17,13 @@ import { UpgradeOsPackages } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { gitk } from "./gitk.ts";
 
-const HOME: string = requireEnv("HOME");
-
 const desktopIsHome = new SymlinkElsewhere(
-  await getTargetUser(),
+  targetUser,
   `~/Desktop`,
   ".",
 );
 const downloadsIsTmp = new SymlinkElsewhere(
-  await getTargetUser(),
+  targetUser,
   `~/Downloads`,
   "/tmp",
 );
@@ -59,6 +57,7 @@ const commands: Record<string, Command> = {
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,
+  bashAliases,
   tabbed: await tabbed(),
   awscli: new InstallOsPackage("aws-cli"),
   libreoffice: InstallOsPackage.multi([

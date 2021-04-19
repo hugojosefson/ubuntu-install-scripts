@@ -39,11 +39,22 @@ const existsDir = async (dirSegments: Array<string>): Promise<boolean> => {
   }
 };
 
+const existsPath = async (dirSegments: Array<string>): Promise<boolean> => {
+  try {
+    await Deno.stat(asPath(dirSegments));
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const asPath = (pathSegments: Array<string>): string =>
   "/" + pathSegments.join("/");
 
 const getParentDirSegments = (dirSegments: Array<string>) =>
   dirSegments.slice(0, dirSegments.length - 1);
+
+const asPathSegments = (path: string): Array<string> => path.split("/");
 
 const mkdirp = async (
   owner: PasswdEntry,
@@ -67,45 +78,71 @@ const mkdirp = async (
   await Deno.chown(asPath(dirSegments), owner.uid, owner.gid);
 };
 
+const backupFile = async (filePath: string): Promise<string | undefined> => {
+  if (!await existsPath(asPathSegments(filePath))) {
+    return undefined;
+  }
+
+  const backupFilePath = `${filePath}.${Date.now()}.backup`;
+  await Deno.rename(filePath, backupFilePath);
+  return backupFilePath;
+};
+
+/**
+ * Creates a file. If it creates a backup of any existing file, its Promise resolves to that path. Otherwise to undefined.
+ */
 const createFile = async (
   owner: PasswdEntry,
   path: string,
   contents: string,
+  shouldBackupAnyExistingFile: boolean = false,
   mode?: number,
-) => {
+): Promise<string | undefined> => {
   const resolvedPath: string = resolvePath(owner, path);
   await mkdirp(owner, dirname(resolvedPath).split("/"));
 
   const data: Uint8Array = new TextEncoder().encode(contents);
   const options: Deno.WriteFileOptions = mode ? { mode } : {};
 
+  const backupFilePath: string | undefined = shouldBackupAnyExistingFile
+    ? await backupFile(resolvedPath)
+    : undefined;
+
   await Deno.writeFile(resolvedPath, data, options);
   await Deno.chown(resolvedPath, owner.uid, owner.gid);
+  return backupFilePath;
 };
 
 export class CreateFile extends AbstractFileCommand {
   readonly type: "CreateFile" = "CreateFile";
   readonly contents: string;
+  readonly shouldBackupAnyExistingFile: boolean;
 
   constructor(
     owner: PasswdEntry,
     path: string,
     contents: string,
+    shouldBackupAnyExistingFile: boolean = false,
     mode?: number,
   ) {
     super(owner, path, mode);
     this.contents = contents;
+    this.shouldBackupAnyExistingFile = shouldBackupAnyExistingFile;
   }
 
   async run(): Promise<CommandResult> {
-    await createFile(
+    const backupFilePath: string | undefined = await createFile(
       this.owner,
       this.path,
       this.contents,
+      this.shouldBackupAnyExistingFile,
       this.mode,
     );
     return {
-      stdout: `Created file ${this.toString()}.`,
+      stdout: `Created file ${this.toString()}.` +
+        (backupFilePath
+          ? `\nBacked up previous file to ${backupFilePath}`
+          : ""),
       stderr: "",
       status: { success: true, code: 0 },
     };

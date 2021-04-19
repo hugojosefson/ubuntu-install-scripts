@@ -1,4 +1,5 @@
-import { getTargetUser } from "../os/user/target-user.ts";
+import { targetUser } from "../os/user/target-user.ts";
+import { bashAliases } from "./bash-aliases.ts";
 import { CreateDir, CreateFile } from "./common/file-commands.ts";
 import {
   InstallAurPackage,
@@ -15,8 +16,6 @@ import {
   tmuxinatorTempTemplate,
 } from "./files/tmuxinator-files.ts";
 
-const targetUser = await getTargetUser();
-
 const files: Array<[string, string]> = [
   ["base.yml", tmuxinatorBaseYml],
   ["temp.TEMPLATE", tmuxinatorTempTemplate],
@@ -25,7 +24,7 @@ const files: Array<[string, string]> = [
 
 export const tmuxinatorFiles = new ParallelCommand(
   files.map(([filename, contents]) =>
-    new CreateFile(targetUser, `~/.tmuxinator/${filename}`, contents)
+    new CreateFile(targetUser, `~/.tmuxinator/${filename}`, contents, true)
   ),
 );
 
@@ -44,4 +43,5 @@ export const tmuxinatorByobuBash_aliases = new ParallelCommand([
   new CreateDir(targetUser, "~/code"),
   tmuxinatorFiles,
   mTemp,
+  bashAliases,
 ]);

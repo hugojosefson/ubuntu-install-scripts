@@ -1,6 +1,6 @@
 import { defer, Deferred } from "./defer.ts";
 import { ensureSuccessful, isSuccessful } from "./exec.ts";
-import { getTargetUser, ROOT } from "./user/target-user.ts";
+import { ROOT, targetUser } from "./user/target-user.ts";
 
 export type PackageOperationType =
   | "noop"
@@ -162,7 +162,7 @@ class InstallOsPackageOperation
 const isInstalledOsPackages = async (
   packageNames: Array<OsPackageName>,
 ): Promise<boolean> =>
-  await isSuccessful(await getTargetUser(), [
+  await isSuccessful(targetUser, [
     "pacman",
     "--query",
     "--info",
@@ -171,7 +171,7 @@ const isInstalledOsPackages = async (
 const isInstalledAurPackages = async (
   packageNames: Array<AurPackageName>,
 ): Promise<boolean> =>
-  await isSuccessful(await getTargetUser(), [
+  await isSuccessful(targetUser, [
     "yay",
     "--query",
     "--info",
@@ -214,7 +214,7 @@ class InstallAurPackageOperation
 
   async run(): Promise<void> {
     await installOsPackagesImmediately(["base-devel", "yay"]);
-    await ensureSuccessful(await getTargetUser(), [
+    await ensureSuccessful(targetUser, [
       "yay",
       "--sync",
       "--refresh",
@@ -235,7 +235,7 @@ class RemoveAurPackageOperation
     if (!await isInstalledAurPackages(this.packageNames)) {
       return;
     }
-    await ensureSuccessful(await getTargetUser(), [
+    await ensureSuccessful(targetUser, [
       "yay",
       "--remove",
       "--nosave",

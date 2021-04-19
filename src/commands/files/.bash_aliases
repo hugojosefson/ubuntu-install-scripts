@@ -11,6 +11,18 @@ alias ll='exa -lF'
 alias la='exa -aF'
 alias lla='exa -Fla'
 
+# ssh TERM
+function ssh {
+  if [[ "${TERM}" = alacritty ]]; then
+    env TERM=xterm-256color ssh "$@"
+  else
+    ssh "$@"
+  fi
+}
+
+# deno
+command -v deno > /dev/null && . <(deno completions bash)
+
 # node
 alias nn='nvm install $(cat package.json | jq -r .engines.node)'
 
@@ -41,9 +53,6 @@ _tmuxinator() {
 complete -F _tmuxinator tmuxinator mux m
 
 # Git
-[[ -f /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
-[[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]] && . /usr/local/etc/bash_completion.d/git-completion.bash
-alias gk='gitk --all &>/dev/null &'
 command -v gh > /dev/null && . <(gh completion)
 
 __git_complete g __git_main
@@ -89,6 +98,16 @@ function gpl() {
     git pull "$@"
 }
 
+__git_complete gr _git_rebase
+function gr() {
+    git rebase "$@"
+}
+
+__git_complete rv _git_rebase
+function rv() {
+    git revise "$@"
+}
+
 
 # Docker
 function d() {
@@ -115,3 +134,6 @@ function mkcd () {
 
 # temp directory
 alias t='cd $(mktemp -d)'
+
+# pfFocus
+alias pffocus="docker run --rm -i hugojosefson/pffocus"

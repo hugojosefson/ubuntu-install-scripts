@@ -1,5 +1,5 @@
 import { createTempDir } from "../os/create-temp-dir.ts";
-import { getTargetUser, ROOT } from "../os/user/target-user.ts";
+import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
@@ -7,7 +7,6 @@ import { SequentialCommand } from "./common/sequential-command.ts";
 import { Exec } from "./exec.ts";
 
 export const tabbed = async () => {
-  const targetUser = await getTargetUser();
   const cwd: string = await createTempDir(targetUser);
 
   return new ParallelCommand([
