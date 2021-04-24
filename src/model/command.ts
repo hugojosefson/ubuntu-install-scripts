@@ -12,7 +12,7 @@ export type CommandType =
   | "UpgradeOsPackages"
   | "InstallAurPackage"
   | "RemoveAurPackage"
-  | "SymlinkElsewhere"
+  | "Symlink"
   | "CreateFile"
   | "CreateDir"
   | "LineInFile"

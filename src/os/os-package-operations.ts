@@ -155,7 +155,7 @@ class InstallOsPackageOperation
       "--noconfirm",
       "--needed",
       ...this.packageNames,
-    ]);
+    ], {});
   }
 }
 

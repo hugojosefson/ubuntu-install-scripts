@@ -235,13 +235,13 @@ async function isDirectoryEmpty(directory: string) {
   return (await (Deno.readDirSync(directory))[Symbol.iterator]().next()).done;
 }
 
-export class SymlinkElsewhere extends AbstractFileCommand {
-  readonly type: "SymlinkElsewhere" = "SymlinkElsewhere";
+export class Symlink extends AbstractFileCommand {
+  readonly type: "Symlink" = "Symlink";
   readonly target: string;
 
-  constructor(owner: PasswdEntry, directory: string, target: string) {
-    super(owner, directory);
-    this.target = resolvePath(owner, target);
+  constructor(owner: PasswdEntry, from: string, to: string) {
+    super(owner, to);
+    this.target = resolvePath(owner, from);
   }
 
   private result(partialCommandResult: Partial<CommandResult>): CommandResult {

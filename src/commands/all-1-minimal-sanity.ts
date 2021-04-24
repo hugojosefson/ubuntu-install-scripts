@@ -10,7 +10,7 @@ import { vim } from "./vim.ts";
 
 export const all1MinimalSanity = new ParallelCommand([
   new UpgradeOsPackages(),
-  InstallOsPackage.multi([
+  InstallOsPackage.parallel([
     "bmenu",
     "dos2unix",
     "jq",

@@ -1,8 +1,6 @@
-import { fetchFile } from "../deps.ts";
+import { readFromUrl } from "./read-from-url.ts";
 
 export const readRelativeFile = async (
   relativeFilePath: string,
   base: string | URL,
-) =>
-  await (await fetchFile(new URL(relativeFilePath, base)))
-    .text();
+) => await readFromUrl(new URL(relativeFilePath, base));

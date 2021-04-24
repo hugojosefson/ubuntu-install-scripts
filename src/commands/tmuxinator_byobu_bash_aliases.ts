@@ -30,7 +30,7 @@ export const tmuxinatorFiles = new ParallelCommand(
 
 export const tmuxinatorByobuBash_aliases = new ParallelCommand([
   await tabbed(),
-  InstallOsPackage.multi([
+  InstallOsPackage.parallel([
     "byobu",
     "tmux",
     "alacritty",

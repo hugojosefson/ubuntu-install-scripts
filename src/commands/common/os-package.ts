@@ -17,7 +17,7 @@ export class InstallOsPackage implements Command {
     this.packageName = packageName;
   }
 
-  static multi(packageNames: Array<OsPackageName>): Command {
+  static parallel(packageNames: Array<OsPackageName>): Command {
     return new ParallelCommand(
       packageNames.map((packageName) => new InstallOsPackage(packageName)),
     );
@@ -47,7 +47,7 @@ export class RemoveOsPackage implements Command {
     this.packageName = packageName;
   }
 
-  static multi(packageNames: Array<OsPackageName>): Command {
+  static parallel(packageNames: Array<OsPackageName>): Command {
     return new ParallelCommand(
       packageNames.map((packageName) => new RemoveOsPackage(packageName)),
     );
@@ -77,7 +77,7 @@ export class InstallAurPackage implements Command {
     this.packageName = packageName;
   }
 
-  static multi(packageNames: Array<AurPackageName>): Command {
+  static parallel(packageNames: Array<AurPackageName>): Command {
     return new ParallelCommand(
       packageNames.map((packageName) => new InstallAurPackage(packageName)),
     );
@@ -107,7 +107,7 @@ export class RemoveAurPackage implements Command {
     this.packageName = packageName;
   }
 
-  static multi(packageNames: Array<AurPackageName>): Command {
+  static parallel(packageNames: Array<AurPackageName>): Command {
     return new ParallelCommand(
       packageNames.map((packageName) => new RemoveAurPackage(packageName)),
     );

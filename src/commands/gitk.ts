@@ -7,7 +7,7 @@ import { ParallelCommand } from "./common/parallel-command.ts";
 
 export const gitk: Command = new ParallelCommand([
   addHomeBinToPath,
-  InstallOsPackage.multi(["git", "tk"]),
+  InstallOsPackage.parallel(["git", "tk"]),
   new CreateFile(
     targetUser,
     "~/bin/gk",

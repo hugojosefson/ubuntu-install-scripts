@@ -12,7 +12,7 @@ export const tabbed = async () => {
   return new ParallelCommand([
     addHomeBinToPath,
     new SequentialCommand([
-      InstallOsPackage.multi([
+      InstallOsPackage.parallel([
         "base-devel",
         "git",
         "libxft",

@@ -19,7 +19,7 @@ export class Exec implements Command {
     this.options = options;
   }
 
-  static multi(
+  static sequential(
     asUser: PasswdEntry,
     options: ExecOptions,
     cmds: Array<Array<string>>,
