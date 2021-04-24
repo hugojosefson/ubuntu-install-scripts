@@ -149,12 +149,10 @@ class InstallOsPackageOperation
       return;
     }
     await ensureSuccessful(ROOT, [
-      "pacman",
-      "--sync",
-      "--refresh",
-      "--noconfirm",
-      "--needed",
-      ...this.packageNames,
+      "bash",
+      "-c",
+      "yes y | pacman --sync --refresh --noconfirm --needed " +
+      this.packageNames.join(" "),
     ], {});
   }
 }

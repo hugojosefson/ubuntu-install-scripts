@@ -8,6 +8,7 @@ export const virtManager = new SequentialCommand([
     "bridge-utils",
     "dmidecode",
     "dnsmasq",
+    "iptables-nft",
     "edk2-ovmf",
     "inxi",
     "openbsd-netcat",
@@ -15,11 +16,6 @@ export const virtManager = new SequentialCommand([
     "swtpm",
     "vde2",
     "virt-manager",
-  ]),
-  new Exec(ROOT, {}, [
-    "bash",
-    "-c",
-    "yes y | pacman --sync --refresh --needed iptables-nft",
   ]),
   Exec.sequential(ROOT, {}, [
     ["systemctl", "enable", "libvirtd.service"],

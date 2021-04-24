@@ -1,5 +1,5 @@
 import { ensureSuccessful } from "./exec.ts";
-import isInsideDocker from "./is-inside-docker.ts";
+import { isInsideDocker } from "./is-inside-docker.ts";
 import { ensureInstalledOsPackage } from "./os-package-operations.ts";
 import { ROOT } from "./user/target-user.ts";
 
@@ -14,7 +14,7 @@ export const ensureInstalledFlatpak = async (
     "install",
     "--or-update",
     "--noninteractive",
-    ...((await isInsideDocker()) ? ["--no-deploy"] : []),
+    ...(isInsideDocker ? ["--no-deploy"] : []),
     "flathub",
     ...flatPackageNames,
   ]);
