@@ -20,7 +20,7 @@ import { gitk } from "./gitk.ts";
 import { idea } from "./idea.ts";
 import { insync } from "./insync.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
-import { java } from "./java.ts";
+import { java, sdkmanJava } from "./java.ts";
 import { keybase } from "./keybase.ts";
 import { mTemp } from "./m-temp.ts";
 import { minecraft } from "./minecraft.ts";
@@ -70,6 +70,7 @@ const commands: Record<string, Command> = {
   addNodeModulesBinToPath,
   flatpak,
   java,
+  sdkmanJava,
   idea,
   rust,
   yubikey,
