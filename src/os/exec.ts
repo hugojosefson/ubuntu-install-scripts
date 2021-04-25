@@ -33,6 +33,7 @@ export const pipeAndCollect = async (
       }
     }
   }
+  from?.close();
   return new TextDecoder().decode(all);
 };
 
