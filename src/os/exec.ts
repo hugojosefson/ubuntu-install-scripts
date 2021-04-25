@@ -95,14 +95,14 @@ export const ensureSuccessful = async (
 
 export const symlink = (
   owner: PasswdEntry,
-  target: string,
-  path: string,
+  from: string,
+  to: string,
 ): Promise<CommandResult> =>
   ensureSuccessful(owner, [
     "ln",
     "-s",
-    target,
-    path,
+    from,
+    to,
   ]);
 
 export const ensureSuccessfulStdOut = async (
