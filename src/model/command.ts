@@ -12,6 +12,8 @@ export type CommandType =
   | "UpgradeOsPackages"
   | "InstallAurPackage"
   | "RemoveAurPackage"
+  | "InstallFlatpakPackage"
+  | "RemoveFlatpakPackage"
   | "Symlink"
   | "CreateFile"
   | "CreateDir"

@@ -1,5 +1,6 @@
 import { defer, Deferred } from "./defer.ts";
 import { ensureSuccessful, isSuccessful } from "./exec.ts";
+import { isInsideDocker } from "./is-inside-docker.ts";
 import { ROOT, targetUser } from "./user/target-user.ts";
 
 export type PackageOperationType =
@@ -7,12 +8,15 @@ export type PackageOperationType =
   | "os_install"
   | "os_remove"
   | "aur_install"
-  | "aur_remove";
+  | "aur_remove"
+  | "flatpak_install"
+  | "flatpak_remove";
 const RUN_DELAY = 10;
 
 export type OsPackageName = string;
 export type AurPackageName = string;
-export type PackageName = OsPackageName | AurPackageName;
+export type FlatpakPackageName = string;
+export type PackageName = OsPackageName | AurPackageName | FlatpakPackageName;
 
 export const ensureInstalledOsPackage = (
   name: OsPackageName,
@@ -29,6 +33,14 @@ export const ensureInstalledAurPackage = (
 export const ensureRemovedAurPackage = (
   name: AurPackageName,
 ): Promise<void> => enqueue("aur_remove", name);
+
+export const ensureInstalledFlatpakPackage = (
+  name: FlatpakPackageName,
+): Promise<void> => enqueue("flatpak_install", name);
+
+export const ensureRemovedFlatpakPackage = (
+  name: FlatpakPackageName,
+): Promise<void> => enqueue("flatpak_remove", name);
 
 export const upgradeOsPackages = () => ensureInstalledOsPackage("--sysupgrade");
 
@@ -176,6 +188,19 @@ const isInstalledAurPackages = async (
     ...packageNames,
   ]);
 
+const isInstalledFlatpakPackages = async (
+  packageNames: Array<FlatpakPackageName>,
+): Promise<boolean> =>
+  (await Promise.all(
+    packageNames.map(async (packageName) =>
+      await isSuccessful(targetUser, [
+        "bash",
+        "-c",
+        `flatpak list --columns application | grep --line-regexp '${packageName}'`,
+      ])
+    ),
+  )).reduce((acc, curr) => acc && curr, true);
+
 class RemoveOsPackageOperation
   extends AbstractActivePackageOperation<"os_remove"> {
   constructor(waitUntilAfter: Promise<void>) {
@@ -243,6 +268,47 @@ class RemoveAurPackageOperation
   }
 }
 
+export const flatpakOsPackages = ["xdg-desktop-portal-gtk", "flatpak"];
+
+class InstallFlatpakPackageOperation
+  extends AbstractActivePackageOperation<"flatpak_install"> {
+  constructor(waitUntilAfter: Promise<void>) {
+    super(waitUntilAfter, "flatpak_install");
+  }
+
+  async run(): Promise<void> {
+    await installOsPackagesImmediately(flatpakOsPackages);
+    await ensureSuccessful(ROOT, [
+      "flatpak",
+      "install",
+      "--or-update",
+      "--noninteractive",
+      ...(isInsideDocker ? ["--no-deploy"] : []),
+      "flathub",
+      ...this.packageNames,
+    ]);
+  }
+}
+
+class RemoveFlatpakPackageOperation
+  extends AbstractActivePackageOperation<"flatpak_remove"> {
+  constructor(waitUntilAfter: Promise<void>) {
+    super(waitUntilAfter, "flatpak_remove");
+  }
+  async run(): Promise<void> {
+    await installOsPackagesImmediately(flatpakOsPackages);
+    if (!await isInstalledFlatpakPackages(this.packageNames)) {
+      return;
+    }
+    await ensureSuccessful(ROOT, [
+      "flatpak",
+      "uninstall",
+      "--noninteractive",
+      ...this.packageNames,
+    ]);
+  }
+}
+
 const createPackageOperation = <T extends PackageOperationType>(
   waitUntilAfter: Promise<void>,
   type: T,
@@ -251,7 +317,9 @@ const createPackageOperation = <T extends PackageOperationType>(
   | InstallOsPackageOperation
   | RemoveOsPackageOperation
   | InstallAurPackageOperation
-  | RemoveAurPackageOperation => {
+  | RemoveAurPackageOperation
+  | InstallFlatpakPackageOperation
+  | RemoveFlatpakPackageOperation => {
   if (type === "noop") return new NoopPackageOperation();
   if (type === "os_install") {
     return new InstallOsPackageOperation(waitUntilAfter);
@@ -262,6 +330,12 @@ const createPackageOperation = <T extends PackageOperationType>(
   }
   if (type === "aur_remove") {
     return new RemoveAurPackageOperation(waitUntilAfter);
+  }
+  if (type === "flatpak_install") {
+    return new InstallFlatpakPackageOperation(waitUntilAfter);
+  }
+  if (type === "flatpak_remove") {
+    return new RemoveFlatpakPackageOperation(waitUntilAfter);
   }
   throw new Error(
     `ERROR: Unknown OsPackageOperationType ${type}. Can't construct it.`,

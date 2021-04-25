@@ -11,6 +11,7 @@ import { InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
+import { flatpak } from "./flatpak.ts";
 import { gitk } from "./gitk.ts";
 import { idea } from "./idea.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
@@ -44,6 +45,7 @@ const commands: Record<string, Command> = {
   downloadsIsTmp,
   addHomeBinToPath,
   addNodeModulesBinToPath,
+  flatpak,
   java,
   idea,
   tmuxinatorByobuBash_aliases,

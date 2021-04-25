@@ -2,9 +2,12 @@ import { Command, CommandResult } from "../../model/command.ts";
 import {
   AurPackageName,
   ensureInstalledAurPackage,
+  ensureInstalledFlatpakPackage,
   ensureInstalledOsPackage,
   ensureRemovedAurPackage,
+  ensureRemovedFlatpakPackage,
   ensureRemovedOsPackage,
+  FlatpakPackageName,
   OsPackageName,
 } from "../../os/os-package-operations.ts";
 import { ParallelCommand } from "./parallel-command.ts";
@@ -123,6 +126,66 @@ export class RemoveAurPackage implements Command {
     );
     return {
       stdout: `Removed AUR package ${this.packageName}.`,
+      stderr: "",
+      status: { success: true, code: 0 },
+    };
+  }
+}
+
+export class InstallFlatpakPackage implements Command {
+  readonly type: "InstallFlatpakPackage" = "InstallFlatpakPackage";
+  readonly packageName: FlatpakPackageName;
+
+  constructor(packageName: FlatpakPackageName) {
+    this.packageName = packageName;
+  }
+
+  static parallel(packageNames: Array<FlatpakPackageName>): Command {
+    return new ParallelCommand(
+      packageNames.map((packageName) => new InstallFlatpakPackage(packageName)),
+    );
+  }
+
+  toString() {
+    return JSON.stringify({ type: this.type, packageName: this.packageName });
+  }
+
+  async run(): Promise<CommandResult> {
+    await ensureInstalledFlatpakPackage(
+      this.packageName,
+    );
+    return {
+      stdout: `Installed Flatpak package ${this.packageName}.`,
+      stderr: "",
+      status: { success: true, code: 0 },
+    };
+  }
+}
+
+export class RemoveFlatpakPackage implements Command {
+  readonly type: "RemoveFlatpakPackage" = "RemoveFlatpakPackage";
+  readonly packageName: FlatpakPackageName;
+
+  constructor(packageName: FlatpakPackageName) {
+    this.packageName = packageName;
+  }
+
+  static parallel(packageNames: Array<FlatpakPackageName>): Command {
+    return new ParallelCommand(
+      packageNames.map((packageName) => new RemoveFlatpakPackage(packageName)),
+    );
+  }
+
+  toString() {
+    return JSON.stringify({ type: this.type, packageName: this.packageName });
+  }
+
+  async run(): Promise<CommandResult> {
+    await ensureRemovedFlatpakPackage(
+      this.packageName,
+    );
+    return {
+      stdout: `Removed Flatpak package ${this.packageName}.`,
       stderr: "",
       status: { success: true, code: 0 },
     };
