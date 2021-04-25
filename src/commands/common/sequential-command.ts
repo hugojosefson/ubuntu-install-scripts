@@ -1,5 +1,5 @@
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
-import { Enqueued, Queue } from "../../model/queue.ts";
+import { Queue } from "../../model/queue.ts";
 
 export class SequentialCommand implements Command {
   readonly type: CommandType = "SequentialCommand";
@@ -12,14 +12,14 @@ export class SequentialCommand implements Command {
   async run(queue: Queue): Promise<CommandResult> {
     const results: Array<CommandResult> = [];
     for (const command of this.commands) {
-      const commandEnqueued: Enqueued<Command> = queue.enqueue(command);
-      const commandResult: CommandResult = await commandEnqueued.promise;
-      results.push(commandResult);
+      results.push(await queue.enqueue(command).promise);
     }
 
     return {
-      stdout: results.map((result) => result.stdout.trim()).join("\n").trim(),
-      stderr: results.map((result) => result.stderr.trim()).join("\n").trim(),
+      stdout: results.map((result) => result.stdout).map((s = "") => s.trim())
+        .filter((s) => s.length > 0).join("\n"),
+      stderr: results.map((result) => result.stderr).map((s = "") => s.trim())
+        .filter((s) => s.length > 0).join("\n"),
       status: { success: true, code: 0 },
     };
   }

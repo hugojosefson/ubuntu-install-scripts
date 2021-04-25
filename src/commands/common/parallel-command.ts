@@ -10,14 +10,15 @@ export class ParallelCommand implements Command {
   }
 
   async run(queue: Queue): Promise<CommandResult> {
-    const commandsEnqueued: Array<Promise<CommandResult>> = this.commands.map(
+    const results = await Promise.all(this.commands.map(
       (command) => queue.enqueue(command).promise,
-    );
+    ));
 
-    const results = await Promise.all(commandsEnqueued);
     return {
-      stdout: results.map((result) => result.stdout).join("\n"),
-      stderr: results.map((result) => result.stderr).join("\n"),
+      stdout: results.map((result) => result.stdout).map((s = "") => s.trim())
+        .filter((s) => s.length > 0).join("\n"),
+      stderr: results.map((result) => result.stderr).map((s = "") => s.trim())
+        .filter((s) => s.length > 0).join("\n"),
       status: { success: true, code: 0 },
     };
   }
