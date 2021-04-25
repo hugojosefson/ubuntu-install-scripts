@@ -1,7 +1,7 @@
 import _debounce from "https://cdn.skypack.dev/lodash.debounce@v4.0.8";
 import parsePasswd_ from "https://cdn.skypack.dev/parse-passwd@v1.0.0";
-import { exists } from "https://deno.land/std@0.93.0/fs/mod.ts";
-import { dirname } from "https://deno.land/std@0.93.0/path/mod.ts";
+import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts";
+import { dirname } from "https://deno.land/std@0.95.0/path/mod.ts";
 import {
   error,
   success,
