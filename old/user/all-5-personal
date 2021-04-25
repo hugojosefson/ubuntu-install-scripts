@@ -7,9 +7,3 @@ cd "$(dirname "${0}")"
 ./disable-some-keyboard-shortcuts
 ./install-keybase
 ./install-rust
-
-ensureInstalledFlatpak \
-  org.signal.Signal \
-  com.spotify.Client \
-  com.slack.Slack \
-  com.microsoft.Teams \

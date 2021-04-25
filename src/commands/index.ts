@@ -5,6 +5,8 @@ import { all1MinimalSanity } from "./all-1-minimal-sanity.ts";
 import { all2DeveloperBase } from "./all-2-developer-base.ts";
 import { all3DeveloperWeb } from "./all-3-developer-web.ts";
 import { all4DeveloperJava } from "./all-4-developer-java.ts";
+import { all5Personal } from "./all-5-personal.ts";
+import { all6Gaming } from "./all-6-gaming.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
@@ -33,6 +35,8 @@ const commands: Record<string, Command> = {
   ["all-2-developer-base"]: all2DeveloperBase,
   ["all-3-developer-web"]: all3DeveloperWeb,
   ["all-4-developer-java"]: all4DeveloperJava,
+  ["all-5-personal"]: all5Personal,
+  ["all-6-gaming"]: all6Gaming,
   upgradeOsPackages: new UpgradeOsPackages(),
   gitk,
   vim,
