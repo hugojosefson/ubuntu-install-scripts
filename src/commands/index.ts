@@ -12,6 +12,7 @@ import { desktopIsHome } from "./desktop-is-home.ts";
 import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { gitk } from "./gitk.ts";
+import { idea } from "./idea.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { java } from "./java.ts";
 import { mTemp } from "./m-temp.ts";
@@ -44,6 +45,7 @@ const commands: Record<string, Command> = {
   addHomeBinToPath,
   addNodeModulesBinToPath,
   java,
+  idea,
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,
