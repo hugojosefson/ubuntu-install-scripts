@@ -31,6 +31,7 @@ import {
 import { UpgradeOsPackages } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { virtManager } from "./virt-manager.ts";
+import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
   ["all-1-minimal-sanity"]: all1MinimalSanity,
@@ -56,6 +57,7 @@ const commands: Record<string, Command> = {
   java,
   idea,
   rust,
+  yubikey,
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,

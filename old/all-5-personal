@@ -5,7 +5,6 @@ cd "$(dirname "${0}")"
 . ./common.bash
 
 ./install-keybase
-./install-yubikey
 ./install-nordvpn
 ./install-insync
 ./install-xpra

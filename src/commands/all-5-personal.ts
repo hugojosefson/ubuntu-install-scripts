@@ -5,6 +5,7 @@ import {
 import { ParallelCommand } from "./common/parallel-command.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { rust } from "./rust.ts";
+import { yubikey } from "./yubikey.ts";
 
 export const all5Personal = new ParallelCommand([
   disableSomeKeyboardShortcuts,
@@ -39,4 +40,5 @@ export const all5Personal = new ParallelCommand([
     "com.microsoft.Teams",
   ]),
   rust,
+  yubikey,
 ]);
