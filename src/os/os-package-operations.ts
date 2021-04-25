@@ -254,6 +254,9 @@ class InstallAurPackageOperation
 
   async run(): Promise<void> {
     await installOsPackagesImmediately(["base-devel", "yay"]);
+    if (await isInstalledAurPackages(this.packageNames)) {
+      return;
+    }
     await ensureSuccessful(targetUser, [
       "yay",
       "--sync",
