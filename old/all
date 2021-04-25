@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -o errexit -o nounset -o pipefail
-cd "$(dirname "${0}")"
-
-./all-3-developer-web
-./all-4-developer-java
-./all-5-personal

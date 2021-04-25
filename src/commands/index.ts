@@ -10,6 +10,7 @@ import { all6Gaming } from "./all-6-gaming.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
+import { ParallelCommand } from "./common/parallel-command.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { docker } from "./docker.ts";
@@ -34,6 +35,12 @@ import { virtManager } from "./virt-manager.ts";
 import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
+  ["all"]: new ParallelCommand([
+    all3DeveloperWeb,
+    all4DeveloperJava,
+    all5Personal,
+    all6Gaming,
+  ]),
   ["all-1-minimal-sanity"]: all1MinimalSanity,
   ["all-2-developer-base"]: all2DeveloperBase,
   ["all-3-developer-web"]: all3DeveloperWeb,
