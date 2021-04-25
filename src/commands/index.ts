@@ -20,6 +20,7 @@ import { isolateInDocker } from "./isolate-in-docker.ts";
 import { java } from "./java.ts";
 import { mTemp } from "./m-temp.ts";
 import { networkUtils } from "./network-utils.ts";
+import { rust } from "./rust.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { tabbed } from "./tabbed.ts";
 import {
@@ -52,6 +53,7 @@ const commands: Record<string, Command> = {
   flatpak,
   java,
   idea,
+  rust,
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,

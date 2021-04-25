@@ -3,6 +3,7 @@ import {
   InstallOsPackage,
 } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
+import { rust } from "./rust.ts";
 
 export const all5Personal = new ParallelCommand([
   InstallOsPackage.parallel([
@@ -35,4 +36,5 @@ export const all5Personal = new ParallelCommand([
     "com.slack.Slack",
     "com.microsoft.Teams",
   ]),
+  rust,
 ]);

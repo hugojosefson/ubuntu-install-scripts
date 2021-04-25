@@ -20,27 +20,28 @@ export type PackageName = OsPackageName | AurPackageName | FlatpakPackageName;
 
 export const ensureInstalledOsPackage = (
   name: OsPackageName,
-): Promise<void> => enqueue("os_install", name);
+): Promise<void> => enqueue("os_install", name, []);
 
 export const ensureRemovedOsPackage = (
   name: OsPackageName,
-): Promise<void> => enqueue("os_remove", name);
+  extraArgs: Array<string>,
+): Promise<void> => enqueue("os_remove", name, extraArgs);
 
 export const ensureInstalledAurPackage = (
   name: AurPackageName,
-): Promise<void> => enqueue("aur_install", name);
+): Promise<void> => enqueue("aur_install", name, []);
 
 export const ensureRemovedAurPackage = (
   name: AurPackageName,
-): Promise<void> => enqueue("aur_remove", name);
+): Promise<void> => enqueue("aur_remove", name, []);
 
 export const ensureInstalledFlatpakPackage = (
   name: FlatpakPackageName,
-): Promise<void> => enqueue("flatpak_install", name);
+): Promise<void> => enqueue("flatpak_install", name, []);
 
 export const ensureRemovedFlatpakPackage = (
   name: FlatpakPackageName,
-): Promise<void> => enqueue("flatpak_remove", name);
+): Promise<void> => enqueue("flatpak_remove", name, []);
 
 export const upgradeOsPackages = () => ensureInstalledOsPackage("--sysupgrade");
 
@@ -55,11 +56,13 @@ class PackageOperationQueue {
   enqueue<T extends PackageOperationType>(
     type: T,
     packageName: PackageName,
+    extraArgs: Array<string>,
   ): Promise<void> {
     if (!this.canAppendType(type)) {
       this.pendingOperation = createPackageOperation(
         this.pendingOperation.deferred.promise,
         type,
+        extraArgs,
       );
     }
     this.pendingOperation.append(packageName);
@@ -161,10 +164,12 @@ class InstallOsPackageOperation
       return;
     }
     await ensureSuccessful(ROOT, [
-      "bash",
-      "-c",
-      "yes | head -n 100 | pacman --sync --refresh --needed " +
-      this.packageNames.join(" "),
+      "pacman",
+      "--sync",
+      "--refresh",
+      "--needed",
+      "--noconfirm",
+      ...this.packageNames,
     ]);
   }
 }
@@ -172,12 +177,21 @@ class InstallOsPackageOperation
 const isInstalledOsPackages = async (
   packageNames: Array<OsPackageName>,
 ): Promise<boolean> =>
-  await isSuccessful(targetUser, [
-    "pacman",
-    "--query",
-    "--info",
-    ...packageNames,
+  (await Promise.all(
+    packageNames.map(async (packageName) =>
+      await isInstalledOsPackage(packageName)
+    ),
+  )).reduce((acc, curr) => acc && curr, true);
+
+const isInstalledOsPackage = async (
+  packageName: OsPackageName,
+): Promise<boolean> =>
+  await isSuccessful(ROOT, [
+    "bash",
+    "-c",
+    `pacman --query --info ${packageName} | grep -E '^Name +: ${packageName}$'`,
   ], { verbose: false });
+
 const isInstalledAurPackages = async (
   packageNames: Array<AurPackageName>,
 ): Promise<boolean> =>
@@ -203,8 +217,10 @@ const isInstalledFlatpakPackages = async (
 
 class RemoveOsPackageOperation
   extends AbstractActivePackageOperation<"os_remove"> {
-  constructor(waitUntilAfter: Promise<void>) {
+  private readonly extraArgs: Array<string>;
+  constructor(waitUntilAfter: Promise<void>, extraArgs: Array<string>) {
     super(waitUntilAfter, "os_remove");
+    this.extraArgs = extraArgs;
   }
   async run(): Promise<void> {
     if (!await isInstalledOsPackages(this.packageNames)) {
@@ -214,6 +230,7 @@ class RemoveOsPackageOperation
       "pacman",
       "--remove",
       "--noconfirm",
+      ...this.extraArgs,
       ...this.packageNames,
     ]);
   }
@@ -312,6 +329,7 @@ class RemoveFlatpakPackageOperation
 const createPackageOperation = <T extends PackageOperationType>(
   waitUntilAfter: Promise<void>,
   type: T,
+  extraArgs: Array<string>,
 ):
   | NoopPackageOperation
   | InstallOsPackageOperation
@@ -324,7 +342,9 @@ const createPackageOperation = <T extends PackageOperationType>(
   if (type === "os_install") {
     return new InstallOsPackageOperation(waitUntilAfter);
   }
-  if (type === "os_remove") return new RemoveOsPackageOperation(waitUntilAfter);
+  if (type === "os_remove") {
+    return new RemoveOsPackageOperation(waitUntilAfter, extraArgs);
+  }
   if (type === "aur_install") {
     return new InstallAurPackageOperation(waitUntilAfter);
   }
@@ -346,4 +366,5 @@ const queueInstance: PackageOperationQueue = new PackageOperationQueue();
 export const enqueue = <T extends PackageOperationType>(
   type: T,
   osPackageName: OsPackageName,
-): Promise<void> => queueInstance.enqueue(type, osPackageName);
+  extraArgs: Array<string>,
+): Promise<void> => queueInstance.enqueue(type, osPackageName, extraArgs);

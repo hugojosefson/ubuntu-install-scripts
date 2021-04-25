@@ -42,30 +42,46 @@ export class InstallOsPackage implements Command {
   }
 }
 
+export const IGNORE_DEPENDENTS: Array<string> = ["--nodeps", "--nodeps"];
+
 export class RemoveOsPackage implements Command {
   readonly type: "RemoveOsPackage" = "RemoveOsPackage";
   readonly packageName: OsPackageName;
+  readonly extraArgs: Array<string>;
 
-  constructor(packageName: OsPackageName) {
+  constructor(packageName: OsPackageName, extraArgs: Array<string> = []) {
     this.packageName = packageName;
+    this.extraArgs = extraArgs;
   }
 
-  static parallel(packageNames: Array<OsPackageName>): Command {
+  static parallel(
+    packageNames: Array<OsPackageName>,
+    extraArgs: Array<string> = [],
+  ): Command {
     return new ParallelCommand(
-      packageNames.map((packageName) => new RemoveOsPackage(packageName)),
+      packageNames.map((packageName) =>
+        new RemoveOsPackage(packageName, extraArgs)
+      ),
     );
   }
 
   toString() {
-    return JSON.stringify({ type: this.type, packageName: this.packageName });
+    return JSON.stringify({
+      type: this.type,
+      packageName: this.packageName,
+      extraArgs: this.extraArgs,
+    });
   }
 
   async run(): Promise<CommandResult> {
     await ensureRemovedOsPackage(
       this.packageName,
+      this.extraArgs,
     );
     return {
-      stdout: `Removed package ${this.packageName}.`,
+      stdout: `Removed package ${
+        this.extraArgs.length ? `with ${this.extraArgs.join(" ")}, ` : ""
+      }${this.packageName}.`,
       stderr: "",
       status: { success: true, code: 0 },
     };
