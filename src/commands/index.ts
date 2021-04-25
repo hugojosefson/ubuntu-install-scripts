@@ -34,6 +34,7 @@ import {
 import { UpgradeOsPackages } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { virtManager } from "./virt-manager.ts";
+import { virtualbox } from "./virtualbox.ts";
 import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
@@ -59,6 +60,7 @@ const commands: Record<string, Command> = {
   desktopIsHome,
   docker,
   virtManager,
+  virtualbox,
   downloadsIsTmp,
   addHomeBinToPath,
   addNodeModulesBinToPath,
