@@ -151,7 +151,7 @@ class InstallOsPackageOperation
     await ensureSuccessful(ROOT, [
       "bash",
       "-c",
-      "yes | pacman --sync --refresh --needed " +
+      "yes | head -n 100 | pacman --sync --refresh --needed " +
       this.packageNames.join(" "),
     ]);
   }
