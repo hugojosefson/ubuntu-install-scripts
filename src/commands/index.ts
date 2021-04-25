@@ -18,6 +18,7 @@ import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { flatpak } from "./flatpak.ts";
 import { gitk } from "./gitk.ts";
 import { idea } from "./idea.ts";
+import { insync } from "./insync.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { java } from "./java.ts";
 import { keybase } from "./keybase.ts";
@@ -61,6 +62,7 @@ const commands: Record<string, Command> = {
   docker,
   virtManager,
   virtualbox,
+  insync,
   downloadsIsTmp,
   addHomeBinToPath,
   addNodeModulesBinToPath,

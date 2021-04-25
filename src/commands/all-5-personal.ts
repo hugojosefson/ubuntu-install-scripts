@@ -4,6 +4,7 @@ import {
 } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
+import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { nordvpn } from "./nordvpn.ts";
 import { rust } from "./rust.ts";
@@ -46,4 +47,5 @@ export const all5Personal = new ParallelCommand([
   yubikey,
   keybase,
   nordvpn,
+  insync,
 ]);
