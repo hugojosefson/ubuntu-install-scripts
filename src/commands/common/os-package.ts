@@ -7,6 +7,7 @@ import {
   ensureRemovedAurPackage,
   ensureRemovedFlatpakPackage,
   ensureRemovedOsPackage,
+  ensureSwitchedOsPackage,
   FlatpakPackageName,
   OsPackageName,
 } from "../../os/os-package-operations.ts";
@@ -42,26 +43,17 @@ export class InstallOsPackage implements Command {
   }
 }
 
-export const IGNORE_DEPENDENTS: Array<string> = ["--nodeps", "--nodeps"];
-
 export class RemoveOsPackage implements Command {
   readonly type: "RemoveOsPackage" = "RemoveOsPackage";
   readonly packageName: OsPackageName;
-  readonly extraArgs: Array<string>;
 
-  constructor(packageName: OsPackageName, extraArgs: Array<string> = []) {
+  constructor(packageName: OsPackageName) {
     this.packageName = packageName;
-    this.extraArgs = extraArgs;
   }
 
-  static parallel(
-    packageNames: Array<OsPackageName>,
-    extraArgs: Array<string> = [],
-  ): Command {
+  static parallel(packageNames: Array<OsPackageName>): Command {
     return new ParallelCommand(
-      packageNames.map((packageName) =>
-        new RemoveOsPackage(packageName, extraArgs)
-      ),
+      packageNames.map((packageName) => new RemoveOsPackage(packageName)),
     );
   }
 
@@ -69,19 +61,48 @@ export class RemoveOsPackage implements Command {
     return JSON.stringify({
       type: this.type,
       packageName: this.packageName,
-      extraArgs: this.extraArgs,
     });
   }
 
   async run(): Promise<CommandResult> {
-    await ensureRemovedOsPackage(
-      this.packageName,
-      this.extraArgs,
+    await ensureRemovedOsPackage(this.packageName);
+    return {
+      stdout: `Removed package ${this.packageName}.`,
+      stderr: "",
+      status: { success: true, code: 0 },
+    };
+  }
+}
+
+export class SwitchOsPackage implements Command {
+  readonly type: "SwitchOsPackage" = "SwitchOsPackage";
+  readonly removePackageName: OsPackageName;
+  readonly installPackageName: OsPackageName;
+
+  constructor(
+    removePackageName: OsPackageName,
+    installPackageName: OsPackageName,
+  ) {
+    this.removePackageName = removePackageName;
+    this.installPackageName = installPackageName;
+  }
+
+  toString() {
+    return JSON.stringify({
+      type: this.type,
+      removePackageName: this.removePackageName,
+      installPackageName: this.installPackageName,
+    });
+  }
+
+  async run(): Promise<CommandResult> {
+    await ensureSwitchedOsPackage(
+      this.removePackageName,
+      this.installPackageName,
     );
     return {
-      stdout: `Removed package ${
-        this.extraArgs.length ? `with ${this.extraArgs.join(" ")}, ` : ""
-      }${this.packageName}.`,
+      stdout:
+        `Switched package ${this.removePackageName} to ${this.installPackageName}.`,
       stderr: "",
       status: { success: true, code: 0 },
     };
