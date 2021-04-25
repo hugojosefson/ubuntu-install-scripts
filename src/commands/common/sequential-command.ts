@@ -18,8 +18,8 @@ export class SequentialCommand implements Command {
     }
 
     return {
-      stdout: results.map((result) => result.stdout).join("\n"),
-      stderr: results.map((result) => result.stderr).join("\n"),
+      stdout: results.map((result) => result.stdout.trim()).join("\n").trim(),
+      stderr: results.map((result) => result.stderr.trim()).join("\n").trim(),
       status: { success: true, code: 0 },
     };
   }

@@ -41,6 +41,8 @@ export const cli = async () => {
     (err: any) => {
       if (err.message) console.error(colorlog.error(err.message));
       if (err.stack) console.error(colorlog.warning(err.stack));
+      err.stdout && console.log(colorlog.success(err.stdout));
+      err.stderr && console.error(colorlog.error(err.stderr));
       console.error(colorlog.error(JSON.stringify(err, null, 2)));
       const code: number = err?.status?.code || err?.code || 1;
       Deno.exit(code);

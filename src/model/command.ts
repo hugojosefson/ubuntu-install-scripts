@@ -17,6 +17,7 @@ export type CommandType =
   | "CreateDir"
   | "LineInFile"
   | "Exec"
+  | "Noop"
   | "ParallelCommand"
   | "SequentialCommand";
 

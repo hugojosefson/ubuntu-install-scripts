@@ -151,9 +151,9 @@ class InstallOsPackageOperation
     await ensureSuccessful(ROOT, [
       "bash",
       "-c",
-      "yes y | pacman --sync --refresh --noconfirm --needed " +
+      "yes | pacman --sync --refresh --needed " +
       this.packageNames.join(" "),
-    ], {});
+    ], { stdout: "inherit", stderr: "inherit" });
   }
 }
 

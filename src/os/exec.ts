@@ -2,7 +2,10 @@ import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
 import { ROOT } from "./user/target-user.ts";
 
-export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env">;
+export type ExecOptions = Pick<
+  Deno.RunOptions,
+  "cwd" | "env" | "stdout" | "stderr"
+>;
 
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
@@ -38,7 +41,9 @@ export const ensureSuccessful = async (
     }
   } catch (e) {
   }
-  return Promise.reject(process);
+  return Promise.reject({
+    status: await process.status(),
+  });
 };
 
 export const symlink = (
