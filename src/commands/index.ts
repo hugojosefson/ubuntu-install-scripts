@@ -4,6 +4,7 @@ import { addNodeModulesBinToPath } from "./add-node_modules-bin-to-path.ts";
 import { all1MinimalSanity } from "./all-1-minimal-sanity.ts";
 import { all2DeveloperBase } from "./all-2-developer-base.ts";
 import { all3DeveloperWeb } from "./all-3-developer-web.ts";
+import { all4DeveloperJava } from "./all-4-developer-java.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
@@ -12,6 +13,7 @@ import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { gitk } from "./gitk.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
+import { java } from "./java.ts";
 import { mTemp } from "./m-temp.ts";
 import { networkUtils } from "./network-utils.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
@@ -28,6 +30,7 @@ const commands: Record<string, Command> = {
   ["all-1-minimal-sanity"]: all1MinimalSanity,
   ["all-2-developer-base"]: all2DeveloperBase,
   ["all-3-developer-web"]: all3DeveloperWeb,
+  ["all-4-developer-java"]: all4DeveloperJava,
   upgradeOsPackages: new UpgradeOsPackages(),
   gitk,
   vim,
@@ -40,6 +43,7 @@ const commands: Record<string, Command> = {
   downloadsIsTmp,
   addHomeBinToPath,
   addNodeModulesBinToPath,
+  java,
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,

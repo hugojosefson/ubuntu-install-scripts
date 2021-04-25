@@ -40,6 +40,8 @@ export const ensureSuccessful = async (
   }
   return Promise.reject({
     status: await process.status(),
+    stdout: new TextDecoder().decode(await process.output()),
+    stderr: new TextDecoder().decode(await process.stderrOutput()),
   });
 };
 
