@@ -20,6 +20,7 @@ import { gitk } from "./gitk.ts";
 import { idea } from "./idea.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { java } from "./java.ts";
+import { keybase } from "./keybase.ts";
 import { mTemp } from "./m-temp.ts";
 import { networkUtils } from "./network-utils.ts";
 import { rust } from "./rust.ts";
@@ -65,6 +66,7 @@ const commands: Record<string, Command> = {
   idea,
   rust,
   yubikey,
+  keybase,
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,
