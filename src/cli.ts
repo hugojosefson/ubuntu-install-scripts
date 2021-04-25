@@ -23,9 +23,9 @@ export const cli = async () => {
   await run(Deno.args).then(
     (results: Array<CommandResult>) => {
       results.forEach((result) => {
-        result.stdout && console.log(colorlog.success(result.stdout));
-        result.stderr && console.error(colorlog.error(result.stderr));
-        if (!result?.status?.success) {
+        if (result.stdout) console.log(colorlog.success(result.stdout));
+        if (result.stderr) console.error(colorlog.error(result.stderr));
+        if (!(result?.status?.success)) {
           console.error(JSON.stringify(result.status));
         }
       });
@@ -39,11 +39,20 @@ export const cli = async () => {
       }
     },
     (err: any) => {
-      if (err.message) console.error(colorlog.error(err.message));
-      if (err.stack) console.error(colorlog.warning(err.stack));
-      err.stdout && console.log(colorlog.success(err.stdout));
-      err.stderr && console.error(colorlog.error(err.stderr));
-      console.error(colorlog.error(JSON.stringify(err, null, 2)));
+      if (err.message) {
+        console.error("err.message: " + colorlog.error(err.message));
+      }
+      if (err.stack) {
+        console.error("err.stack: " + colorlog.warning(err.stack));
+      }
+      if (err.stdout) {
+        console.log("err.stdout: " + colorlog.success(err.stdout));
+      }
+      if (err.stderr) {
+        console.error("err.stderr: " + colorlog.error(err.stderr));
+      }
+
+      console.error("err: " + colorlog.error(JSON.stringify(err, null, 2)));
       const code: number = err?.status?.code || err?.code || 1;
       Deno.exit(code);
     },

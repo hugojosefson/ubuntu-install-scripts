@@ -13,8 +13,7 @@ export const run = async (
       .map((command) => queue.enqueue(command)),
   );
 
-  const commandResults: Array<CommandResult> = await Promise.all(
+  return await Promise.all(
     enqueuedCommands.map((enqueued: Enqueued<Command>) => enqueued.promise),
   );
-  return commandResults;
 };

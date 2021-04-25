@@ -153,7 +153,7 @@ class InstallOsPackageOperation
       "-c",
       "yes | pacman --sync --refresh --needed " +
       this.packageNames.join(" "),
-    ], { stdout: "inherit", stderr: "inherit" });
+    ]);
   }
 }
 

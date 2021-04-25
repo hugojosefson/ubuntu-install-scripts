@@ -1,5 +1,5 @@
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
-import { Enqueued, Queue } from "../../model/queue.ts";
+import { Queue } from "../../model/queue.ts";
 
 export class ParallelCommand implements Command {
   readonly type: CommandType = "ParallelCommand";
@@ -11,10 +11,7 @@ export class ParallelCommand implements Command {
 
   async run(queue: Queue): Promise<CommandResult> {
     const commandsEnqueued: Array<Promise<CommandResult>> = this.commands.map(
-      async (command) => {
-        const commandEnqueued: Enqueued<Command> = queue.enqueue(command);
-        return commandEnqueued.promise;
-      },
+      (command) => queue.enqueue(command).promise,
     );
 
     const results = await Promise.all(commandsEnqueued);

@@ -2,10 +2,7 @@ import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
 import { ROOT } from "./user/target-user.ts";
 
-export type ExecOptions = Pick<
-  Deno.RunOptions,
-  "cwd" | "env" | "stdout" | "stderr"
->;
+export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env">;
 
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
