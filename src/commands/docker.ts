@@ -14,7 +14,7 @@ const activateAndTest = new SequentialCommand([
 ]);
 
 export const docker = new SequentialCommand([
-  new InstallOsPackage("docker"),
+  InstallOsPackage.parallel(["docker", "docker-compose"]),
   new Exec(ROOT, {}, ["usermod", "-aG", "docker", targetUser.username]),
   ...(isInsideDocker ? [] : [activateAndTest]),
 ]);
