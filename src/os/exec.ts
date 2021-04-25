@@ -4,6 +4,30 @@ import { ROOT } from "./user/target-user.ts";
 
 export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env">;
 
+export const pipeAndCollect = async (
+  from: (Deno.Reader & Deno.Closer) | null,
+  to?: (Deno.Writer & Deno.Closer) | null | false,
+): Promise<string> => {
+  if (!from) throw new Error("Nothing to pipe from!");
+
+  const buf: Uint8Array = new Uint8Array(1024);
+  let all: Uint8Array = Uint8Array.from([]);
+  for (
+    let n: number | null = 0;
+    typeof n === "number";
+    n = await from.read(buf)
+  ) {
+    if (n > 0) {
+      const bytes: Uint8Array = buf.subarray(0, n);
+      all = Uint8Array.from([...all, ...bytes]);
+      if (to) {
+        await to.write(bytes);
+      }
+    }
+  }
+  return new TextDecoder().decode(all);
+};
+
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
   cmd: Array<string>,
@@ -27,21 +51,23 @@ export const ensureSuccessful = async (
     cmd: effectiveCmd,
     ...options,
   });
+  const stdoutPromise = pipeAndCollect(process.stdout, Deno.stdout);
+  const stderrPromise = pipeAndCollect(process.stderr, Deno.stderr);
   try {
     const status: Deno.ProcessStatus = await process.status();
     if (status.success) {
       return {
         status,
-        stdout: new TextDecoder().decode(await process.output()),
-        stderr: new TextDecoder().decode(await process.stderrOutput()),
+        stdout: await stdoutPromise,
+        stderr: await stderrPromise,
       };
     }
   } catch (e) {
   }
   return Promise.reject({
     status: await process.status(),
-    stdout: new TextDecoder().decode(await process.output()),
-    stderr: new TextDecoder().decode(await process.stderrOutput()),
+    stdout: await stdoutPromise,
+    stderr: await stderrPromise,
   });
 };
 
