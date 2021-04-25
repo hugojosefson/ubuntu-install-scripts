@@ -2,11 +2,14 @@ import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
 import { ROOT } from "./user/target-user.ts";
 
-export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env">;
+export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
+  verbose?: boolean;
+};
 
 export const pipeAndCollect = async (
   from: (Deno.Reader & Deno.Closer) | null,
   to?: (Deno.Writer & Deno.Closer) | null | false,
+  verbose: boolean = false,
 ): Promise<string> => {
   if (!from) throw new Error("Nothing to pipe from!");
 
@@ -20,7 +23,7 @@ export const pipeAndCollect = async (
     if (n > 0) {
       const bytes: Uint8Array = buf.subarray(0, n);
       all = Uint8Array.from([...all, ...bytes]);
-      if (to) {
+      if (verbose && to) {
         await to.write(bytes);
       }
     }
@@ -44,15 +47,29 @@ export const ensureSuccessful = async (
       JSON.stringify({ options, user: asUser.username, cmd, effectiveCmd }),
     ),
   );
+  const runOptions = (opts: ExecOptions): Exclude<ExecOptions, "verbose"> => {
+    if (opts.cwd && opts.env) return { cwd: opts.cwd, env: opts.env };
+    if (opts.cwd) return { cwd: opts.cwd };
+    if (opts.env) return { env: opts.env };
+    return {};
+  };
   const process: Deno.Process = Deno.run({
     stdin: "null",
     stdout: "piped",
     stderr: "piped",
     cmd: effectiveCmd,
-    ...options,
+    ...runOptions(options),
   });
-  const stdoutPromise = pipeAndCollect(process.stdout, Deno.stdout);
-  const stderrPromise = pipeAndCollect(process.stderr, Deno.stderr);
+  const stdoutPromise = pipeAndCollect(
+    process.stdout,
+    Deno.stdout,
+    options.verbose,
+  );
+  const stderrPromise = pipeAndCollect(
+    process.stderr,
+    Deno.stderr,
+    options.verbose,
+  );
   try {
     const status: Deno.ProcessStatus = await process.status();
     if (status.success) {
