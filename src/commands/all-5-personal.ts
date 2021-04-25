@@ -3,9 +3,11 @@ import {
   InstallOsPackage,
 } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
+import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { rust } from "./rust.ts";
 
 export const all5Personal = new ParallelCommand([
+  disableSomeKeyboardShortcuts,
   InstallOsPackage.parallel([
     "jack2",
     "gnu-free-fonts",

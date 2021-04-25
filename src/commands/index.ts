@@ -11,6 +11,7 @@ import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
+import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { flatpak } from "./flatpak.ts";
@@ -41,6 +42,7 @@ const commands: Record<string, Command> = {
   upgradeOsPackages: new UpgradeOsPackages(),
   gitk,
   vim,
+  disableSomeKeyboardShortcuts,
   saveBashHistory,
   bashGitPrompt,
   isolateInDocker,
