@@ -177,7 +177,7 @@ const isInstalledOsPackages = async (
     "--query",
     "--info",
     ...packageNames,
-  ]);
+  ], { verbose: false });
 const isInstalledAurPackages = async (
   packageNames: Array<AurPackageName>,
 ): Promise<boolean> =>
@@ -186,18 +186,18 @@ const isInstalledAurPackages = async (
     "--query",
     "--info",
     ...packageNames,
-  ]);
+  ], { verbose: false });
 
 const isInstalledFlatpakPackages = async (
   packageNames: Array<FlatpakPackageName>,
 ): Promise<boolean> =>
   (await Promise.all(
     packageNames.map(async (packageName) =>
-      await isSuccessful(targetUser, [
+      await isSuccessful(ROOT, [
         "bash",
         "-c",
         `flatpak list --columns application | grep --line-regexp '${packageName}'`,
-      ])
+      ], { verbose: false })
     ),
   )).reduce((acc, curr) => acc && curr, true);
 

@@ -1,3 +1,4 @@
+import { config } from "../config.ts";
 import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
 import { ROOT } from "./user/target-user.ts";
@@ -9,9 +10,13 @@ export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
 export const pipeAndCollect = async (
   from: (Deno.Reader & Deno.Closer) | null,
   to?: (Deno.Writer & Deno.Closer) | null | false,
-  verbose: boolean = false,
+  verbose?: boolean,
 ): Promise<string> => {
   if (!from) throw new Error("Nothing to pipe from!");
+
+  const isVerbose: boolean = typeof verbose === "boolean"
+    ? verbose
+    : config.verbose;
 
   const buf: Uint8Array = new Uint8Array(1024);
   let all: Uint8Array = Uint8Array.from([]);
@@ -23,7 +28,7 @@ export const pipeAndCollect = async (
     if (n > 0) {
       const bytes: Uint8Array = buf.subarray(0, n);
       all = Uint8Array.from([...all, ...bytes]);
-      if (verbose && to) {
+      if (isVerbose && to) {
         await to.write(bytes);
       }
     }
