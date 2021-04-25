@@ -35,6 +35,7 @@ export const all5Personal = new ParallelCommand([
     "imagemagick",
     "inkscape",
     "neofetch",
+    "xpra",
   ]),
   InstallFlatpakPackage.parallel([
     "com.spotify.Client",
