@@ -4,6 +4,5 @@ set -o errexit -o nounset -o pipefail
 cd "$(dirname "${0}")"
 . ./common.bash
 
-./install-nordvpn
 ./install-insync
 ./install-xpra

@@ -23,6 +23,7 @@ import { java } from "./java.ts";
 import { keybase } from "./keybase.ts";
 import { mTemp } from "./m-temp.ts";
 import { networkUtils } from "./network-utils.ts";
+import { nordvpn } from "./nordvpn.ts";
 import { rust } from "./rust.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { tabbed } from "./tabbed.ts";
@@ -67,6 +68,7 @@ const commands: Record<string, Command> = {
   rust,
   yubikey,
   keybase,
+  nordvpn,
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
   mTemp,
