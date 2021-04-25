@@ -1,3 +1,6 @@
-import { NOOP } from "./common/noop.ts";
+import { ParallelCommand } from "./common/parallel-command.ts";
+import { minecraft } from "./minecraft.ts";
 
-export const all6Gaming = NOOP;
+export const all6Gaming = new ParallelCommand([
+  minecraft,
+]);
