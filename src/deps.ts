@@ -50,3 +50,6 @@ export const stringifyYaml = (value: any): string =>
 
 import { fetch as fetchFile } from "https://deno.land/x/file_fetch@0.1.0/mod.ts";
 export { fetchFile };
+
+import PQueue from "https://cdn.skypack.dev/p-queue@7.1.0?dts";
+export { PQueue };
