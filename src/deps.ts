@@ -1,30 +1,12 @@
-import _debounce from "https://cdn.skypack.dev/lodash.debounce@v4.0.8";
-import parsePasswd_ from "https://cdn.skypack.dev/parse-passwd@v1.0.0";
-import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts";
 import { dirname } from "https://deno.land/std@0.95.0/path/mod.ts";
+import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts";
+export { dirname, exists };
+
 import {
   error,
   success,
   warning,
 } from "https://deno.land/x/colorlog@v1.0/mod.ts";
-
-export { dirname };
-
-export { exists };
-
-export const debounce = (
-  func: Function,
-  wait: number = 0,
-  options: { leading?: boolean; trailing?: boolean; maxWait?: number } = {
-    leading: false,
-    trailing: true,
-  },
-) =>
-  _debounce(func, wait, {
-    leading: false,
-    trailing: true,
-    ...options,
-  });
 
 type LogColorer = (val: any) => string;
 export const colorlog: {
@@ -45,6 +27,8 @@ interface PasswdEntry_ {
   uid: any;
   gid: any;
 }
+
+import parsePasswd_ from "https://cdn.skypack.dev/parse-passwd@v1.0.0";
 export const parsePasswd = (content: string): Array<PasswdEntry> => {
   const parsed = parsePasswd_(content) as Array<PasswdEntry_>;
   return parsed
