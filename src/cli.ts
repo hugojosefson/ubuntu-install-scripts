@@ -20,7 +20,9 @@ export const cli = async () => {
       "You must run this program as root. Try again with sudo :)",
     );
   }
-  if (Deno.env.get("VERBOSE") === "true") {
+  if (Deno.env.get("VERBOSE") === "false") {
+    config.verbose = false;
+  } else {
     config.verbose = true;
   }
   await run(Deno.args).then(
