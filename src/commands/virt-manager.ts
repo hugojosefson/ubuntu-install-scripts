@@ -1,13 +1,13 @@
 import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { ROOT } from "../os/user/target-user.ts";
 import { NOOP } from "./common/noop.ts";
-import { InstallOsPackage, SwitchOsPackage } from "./common/os-package.ts";
+import { InstallOsPackage, ReplaceOsPackage } from "./common/os-package.ts";
 import { SequentialCommand } from "./common/sequential-command.ts";
 import { Exec } from "./exec.ts";
 
 export const virtManager = new SequentialCommand([
-  new SwitchOsPackage("iptables", "iptables-nft"),
-  new SwitchOsPackage("jack", "jack2"),
+  new ReplaceOsPackage("iptables", "iptables-nft"),
+  new ReplaceOsPackage("jack", "jack2"),
   InstallOsPackage.parallel([
     "bridge-utils",
     "dmidecode",

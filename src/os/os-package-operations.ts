@@ -7,7 +7,7 @@ export type PackageOperationType =
   | "noop"
   | "os_install"
   | "os_remove"
-  | "os_switch"
+  | "os_replace"
   | "aur_install"
   | "aur_remove"
   | "flatpak_install"
@@ -27,10 +27,11 @@ export const ensureRemovedOsPackage = (
   name: OsPackageName,
 ): Promise<void> => enqueue("os_remove", name);
 
-export const ensureSwitchedOsPackage = (
+export const ensureReplacedOsPackage = (
   removePackageName: OsPackageName,
   installPackageName: OsPackageName,
-): Promise<void> => enqueue("os_switch", removePackageName, installPackageName);
+): Promise<void> =>
+  enqueue("os_replace", removePackageName, installPackageName);
 
 export const ensureInstalledAurPackage = (
   name: AurPackageName,
@@ -54,16 +55,16 @@ class PackageOperationQueue {
   private pendingOperation: PackageOperation<any> = new NoopPackageOperation();
 
   private canAppendType(type: PackageOperationType): boolean {
-    return type !== "os_switch" && this.pendingOperation.isAppendable &&
+    return type !== "os_replace" && this.pendingOperation.isAppendable &&
       this.pendingOperation.type === type;
   }
 
   enqueue(
-    type: "os_switch",
+    type: "os_replace",
     removeOsPackageName: OsPackageName,
     installOsPackageName: OsPackageName,
   ): Promise<void>;
-  enqueue<T extends Exclude<PackageOperationType, "os_switch">>(
+  enqueue<T extends Exclude<PackageOperationType, "os_replace">>(
     type: T,
     packageName: PackageName,
   ): Promise<void>;
@@ -72,7 +73,7 @@ class PackageOperationQueue {
     packageName: PackageName,
     packageName2?: PackageName,
   ): Promise<void> {
-    if (type === "os_switch") {
+    if (type === "os_replace") {
       if (!packageName2) {
         throw new Error(
           "Unexpected: packageName2 should be specified.",
@@ -260,10 +261,10 @@ class RemoveOsPackageOperation
   }
 }
 
-class SwitchOsPackageOperation
-  extends AbstractActivePackageOperation<"os_switch"> {
+class ReplaceOsPackageOperation
+  extends AbstractActivePackageOperation<"os_replace"> {
   constructor(waitUntilAfter: Promise<void>) {
-    super(waitUntilAfter, "os_switch");
+    super(waitUntilAfter, "os_replace");
   }
   async run(): Promise<void> {
     const [removeOsPackageName, installOsPackageName] = this.packageNames;
@@ -381,7 +382,7 @@ const createPackageOperation = <T extends PackageOperationType>(
   | NoopPackageOperation
   | InstallOsPackageOperation
   | RemoveOsPackageOperation
-  | SwitchOsPackageOperation
+  | ReplaceOsPackageOperation
   | InstallAurPackageOperation
   | RemoveAurPackageOperation
   | InstallFlatpakPackageOperation
@@ -393,8 +394,8 @@ const createPackageOperation = <T extends PackageOperationType>(
   if (type === "os_remove") {
     return new RemoveOsPackageOperation(waitUntilAfter);
   }
-  if (type === "os_switch") {
-    return new SwitchOsPackageOperation(waitUntilAfter);
+  if (type === "os_replace") {
+    return new ReplaceOsPackageOperation(waitUntilAfter);
   }
   if (type === "aur_install") {
     return new InstallAurPackageOperation(waitUntilAfter);
@@ -415,11 +416,11 @@ const createPackageOperation = <T extends PackageOperationType>(
 
 const queueInstance: PackageOperationQueue = new PackageOperationQueue();
 export function enqueue(
-  type: "os_switch",
+  type: "os_replace",
   removeOsPackageName: OsPackageName,
   installOsPackageName: OsPackageName,
 ): Promise<void>;
-export function enqueue<T extends Exclude<PackageOperationType, "os_switch">>(
+export function enqueue<T extends Exclude<PackageOperationType, "os_replace">>(
   type: T,
   osPackageName: OsPackageName,
 ): Promise<void>;
@@ -428,14 +429,14 @@ export function enqueue<T extends PackageOperationType>(
   osPackageName: OsPackageName,
   osPackageName2?: OsPackageName,
 ): Promise<void> {
-  if (type === "os_switch") {
+  if (type === "os_replace") {
     if (!osPackageName2) {
       throw new Error("Unexpected: installOsPackageName should be specified.");
     }
-    return queueInstance.enqueue("os_switch", osPackageName, osPackageName2);
+    return queueInstance.enqueue("os_replace", osPackageName, osPackageName2);
   }
   return queueInstance.enqueue(
-    type as Exclude<PackageOperationType, "os_switch">,
+    type as Exclude<PackageOperationType, "os_replace">,
     osPackageName,
   );
 }

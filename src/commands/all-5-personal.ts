@@ -1,7 +1,7 @@
 import {
   InstallFlatpakPackage,
   InstallOsPackage,
-  SwitchOsPackage,
+  ReplaceOsPackage,
 } from "./common/os-package.ts";
 import { ParallelCommand } from "./common/parallel-command.ts";
 import { SequentialCommand } from "./common/sequential-command.ts";
@@ -15,7 +15,7 @@ import { yubikey } from "./yubikey.ts";
 export const all5Personal = new ParallelCommand([
   disableSomeKeyboardShortcuts,
   new SequentialCommand([
-    new SwitchOsPackage("jack", "jack2"),
+    new ReplaceOsPackage("jack", "jack2"),
     InstallOsPackage.parallel([
       "gnu-free-fonts",
       "noto-fonts",

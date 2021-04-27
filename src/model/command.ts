@@ -9,7 +9,7 @@ export interface CommandResult {
 export type CommandType =
   | "InstallOsPackage"
   | "RemoveOsPackage"
-  | "SwitchOsPackage"
+  | "ReplaceOsPackage"
   | "UpgradeOsPackages"
   | "InstallAurPackage"
   | "RemoveAurPackage"

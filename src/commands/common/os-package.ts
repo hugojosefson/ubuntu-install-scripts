@@ -7,7 +7,7 @@ import {
   ensureRemovedAurPackage,
   ensureRemovedFlatpakPackage,
   ensureRemovedOsPackage,
-  ensureSwitchedOsPackage,
+  ensureReplacedOsPackage,
   FlatpakPackageName,
   OsPackageName,
 } from "../../os/os-package-operations.ts";
@@ -74,8 +74,8 @@ export class RemoveOsPackage implements Command {
   }
 }
 
-export class SwitchOsPackage implements Command {
-  readonly type: "SwitchOsPackage" = "SwitchOsPackage";
+export class ReplaceOsPackage implements Command {
+  readonly type: "ReplaceOsPackage" = "ReplaceOsPackage";
   readonly removePackageName: OsPackageName;
   readonly installPackageName: OsPackageName;
 
@@ -96,13 +96,13 @@ export class SwitchOsPackage implements Command {
   }
 
   async run(): Promise<CommandResult> {
-    await ensureSwitchedOsPackage(
+    await ensureReplacedOsPackage(
       this.removePackageName,
       this.installPackageName,
     );
     return {
       stdout:
-        `Switched package ${this.removePackageName} to ${this.installPackageName}.`,
+        `Replaced package ${this.removePackageName} with ${this.installPackageName}.`,
       stderr: "",
       status: { success: true, code: 0 },
     };
