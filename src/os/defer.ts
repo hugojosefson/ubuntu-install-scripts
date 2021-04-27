@@ -28,9 +28,3 @@ export const defer = <T>(): Deferred<T> => {
   // @ts-ignore
   return { promise, resolve, reject };
 };
-
-export const resolvedVoidDefer = (): Deferred<void> => {
-  const deferred = defer<void>();
-  deferred.resolve();
-  return deferred;
-};
