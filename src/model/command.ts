@@ -20,9 +20,7 @@ export type CommandType =
   | "CreateDir"
   | "LineInFile"
   | "Exec"
-  | "Noop"
-  | "ParallelCommand"
-  | "SequentialCommand";
+  | "Noop";
 
 export interface Command {
   readonly type: CommandType;
