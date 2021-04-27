@@ -1,6 +1,5 @@
 import { dirname } from "https://deno.land/std@0.95.0/path/mod.ts";
-import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts";
-export { dirname, exists };
+export { dirname };
 
 import {
   error,

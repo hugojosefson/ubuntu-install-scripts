@@ -1,7 +1,3 @@
-import { exists } from "../deps.ts";
-import { isSuccessful } from "./exec.ts";
-import { ROOT } from "./user/target-user.ts";
+import { isDocker } from "https://deno.land/x/is_docker@v2.0.0/mod.ts";
 
-export const isInsideDocker = await exists("/.dockerenv") ||
-  await exists("/proc/self/cgroup") &&
-    await isSuccessful(ROOT, ["grep", "docker", "/proc/self/cgroup"]);
+export const isInsideDocker: boolean = await isDocker();
