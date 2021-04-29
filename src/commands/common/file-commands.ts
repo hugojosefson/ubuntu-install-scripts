@@ -1,5 +1,6 @@
 import { dirname, PasswdEntry } from "../../deps.ts";
 import { Command, CommandResult, CommandType } from "../../model/command.ts";
+import { Dependency, DependencyId } from "../../model/dependency.ts";
 import { Queue } from "../../model/queue.ts";
 import { isSuccessful, symlink } from "../../os/exec.ts";
 import { resolvePath } from "../../os/resolve-path.ts";
@@ -7,12 +8,19 @@ import { ROOT } from "../../os/user/target-user.ts";
 
 export abstract class AbstractFileCommand implements Command {
   abstract readonly type: CommandType;
+  readonly id: DependencyId;
 
   readonly owner: PasswdEntry;
   readonly path: string;
   readonly mode?: number;
 
-  protected constructor(owner: PasswdEntry, path: string, mode?: number) {
+  protected constructor(
+    id: DependencyId,
+    owner: PasswdEntry,
+    path: string,
+    mode?: number,
+  ) {
+    this.id = id;
     this.owner = owner;
     this.path = resolvePath(owner, path);
     this.mode = mode;
@@ -20,6 +28,7 @@ export abstract class AbstractFileCommand implements Command {
 
   toString() {
     return JSON.stringify({
+      id: this.id,
       owner: this.owner,
       type: this.type,
       path: this.path,
@@ -131,7 +140,7 @@ export class CreateFile extends AbstractFileCommand {
     shouldBackupAnyExistingFile: boolean = false,
     mode?: number,
   ) {
-    super(owner, path, mode);
+    super(new DependencyId("CreateFile", path), owner, path, mode);
     this.contents = contents;
     this.shouldBackupAnyExistingFile = shouldBackupAnyExistingFile;
   }
@@ -165,10 +174,13 @@ const createDir = async (
 
 export class CreateDir implements Command {
   readonly type: "CreateDir" = "CreateDir";
+  readonly id: DependencyId;
+  readonly dependencies: Array<Dependency> = [];
   readonly owner: PasswdEntry;
   readonly path: string;
 
   constructor(owner: PasswdEntry, path: string) {
+    this.id = new DependencyId("CreateDir", path);
     this.owner = owner;
     this.path = path;
   }
@@ -217,7 +229,7 @@ export class LineInFile extends AbstractFileCommand {
   readonly line: string;
 
   constructor(owner: PasswdEntry, path: string, line: string) {
-    super(owner, path);
+    super(new DependencyId("LineInFile", { path, line }), owner, path);
     this.line = line;
   }
 
@@ -240,7 +252,7 @@ export class Symlink extends AbstractFileCommand {
   readonly target: string;
 
   constructor(owner: PasswdEntry, from: string, to: string) {
-    super(owner, to);
+    super(new DependencyId("Symlink", { from, to }), owner, to);
     this.target = resolvePath(owner, from);
   }
 

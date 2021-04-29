@@ -52,3 +52,6 @@ export { fetchFile };
 
 import PQueue from "https://cdn.skypack.dev/p-queue@7.1.0?dts";
 export { PQueue };
+
+import memoize from "https://deno.land/x/memoizy@1.0.0/mod.ts";
+export { memoize };

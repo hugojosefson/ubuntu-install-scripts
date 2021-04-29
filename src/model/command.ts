@@ -1,4 +1,8 @@
-import { Queue } from "./queue.ts";
+import {
+  Dependency,
+  NeedsDependenciesDone,
+  NeedsExclusiveLock,
+} from "./dependency.ts";
 
 export interface CommandResult {
   status: Deno.ProcessStatus;
@@ -22,8 +26,9 @@ export type CommandType =
   | "Exec"
   | "Noop";
 
-export interface Command {
+export interface Command
+  extends NeedsExclusiveLock, NeedsDependenciesDone, Dependency {
   readonly type: CommandType;
-  readonly run: (queue: Queue) => Promise<CommandResult>;
+  readonly run: () => Promise<CommandResult>;
   readonly toString: () => string;
 }

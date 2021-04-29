@@ -16,7 +16,7 @@ export const defer = <T>(): Deferred<T> => {
   let resolve: ResolveFn<T>;
   let reject: RejectFn;
 
-  const promise: Promise<T> = new Promise(
+  const promise: Promise<T> = new Promise<T>(
     (resolveFn, rejectFn) => {
       resolve = resolveFn;
       reject = rejectFn;

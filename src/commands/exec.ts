@@ -1,38 +1,48 @@
 import { PasswdEntry } from "../deps.ts";
 import { Command, CommandResult } from "../model/command.ts";
+import { Dependency, DependencyId, Lock } from "../model/dependency.ts";
+import { defer, Deferred } from "../os/defer.ts";
 import { ensureSuccessful, ExecOptions } from "../os/exec.ts";
-import { SequentialCommand } from "./common/sequential-command.ts";
 
 export class Exec implements Command {
   readonly type: "Exec" = "Exec";
+  readonly id: DependencyId;
+  readonly dependencies: Array<Dependency>;
+  private readonly doneDeferred: Deferred<CommandResult> = defer<
+    CommandResult
+  >();
+  readonly done: Promise<CommandResult> = this.doneDeferred.promise;
+  readonly locks: Array<Lock>;
   private readonly asUser: PasswdEntry;
   private readonly cmd: Array<string>;
   private readonly options?: ExecOptions;
 
   constructor(
+    dependencies: Array<Dependency>,
+    locks: Array<Lock>,
     asUser: PasswdEntry,
     options: ExecOptions = {},
     cmd: Array<string>,
   ) {
+    this.id = new DependencyId("Exec", { asUser, cmd, options });
+    this.dependencies = dependencies;
+    this.locks = locks;
     this.asUser = asUser;
     this.cmd = cmd;
     this.options = options;
   }
 
-  static sequential(
-    asUser: PasswdEntry,
-    options: ExecOptions,
-    cmds: Array<Array<string>>,
-  ): Command {
-    return new SequentialCommand(
-      cmds.map((cmd) => new Exec(asUser, options, cmd)),
-    );
-  }
   toString() {
     return JSON.stringify(this);
   }
 
   async run(): Promise<CommandResult> {
-    return ensureSuccessful(this.asUser, this.cmd, this.options);
+    const resultPromise = ensureSuccessful(
+      this.asUser,
+      this.cmd,
+      this.options,
+    );
+    resultPromise.then(this.doneDeferred.resolve, this.doneDeferred.reject);
+    return resultPromise;
   }
 }

@@ -1,4 +1,5 @@
 import { Command, CommandResult } from "../../model/command.ts";
+import { Dependency, DependencyId } from "../../model/dependency.ts";
 import {
   AurPackageName,
   ensureInstalledAurPackage,
@@ -11,20 +12,16 @@ import {
   FlatpakPackageName,
   OsPackageName,
 } from "../../os/os-package-operations.ts";
-import { ParallelCommand } from "./parallel-command.ts";
 
 export class InstallOsPackage implements Command {
   readonly type: "InstallOsPackage" = "InstallOsPackage";
+  readonly id: DependencyId;
+  readonly dependencies: Array<Dependency> = [refreshOsPackages];
   readonly packageName: OsPackageName;
 
   constructor(packageName: OsPackageName) {
+    this.id = new DependencyId("InstallOsPackage", packageName);
     this.packageName = packageName;
-  }
-
-  static parallel(packageNames: Array<OsPackageName>): Command {
-    return new ParallelCommand(
-      packageNames.map((packageName) => new InstallOsPackage(packageName)),
-    );
   }
 
   toString() {
@@ -45,16 +42,13 @@ export class InstallOsPackage implements Command {
 
 export class RemoveOsPackage implements Command {
   readonly type: "RemoveOsPackage" = "RemoveOsPackage";
+  readonly id: DependencyId;
+  readonly dependencies: Array<Dependency> = [];
   readonly packageName: OsPackageName;
 
   constructor(packageName: OsPackageName) {
+    this.id = new DependencyId("RemoveOsPackage", packageName);
     this.packageName = packageName;
-  }
-
-  static parallel(packageNames: Array<OsPackageName>): Command {
-    return new ParallelCommand(
-      packageNames.map((packageName) => new RemoveOsPackage(packageName)),
-    );
   }
 
   toString() {
@@ -76,6 +70,8 @@ export class RemoveOsPackage implements Command {
 
 export class ReplaceOsPackage implements Command {
   readonly type: "ReplaceOsPackage" = "ReplaceOsPackage";
+  readonly id: DependencyId;
+  readonly dependencies: Array<Dependency> = [refreshOsPackages];
   readonly removePackageName: OsPackageName;
   readonly installPackageName: OsPackageName;
 
@@ -83,6 +79,10 @@ export class ReplaceOsPackage implements Command {
     removePackageName: OsPackageName,
     installPackageName: OsPackageName,
   ) {
+    this.id = new DependencyId("ReplaceOsPackage", {
+      removePackageName,
+      installPackageName,
+    });
     this.removePackageName = removePackageName;
     this.installPackageName = installPackageName;
   }
