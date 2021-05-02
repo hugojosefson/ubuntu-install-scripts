@@ -24,10 +24,11 @@ export interface NeedsDependenciesDone {
   readonly dependencies: Array<Dependency>;
 }
 
-export interface NeedsExclusiveLock {
+export interface NeedsExclusiveLocks {
   readonly locks: Array<Lock>;
 }
 
+/** Marker interface. Will be handled by p-queue. */
 export interface Lock {
 }
 

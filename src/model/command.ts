@@ -4,7 +4,7 @@ import {
   DependencyId,
   Lock,
   NeedsDependenciesDone,
-  NeedsExclusiveLock,
+  NeedsExclusiveLocks,
 } from "./dependency.ts";
 
 export interface CommandResult {
@@ -33,7 +33,7 @@ export type CommandType =
   | "Noop";
 
 export interface Command
-  extends NeedsExclusiveLock, NeedsDependenciesDone, Dependency {
+  extends NeedsExclusiveLocks, NeedsDependenciesDone, Dependency {
   readonly type: CommandType;
   run(): Promise<CommandResult>;
   toString(): string;
