@@ -72,3 +72,19 @@ export abstract class AbstractCommand implements Command {
     return this.done;
   }
 }
+export class CustomCommand extends AbstractCommand {
+  constructor(id: DependencyId) {
+    super("Custom", id);
+  }
+  withDependencies(dependencies: Array<Dependency>): CustomCommand {
+    this.dependencies.push(...dependencies);
+    return this;
+  }
+  withLocks(locks: Array<Lock>): CustomCommand {
+    this.locks.push(...locks);
+    return this;
+  }
+  withRunInner(runInner: () => Promise<CommandResult>) {
+    runInner().then();
+  }
+}
