@@ -28,7 +28,7 @@ class RefreshOsPackages extends AbstractCommand {
       "pacman",
       "--sync",
       "--refresh",
-    ]);
+    ]).catch(this.doneDeferred.reject);
 
     return this.resolve({
       stdout: `Refreshed list of OS packages.`,
