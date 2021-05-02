@@ -55,3 +55,6 @@ export { PQueue };
 
 import memoize from "https://deno.land/x/memoizy@1.0.0/mod.ts";
 export { memoize };
+
+import { isDocker } from "https://deno.land/x/is_docker@v2.0.0/mod.ts";
+export { isDocker };
