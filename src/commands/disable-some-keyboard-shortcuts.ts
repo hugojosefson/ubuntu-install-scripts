@@ -1,5 +1,5 @@
 import { AbstractCommand } from "../model/command.ts";
-import { DependencyId, FileSystemPath } from "../model/dependency.ts";
+import { DependencyId } from "../model/dependency.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
