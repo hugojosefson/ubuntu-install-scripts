@@ -1,42 +1,33 @@
 import { dirname, PasswdEntry } from "../../deps.ts";
-import { Command, CommandResult, CommandType } from "../../model/command.ts";
-import { Dependency, DependencyId } from "../../model/dependency.ts";
-import { Queue } from "../../model/queue.ts";
-import { isSuccessful, symlink } from "../../os/exec.ts";
-import { resolvePath } from "../../os/resolve-path.ts";
-import { ROOT } from "../../os/user/target-user.ts";
+import {
+  AbstractCommand,
+  CommandResult,
+  CommandType,
+} from "../../model/command.ts";
+import { DependencyId, FileSystemPath } from "../../model/dependency.ts";
+import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
+import { ROOT, targetUser } from "../../os/user/target-user.ts";
 
-export abstract class AbstractFileCommand implements Command {
-  abstract readonly type: CommandType;
-  readonly id: DependencyId;
-
+export abstract class AbstractFileCommand extends AbstractCommand {
   readonly owner: PasswdEntry;
-  readonly path: string;
+  readonly path: FileSystemPath;
   readonly mode?: number;
 
   protected constructor(
+    commandType: CommandType,
     id: DependencyId,
     owner: PasswdEntry,
-    path: string,
+    path: FileSystemPath,
     mode?: number,
   ) {
-    this.id = id;
+    super(commandType, id);
     this.owner = owner;
-    this.path = resolvePath(owner, path);
+    this.path = path;
     this.mode = mode;
+    this.locks.push(this.path);
   }
 
-  toString() {
-    return JSON.stringify({
-      id: this.id,
-      owner: this.owner,
-      type: this.type,
-      path: this.path,
-      mode: this.mode,
-    });
-  }
-
-  abstract run(queue: Queue): Promise<CommandResult>;
+  abstract run(): Promise<CommandResult>;
 }
 
 const existsDir = async (dirSegments: Array<string>): Promise<boolean> => {
@@ -63,7 +54,8 @@ const asPath = (pathSegments: Array<string>): string =>
 const getParentDirSegments = (dirSegments: Array<string>) =>
   dirSegments.slice(0, dirSegments.length - 1);
 
-const asPathSegments = (path: string): Array<string> => path.split("/");
+const asPathSegments = (path: FileSystemPath): Array<string> =>
+  path.path.split("/");
 
 const mkdirp = async (
   owner: PasswdEntry,
@@ -88,18 +80,21 @@ const mkdirp = async (
 };
 
 const backupFileUnlessContentAlready = async (
-  filePath: string,
+  filePath: FileSystemPath,
   contents: string,
-): Promise<string | undefined> => {
+): Promise<FileSystemPath | undefined> => {
   if (!await existsPath(asPathSegments(filePath))) {
     return undefined;
   }
-  if ((await Deno.readTextFile(filePath)) == contents) {
+  if ((await Deno.readTextFile(filePath.path)) == contents) {
     return undefined;
   }
 
-  const backupFilePath = `${filePath}.${Date.now()}.backup`;
-  await Deno.rename(filePath, backupFilePath);
+  const backupFilePath: FileSystemPath = FileSystemPath.of(
+    ROOT,
+    `${filePath.path}.${Date.now()}.backup`,
+  );
+  await Deno.rename(filePath.path, backupFilePath.path);
   return backupFilePath;
 };
 
@@ -108,98 +103,107 @@ const backupFileUnlessContentAlready = async (
  */
 const createFile = async (
   owner: PasswdEntry,
-  path: string,
+  path: FileSystemPath,
   contents: string,
   shouldBackupAnyExistingFile: boolean = false,
   mode?: number,
-): Promise<string | undefined> => {
-  const resolvedPath: string = resolvePath(owner, path);
-  await mkdirp(owner, dirname(resolvedPath).split("/"));
+): Promise<FileSystemPath | undefined> => {
+  await mkdirp(owner, dirname(path.path).split("/"));
 
   const data: Uint8Array = new TextEncoder().encode(contents);
   const options: Deno.WriteFileOptions = mode ? { mode } : {};
 
-  const backupFilePath: string | undefined = shouldBackupAnyExistingFile
-    ? await backupFileUnlessContentAlready(resolvedPath, contents)
+  const backupFilePath: FileSystemPath | undefined = shouldBackupAnyExistingFile
+    ? await backupFileUnlessContentAlready(path, contents)
     : undefined;
 
-  await Deno.writeFile(resolvedPath, data, options);
-  await Deno.chown(resolvedPath, owner.uid, owner.gid);
+  await Deno.writeFile(path.path, data, options);
+  await Deno.chown(path.path, owner.uid, owner.gid);
   return backupFilePath;
 };
 
 export class CreateFile extends AbstractFileCommand {
-  readonly type: "CreateFile" = "CreateFile";
   readonly contents: string;
   readonly shouldBackupAnyExistingFile: boolean;
 
   constructor(
     owner: PasswdEntry,
-    path: string,
+    path: FileSystemPath,
     contents: string,
     shouldBackupAnyExistingFile: boolean = false,
     mode?: number,
   ) {
-    super(new DependencyId("CreateFile", path), owner, path, mode);
+    super(
+      "CreateFile",
+      new DependencyId("CreateFile", path),
+      owner,
+      path,
+      mode,
+    );
     this.contents = contents;
     this.shouldBackupAnyExistingFile = shouldBackupAnyExistingFile;
   }
 
   async run(): Promise<CommandResult> {
-    const backupFilePath: string | undefined = await createFile(
+    if (this.doneDeferred.isDone) {
+      return this.done;
+    }
+
+    createFile(
       this.owner,
       this.path,
       this.contents,
       this.shouldBackupAnyExistingFile,
       this.mode,
+    ).then(
+      (backupFilePath: FileSystemPath | undefined) =>
+        this.doneDeferred.resolve({
+          stdout: `Created file ${this.toString()}.` +
+            (backupFilePath
+              ? `\nBacked up previous file to ${backupFilePath}`
+              : ""),
+          stderr: "",
+          status: { success: true, code: 0 },
+        }),
+      this.doneDeferred.reject,
     );
-    return {
-      stdout: `Created file ${this.toString()}.` +
-        (backupFilePath
-          ? `\nBacked up previous file to ${backupFilePath}`
-          : ""),
-      stderr: "",
-      status: { success: true, code: 0 },
-    };
+
+    return this.done;
   }
 }
 
 const createDir = async (
   owner: PasswdEntry,
-  path: string,
+  path: FileSystemPath,
 ) => {
-  const resolvedPath: string = resolvePath(owner, path);
-  await mkdirp(owner, resolvedPath.split("/"));
+  await mkdirp(owner, path.path.split("/"));
 };
 
-export class CreateDir implements Command {
-  readonly type: "CreateDir" = "CreateDir";
-  readonly id: DependencyId;
-  readonly dependencies: Array<Dependency> = [];
+export class CreateDir extends AbstractCommand {
   readonly owner: PasswdEntry;
-  readonly path: string;
+  readonly path: FileSystemPath;
 
-  constructor(owner: PasswdEntry, path: string) {
-    this.id = new DependencyId("CreateDir", path);
+  constructor(owner: PasswdEntry, path: FileSystemPath) {
+    super("CreateDir", new DependencyId("CreateDir", path));
+    this.locks.push(path);
     this.owner = owner;
     this.path = path;
   }
 
-  toString() {
-    return JSON.stringify({
-      owner: this.owner,
-      type: this.type,
-      path: this.path,
-    });
-  }
-
   async run(): Promise<CommandResult> {
-    await createDir(this.owner, this.path);
-    return {
+    if (this.doneDeferred.isDone) {
+      return this.done;
+    }
+
+    await createDir(this.owner, this.path)
+      .catch(this.doneDeferred.reject);
+
+    this.doneDeferred.resolve({
       stdout: `Created dir ${this.toString()}.`,
       stderr: "",
       status: { success: true, code: 0 },
-    };
+    });
+    return this.done;
   }
 }
 
@@ -209,33 +213,53 @@ const ensureLineInFile = (
   line: string,
   endWithNewline = true,
 ) =>
-  async (owner: PasswdEntry, file: string): Promise<void> => {
-    const resolvedPath = resolvePath(owner, file);
-    if (await isSuccessful(ROOT, ["grep", line, resolvedPath])) {
+  async (owner: PasswdEntry, file: FileSystemPath): Promise<void> => {
+    if (await isSuccessful(ROOT, ["grep", line, file.path])) {
       return;
     }
     const prefix = "\n";
     const suffix = endWithNewline ? "\n" : "";
     const data = new TextEncoder().encode(prefix + line + suffix);
-    await Deno.writeFile(resolvedPath, data, {
+    await Deno.writeFile(file.path, data, {
       append: true,
       create: true,
     });
-    await Deno.chown(resolvedPath, owner.uid, owner.gid);
+    await Deno.chown(file.path, owner.uid, owner.gid);
   };
 
+function ensureUserInGroup(
+  user: PasswdEntry,
+  group: string,
+): Promise<CommandResult> {
+  return ensureSuccessful(
+    ROOT,
+    ["usermod", "-aG", group, user.username],
+    {},
+  );
+}
+
 export class LineInFile extends AbstractFileCommand {
-  readonly type: "LineInFile" = "LineInFile";
   readonly line: string;
 
-  constructor(owner: PasswdEntry, path: string, line: string) {
-    super(new DependencyId("LineInFile", { path, line }), owner, path);
+  constructor(owner: PasswdEntry, path: FileSystemPath, line: string) {
+    super(
+      "LineInFile",
+      new DependencyId("LineInFile", { path, line }),
+      owner,
+      path,
+    );
     this.line = line;
   }
 
   run(): Promise<CommandResult> {
-    const result = ensureLineInFile(this.line)(this.owner, this.path);
-    return Promise.resolve({
+    if (this.doneDeferred.isDone) {
+      return this.done;
+    }
+
+    ensureLineInFile(this.line)(this.owner, this.path)
+      .catch(this.doneDeferred.reject);
+
+    return this.resolve({
       stdout: `Line ensured in file ${this.toString()}.`,
       stderr: "",
       status: { success: true, code: 0 },
@@ -243,20 +267,48 @@ export class LineInFile extends AbstractFileCommand {
   }
 }
 
-async function isDirectoryEmpty(directory: string) {
-  return (await (Deno.readDirSync(directory))[Symbol.iterator]().next()).done;
+export class UserInGroup extends AbstractCommand {
+  readonly user: PasswdEntry;
+  readonly group: string;
+
+  constructor(user: PasswdEntry, group: string) {
+    super(
+      "UserInGroup",
+      new DependencyId("UserInGroup", { user, group }),
+    );
+    this.user = user;
+    this.group = group;
+  }
+
+  run(): Promise<CommandResult> {
+    if (this.doneDeferred.isDone) {
+      return this.done;
+    }
+
+    ensureUserInGroup(this.user, this.group)
+      .then(this.doneDeferred.resolve, this.doneDeferred.reject);
+
+    return this.done;
+  }
+}
+
+async function isDirectoryEmpty(directory: FileSystemPath) {
+  return (await (Deno.readDirSync(directory.path))[Symbol.iterator]().next())
+    .done;
 }
 
 export class Symlink extends AbstractFileCommand {
   readonly type: "Symlink" = "Symlink";
   readonly target: string;
 
-  constructor(owner: PasswdEntry, from: string, to: string) {
-    super(new DependencyId("Symlink", { from, to }), owner, to);
-    this.target = resolvePath(owner, from);
+  constructor(owner: PasswdEntry, from: string, to: FileSystemPath) {
+    super("Symlink", new DependencyId("Symlink", { from, to }), owner, to);
+    this.target = from;
   }
 
-  private result(partialCommandResult: Partial<CommandResult>): CommandResult {
+  private static result(
+    partialCommandResult: Partial<CommandResult>,
+  ): CommandResult {
     return {
       stdout: "",
       stderr: "",
@@ -266,55 +318,70 @@ export class Symlink extends AbstractFileCommand {
   }
 
   async run(): Promise<CommandResult> {
+    if (this.doneDeferred.isDone) {
+      return this.done;
+    }
+
     const ifExists = async (pathStat: Deno.FileInfo) => {
       if (
         pathStat.isSymlink &&
-        await Deno.readLink(this.path) === await Deno.readLink(this.target)
+        await Deno.readLink(this.path.path) ===
+          await Deno.readLink(this.target)
       ) {
         if (
           pathStat.uid === this.owner.uid && pathStat.gid === this.owner.gid
         ) {
-          return this.result({
+          return Symlink.result({
             stdout: `"${this.path}" is already a symlink to "${this.target}".`,
           });
         }
-        await Deno.remove(this.path);
+        await Deno.remove(this.path.path);
         await symlink(this.owner, this.target, this.path);
 
-        return this.result({
+        return Symlink.result({
           stdout:
             `Replaced correct (but incorrectly owned) symlink "${this.path}" to "${this.target}", with correctly owned symlink.`,
         });
       }
 
       if (pathStat.isDirectory && await isDirectoryEmpty(this.path)) {
-        await Deno.remove(this.path);
+        await Deno.remove(this.path.path);
         await symlink(this.owner, this.target, this.path);
 
-        return this.result({
+        return Symlink.result({
           stdout:
             `Replaced empty directory "${this.path}" with a symlink to "${this.target}".`,
         });
       }
 
-      const newpath = `${this.path}-${Math.ceil(Math.random() * 10e5)}`;
-      await Deno.rename(this.path, newpath);
+      const newpath = `${this.path.path}-${Math.ceil(Math.random() * 10e5)}`;
+      await Deno.rename(this.path.path, newpath);
 
       await symlink(this.owner, this.target, this.path);
-      return this.result({
+      return Symlink.result({
         stdout:
           `Renamed existing "${this.path}" to "${newpath}", then replaced it with a symlink to "${this.target}".`,
       });
     };
 
     const ifNotExists = async () => {
-      await mkdirp(this.owner, getParentDirSegments(this.path.split("/")));
+      await mkdirp(this.owner, getParentDirSegments(this.path.path.split("/")));
       await symlink(this.owner, this.target, this.path);
-      return this.result({
+      return Symlink.result({
         stdout: `Created "${this.path}" as a symlink to "${this.target}".`,
       });
     };
 
-    return await Deno.lstat(this.path).then(ifExists, ifNotExists);
+    Deno.lstat(this.path.path)
+      .then(
+        ifExists,
+        ifNotExists,
+      )
+      .then(
+        this.resolve.bind(this),
+        this.doneDeferred.reject,
+      );
+
+    return this.done;
   }
 }

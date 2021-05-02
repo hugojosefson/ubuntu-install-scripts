@@ -33,7 +33,7 @@ import {
   tmuxinatorByobuBash_aliases,
   tmuxinatorFiles,
 } from "./tmuxinator_byobu_bash_aliases.ts";
-import { UpgradeOsPackages } from "./upgrade-os-packages.ts";
+import { UPGRADE_OS_PACKAGES } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { virtManager } from "./virt-manager.ts";
 import { virtualbox } from "./virtualbox.ts";
@@ -52,7 +52,7 @@ const commands: Record<string, Command> = {
   ["all-4-developer-java"]: all4DeveloperJava,
   ["all-5-personal"]: all5Personal,
   ["all-6-gaming"]: all6Gaming,
-  upgradeOsPackages: new UpgradeOsPackages(),
+  UPGRADE_OS_PACKAGES,
   gitk,
   vim,
   disableSomeKeyboardShortcuts,

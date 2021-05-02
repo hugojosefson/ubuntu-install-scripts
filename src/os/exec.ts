@@ -1,6 +1,7 @@
 import { config } from "../config.ts";
 import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
+import { FileSystemPath } from "../model/dependency.ts";
 import { ROOT } from "./user/target-user.ts";
 
 export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
@@ -8,7 +9,7 @@ export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
 };
 
 export const pipeAndCollect = async (
-  from: (Deno.Reader & Deno.Closer) | null,
+  from: (Deno.Reader & Deno.Closer) | null | undefined,
   to?: (Deno.Writer & Deno.Closer) | null | false,
   verbose?: boolean,
 ): Promise<string> => {
@@ -97,13 +98,13 @@ export const ensureSuccessful = async (
 export const symlink = (
   owner: PasswdEntry,
   from: string,
-  to: string,
+  to: FileSystemPath,
 ): Promise<CommandResult> =>
   ensureSuccessful(owner, [
     "ln",
     "-s",
     from,
-    to,
+    to.path,
   ]);
 
 export const ensureSuccessfulStdOut = async (

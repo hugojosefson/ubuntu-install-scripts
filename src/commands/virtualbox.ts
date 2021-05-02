@@ -1,10 +1,14 @@
+import { AbstractCommand, Command } from "../model/command.ts";
+import { DependencyId } from "../model/dependency.ts";
 import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
-import { ParallelCommand } from "./common/parallel-command.ts";
 
-export const virtualbox = new ParallelCommand([
-  InstallOsPackage.parallel([
-    "virtualbox",
-    "virtualbox-guest-iso",
-  ]),
-  new InstallAurPackage("virtualbox-ext-oracle"),
-]);
+export const virtualbox: Command = new class extends AbstractCommand {
+  constructor() {
+    super("Custom", new DependencyId("virtualbox", "virtualbox"));
+    this.dependencies.push(
+      InstallOsPackage.of("virtualbox"),
+      InstallOsPackage.of("virtualbox-guest-iso"),
+      InstallAurPackage.of("virtualbox-ext-oracle"),
+    );
+  }
+}();

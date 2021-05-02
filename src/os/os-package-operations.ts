@@ -5,6 +5,7 @@ import { ROOT, targetUser } from "./user/target-user.ts";
 
 export type PackageOperationType =
   | "noop"
+  | "os_refresh"
   | "os_install"
   | "os_remove"
   | "os_replace"
@@ -18,6 +19,9 @@ export type OsPackageName = string;
 export type AurPackageName = string;
 export type FlatpakPackageName = string;
 export type PackageName = OsPackageName | AurPackageName | FlatpakPackageName;
+
+export const ensureRefreshedOsPackages = (): Promise<void> =>
+  enqueue("os_refresh");
 
 export const ensureInstalledOsPackage = (
   name: OsPackageName,
@@ -50,6 +54,7 @@ export const ensureRemovedFlatpakPackage = (
 ): Promise<void> => enqueue("flatpak_remove", name);
 
 export const upgradeOsPackages = () => ensureInstalledOsPackage("--sysupgrade");
+export const refreshOsPackages = () => ensureRefreshedOsPackages();
 
 class PackageOperationQueue {
   private pendingOperation: PackageOperation<any> = new NoopPackageOperation();
@@ -59,20 +64,34 @@ class PackageOperationQueue {
       this.pendingOperation.type === type;
   }
 
+  enqueue(type: "os_refresh"): Promise<void>;
   enqueue(
     type: "os_replace",
     removeOsPackageName: OsPackageName,
     installOsPackageName: OsPackageName,
   ): Promise<void>;
-  enqueue<T extends Exclude<PackageOperationType, "os_replace">>(
+  enqueue<T extends Exclude<PackageOperationType, "os_replace" | "os_refresh">>(
     type: T,
     packageName: PackageName,
   ): Promise<void>;
   enqueue<T extends PackageOperationType>(
     type: T,
-    packageName: PackageName,
+    packageName?: PackageName,
     packageName2?: PackageName,
   ): Promise<void> {
+    if (type === "os_refresh") {
+      this.pendingOperation = createPackageOperation(
+        this.pendingOperation.deferred.promise,
+        type,
+      );
+      this.pendingOperation.append("hack, to cause the operation to trigger");
+      return this.pendingOperation.deferred.promise;
+    }
+    if (!packageName) {
+      throw new Error(
+        "Unexpected: packageName should be specified.",
+      );
+    }
     if (type === "os_replace") {
       if (!packageName2) {
         throw new Error(
@@ -178,6 +197,21 @@ abstract class AbstractActivePackageOperation<
       isAppendable: this.isAppendable,
       packageNames: this.packageNames,
     }) + "}";
+  }
+}
+
+class RefreshOsPackagesOperation
+  extends AbstractActivePackageOperation<"os_refresh"> {
+  constructor(waitUntilAfter: Promise<void>) {
+    super(waitUntilAfter, "os_refresh");
+  }
+
+  async run(): Promise<void> {
+    await ensureSuccessful(ROOT, [
+      "pacman",
+      "--sync",
+      "--refresh",
+    ]);
   }
 }
 
@@ -380,6 +414,7 @@ const createPackageOperation = <T extends PackageOperationType>(
   type: T,
 ):
   | NoopPackageOperation
+  | RefreshOsPackagesOperation
   | InstallOsPackageOperation
   | RemoveOsPackageOperation
   | ReplaceOsPackageOperation
@@ -388,6 +423,9 @@ const createPackageOperation = <T extends PackageOperationType>(
   | InstallFlatpakPackageOperation
   | RemoveFlatpakPackageOperation => {
   if (type === "noop") return new NoopPackageOperation();
+  if (type === "os_refresh") {
+    return new RefreshOsPackagesOperation(waitUntilAfter);
+  }
   if (type === "os_install") {
     return new InstallOsPackageOperation(waitUntilAfter);
   }
@@ -420,23 +458,35 @@ export function enqueue(
   removeOsPackageName: OsPackageName,
   installOsPackageName: OsPackageName,
 ): Promise<void>;
-export function enqueue<T extends Exclude<PackageOperationType, "os_replace">>(
+export function enqueue(type: "os_refresh"): Promise<void>;
+export function enqueue<
+  T extends Exclude<PackageOperationType, "os_replace" | "os_refresh">,
+>(
   type: T,
   osPackageName: OsPackageName,
 ): Promise<void>;
 export function enqueue<T extends PackageOperationType>(
   type: T,
-  osPackageName: OsPackageName,
+  osPackageName?: OsPackageName,
   osPackageName2?: OsPackageName,
 ): Promise<void> {
+  if (type === "os_refresh") {
+    return queueInstance.enqueue("os_refresh");
+  }
   if (type === "os_replace") {
+    if (!osPackageName) {
+      throw new Error("Unexpected: removeOsPackageName must be specified.");
+    }
     if (!osPackageName2) {
-      throw new Error("Unexpected: installOsPackageName should be specified.");
+      throw new Error("Unexpected: installOsPackageName must be specified.");
     }
     return queueInstance.enqueue("os_replace", osPackageName, osPackageName2);
   }
+  if (!osPackageName) {
+    throw new Error("Unexpected: osPackageName must be specified.");
+  }
   return queueInstance.enqueue(
-    type as Exclude<PackageOperationType, "os_replace">,
+    type as Exclude<PackageOperationType, "os_replace" | "os_refresh">,
     osPackageName,
   );
 }

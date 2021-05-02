@@ -10,6 +10,7 @@ export interface Deferred<T> {
   promise: Promise<T>;
   resolve: ResolveFn<T>;
   reject: RejectFn;
+  isDone: boolean;
 }
 
 export const defer = <T>(): Deferred<T> => {
@@ -18,13 +19,20 @@ export const defer = <T>(): Deferred<T> => {
 
   const promise: Promise<T> = new Promise<T>(
     (resolveFn, rejectFn) => {
-      resolve = resolveFn;
-      reject = rejectFn;
+      resolve = (value) => {
+        deferred.isDone = true;
+        return resolveFn(value);
+      };
+      reject = (reason) => {
+        deferred.isDone = true;
+        return rejectFn(reason);
+      };
     },
   );
 
   // Promise constructor argument is called immediately, so our resolve
   // and reject variables have been initialised by the time we get here.
   // @ts-ignore
-  return { promise, resolve, reject };
+  const deferred = { promise, resolve, reject, isDone: false };
+  return deferred;
 };

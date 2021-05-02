@@ -1,14 +1,14 @@
 import { AbstractCommand, CommandResult } from "../model/command.ts";
 import { DependencyId, OS_PACKAGE_SYSTEM } from "../model/dependency.ts";
-import { upgradeOsPackages } from "../os/os-package-operations.ts";
+import { refreshOsPackages } from "../os/os-package-operations.ts";
 
-class UpgradeOsPackages extends AbstractCommand {
+class RefreshOsPackages extends AbstractCommand {
   private constructor() {
     super(
-      "UpgradeOsPackages",
+      "RefreshOsPackages",
       new DependencyId(
-        "UpgradeOsPackages",
-        "UPGRADE_OS_PACKAGES",
+        "RefreshOsPackages",
+        "REFRESH_OS_PACKAGES",
       ),
     );
     this.locks.push(OS_PACKAGE_SYSTEM);
@@ -23,16 +23,16 @@ class UpgradeOsPackages extends AbstractCommand {
       return this.done;
     }
 
-    await upgradeOsPackages()
+    await refreshOsPackages()
       .catch(this.doneDeferred.reject);
 
     return this.resolve({
-      stdout: `Upgraded OS packages.`,
+      stdout: `Refreshed list of OS packages.`,
       stderr: "",
       status: { success: true, code: 0 },
     });
   }
 
-  static UPGRADE_OS_PACKAGES = new UpgradeOsPackages();
+  static REFRESH_OS_PACKAGES = new RefreshOsPackages();
 }
-export const UPGRADE_OS_PACKAGES = UpgradeOsPackages.UPGRADE_OS_PACKAGES;
+export const REFRESH_OS_PACKAGES = RefreshOsPackages.REFRESH_OS_PACKAGES;
