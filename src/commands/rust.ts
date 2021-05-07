@@ -1,17 +1,20 @@
+import { Command } from "../model/command.ts";
+import { FileSystemPath } from "../model/dependency.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { LineInFile } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
-import { ParallelCommand } from "./common/parallel-command.ts";
-import { SequentialCommand } from "./common/sequential-command.ts";
 import { Exec } from "./exec.ts";
 
-export const rust = new ParallelCommand([
-  new SequentialCommand([
-    InstallOsPackage.parallel(["base-devel", "rustup"]),
-    Exec.sequential(targetUser, {}, [
+export const rust = Command.custom("rust")
+  .withDependencies([
+    Exec.sequentialExec(targetUser, {}, [
       ["rustup", "toolchain", "install", "stable"],
       ["cargo", "install", "bat", "exa", "fd-find", "ripgrep"],
-    ]),
-  ]),
-  new LineInFile(targetUser, "~/.bashrc", 'export PATH="~/.cargo/bin:$PATH"'),
-]);
+    ])
+      .withDependencies(["base-devel", "rustup"].map(InstallOsPackage.of)),
+    new LineInFile(
+      targetUser,
+      FileSystemPath.of(targetUser, "~/.bashrc"),
+      'export PATH="~/.cargo/bin:$PATH"',
+    ),
+  ]);

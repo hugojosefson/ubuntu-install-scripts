@@ -1,14 +1,15 @@
 import { dirname, PasswdEntry } from "../../deps.ts";
 import {
-  AbstractCommand,
+  Command,
   CommandResult,
   CommandType,
+  RunResult,
 } from "../../model/command.ts";
 import { DependencyId, FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
 
-export abstract class AbstractFileCommand extends AbstractCommand {
+export abstract class AbstractFileCommand extends Command {
   readonly owner: PasswdEntry;
   readonly path: FileSystemPath;
   readonly mode?: number;
@@ -27,7 +28,7 @@ export abstract class AbstractFileCommand extends AbstractCommand {
     this.locks.push(this.path);
   }
 
-  abstract run(): Promise<CommandResult>;
+  abstract run(): Promise<RunResult>;
 }
 
 const existsDir = async (dirSegments: Array<string>): Promise<boolean> => {
@@ -144,31 +145,16 @@ export class CreateFile extends AbstractFileCommand {
     this.shouldBackupAnyExistingFile = shouldBackupAnyExistingFile;
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
-    createFile(
+  async run(): Promise<RunResult> {
+    const backupFilePath: FileSystemPath | undefined = await createFile(
       this.owner,
       this.path,
       this.contents,
       this.shouldBackupAnyExistingFile,
       this.mode,
-    ).then(
-      (backupFilePath: FileSystemPath | undefined) =>
-        this.doneDeferred.resolve({
-          stdout: `Created file ${this.toString()}.` +
-            (backupFilePath
-              ? `\nBacked up previous file to ${backupFilePath}`
-              : ""),
-          stderr: "",
-          status: { success: true, code: 0 },
-        }),
-      this.doneDeferred.reject,
     );
-
-    return this.done;
+    return `Created file ${this.toString()}.` +
+      (backupFilePath ? `\nBacked up previous file to ${backupFilePath}` : "");
   }
 }
 
@@ -179,7 +165,7 @@ const createDir = async (
   await mkdirp(owner, path.path.split("/"));
 };
 
-export class CreateDir extends AbstractCommand {
+export class CreateDir extends Command {
   readonly owner: PasswdEntry;
   readonly path: FileSystemPath;
 
@@ -190,20 +176,9 @@ export class CreateDir extends AbstractCommand {
     this.path = path;
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
-    await createDir(this.owner, this.path)
-      .catch(this.doneDeferred.reject);
-
-    this.doneDeferred.resolve({
-      stdout: `Created dir ${this.toString()}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
-    return this.done;
+  async run(): Promise<RunResult> {
+    await createDir(this.owner, this.path);
+    return `Created dir ${this.toString()}.`;
   }
 }
 
@@ -251,23 +226,13 @@ export class LineInFile extends AbstractFileCommand {
     this.line = line;
   }
 
-  run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
-    ensureLineInFile(this.line)(this.owner, this.path)
-      .catch(this.doneDeferred.reject);
-
-    return this.resolve({
-      stdout: `Line ensured in file ${this.toString()}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+  async run(): Promise<RunResult> {
+    await ensureLineInFile(this.line)(this.owner, this.path);
+    return `Line ensured in file ${this.toString()}.`;
   }
 }
 
-export class UserInGroup extends AbstractCommand {
+export class UserInGroup extends Command {
   readonly user: PasswdEntry;
   readonly group: string;
 
@@ -280,15 +245,8 @@ export class UserInGroup extends AbstractCommand {
     this.group = group;
   }
 
-  run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
-    ensureUserInGroup(this.user, this.group)
-      .then(this.doneDeferred.resolve, this.doneDeferred.reject);
-
-    return this.done;
+  async run(): Promise<RunResult> {
+    return await ensureUserInGroup(this.user, this.group);
   }
 }
 
@@ -306,22 +264,7 @@ export class Symlink extends AbstractFileCommand {
     this.target = from;
   }
 
-  private static result(
-    partialCommandResult: Partial<CommandResult>,
-  ): CommandResult {
-    return {
-      stdout: "",
-      stderr: "",
-      status: { success: true, code: 0 },
-      ...partialCommandResult,
-    };
-  }
-
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     const ifExists = async (pathStat: Deno.FileInfo) => {
       if (
         pathStat.isSymlink &&
@@ -331,57 +274,38 @@ export class Symlink extends AbstractFileCommand {
         if (
           pathStat.uid === this.owner.uid && pathStat.gid === this.owner.gid
         ) {
-          return Symlink.result({
-            stdout: `"${this.path}" is already a symlink to "${this.target}".`,
-          });
+          return `"${this.path}" is already a symlink to "${this.target}".`;
         }
         await Deno.remove(this.path.path);
         await symlink(this.owner, this.target, this.path);
 
-        return Symlink.result({
-          stdout:
-            `Replaced correct (but incorrectly owned) symlink "${this.path}" to "${this.target}", with correctly owned symlink.`,
-        });
+        return `Replaced correct (but incorrectly owned) symlink "${this.path}" to "${this.target}", with correctly owned symlink.`;
       }
 
       if (pathStat.isDirectory && await isDirectoryEmpty(this.path)) {
         await Deno.remove(this.path.path);
         await symlink(this.owner, this.target, this.path);
 
-        return Symlink.result({
-          stdout:
-            `Replaced empty directory "${this.path}" with a symlink to "${this.target}".`,
-        });
+        return `Replaced empty directory "${this.path}" with a symlink to "${this.target}".`;
       }
 
       const newpath = `${this.path.path}-${Math.ceil(Math.random() * 10e5)}`;
       await Deno.rename(this.path.path, newpath);
 
       await symlink(this.owner, this.target, this.path);
-      return Symlink.result({
-        stdout:
-          `Renamed existing "${this.path}" to "${newpath}", then replaced it with a symlink to "${this.target}".`,
-      });
+      return `Renamed existing "${this.path}" to "${newpath}", then replaced it with a symlink to "${this.target}".`;
     };
 
     const ifNotExists = async () => {
       await mkdirp(this.owner, getParentDirSegments(this.path.path.split("/")));
       await symlink(this.owner, this.target, this.path);
-      return Symlink.result({
-        stdout: `Created "${this.path}" as a symlink to "${this.target}".`,
-      });
+      return `Created "${this.path}" as a symlink to "${this.target}".`;
     };
 
-    Deno.lstat(this.path.path)
+    return await Deno.lstat(this.path.path)
       .then(
         ifExists,
         ifNotExists,
-      )
-      .then(
-        this.resolve.bind(this),
-        this.doneDeferred.reject,
       );
-
-    return this.done;
   }
 }

@@ -1,10 +1,9 @@
+import { Command } from "../model/command.ts";
 import {
   InstallFlatpakPackage,
   InstallOsPackage,
   ReplaceOsPackage,
 } from "./common/os-package.ts";
-import { ParallelCommand } from "./common/parallel-command.ts";
-import { SequentialCommand } from "./common/sequential-command.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
@@ -12,11 +11,15 @@ import { nordvpn } from "./nordvpn.ts";
 import { rust } from "./rust.ts";
 import { yubikey } from "./yubikey.ts";
 
-export const all5Personal = new ParallelCommand([
-  disableSomeKeyboardShortcuts,
-  new SequentialCommand([
-    new ReplaceOsPackage("jack", "jack2"),
-    InstallOsPackage.parallel([
+const withDependencies = (dependencies: Array<Command>) =>
+  (command: Command) => command.withDependencies(dependencies);
+
+const replaceJack = ReplaceOsPackage.of2("jack", "jack2");
+
+export const all5Personal = Command.custom("all5Personal")
+  .withDependencies([
+    disableSomeKeyboardShortcuts,
+    ...[
       "gnu-free-fonts",
       "noto-fonts",
       "ttf-bitstream-vera",
@@ -40,16 +43,19 @@ export const all5Personal = new ParallelCommand([
       "inkscape",
       "neofetch",
       "xpra",
-    ]),
-  ]),
-  InstallFlatpakPackage.parallel([
-    "com.spotify.Client",
-    "com.slack.Slack",
-    "com.microsoft.Teams",
-  ]),
-  rust,
-  yubikey,
-  keybase,
-  nordvpn,
-  insync,
-]);
+    ]
+      .map(InstallOsPackage.of)
+      .map(withDependencies([replaceJack])),
+    ...[
+      "com.spotify.Client",
+      "com.slack.Slack",
+      "com.microsoft.Teams",
+    ]
+      .map(InstallFlatpakPackage.of)
+      .map(withDependencies([replaceJack])),
+    rust,
+    yubikey,
+    keybase,
+    nordvpn,
+    insync,
+  ]);

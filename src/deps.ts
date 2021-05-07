@@ -58,3 +58,7 @@ export { memoize };
 
 import { isDocker } from "https://deno.land/x/is_docker@v2.0.0/mod.ts";
 export { isDocker };
+
+import toposort_ from "https://cdn.skypack.dev/toposort@v2.0.2?dts";
+export const toposort = <T>(things: Array<[T, T]>): Array<T> =>
+  toposort_(things);

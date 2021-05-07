@@ -9,13 +9,11 @@ import { all5Personal } from "./all-5-personal.ts";
 import { all6Gaming } from "./all-6-gaming.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
-import { InstallOsPackage } from "./common/os-package.ts";
-import { ParallelCommand } from "./common/parallel-command.ts";
+import { flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
-import { flatpak } from "./flatpak.ts";
 import { gitk } from "./gitk.ts";
 import { idea } from "./idea.ts";
 import { insync } from "./insync.ts";
@@ -30,8 +28,8 @@ import { rust } from "./rust.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { tabbed } from "./tabbed.ts";
 import {
+  createTmuxinatorFiles,
   tmuxinatorByobuBash_aliases,
-  tmuxinatorFiles,
 } from "./tmuxinator_byobu_bash_aliases.ts";
 import { UPGRADE_OS_PACKAGES } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
@@ -40,7 +38,7 @@ import { virtualbox } from "./virtualbox.ts";
 import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
-  ["all"]: new ParallelCommand([
+  ["all"]: Command.custom("all").withDependencies([
     all3DeveloperWeb,
     all4DeveloperJava,
     all5Personal,
@@ -77,20 +75,23 @@ const commands: Record<string, Command> = {
   keybase,
   nordvpn,
   tmuxinatorByobuBash_aliases,
-  tmuxinatorFiles,
+  tmuxinatorFiles: Command.custom("tmuxinatorFiles")
+    .withDependencies(createTmuxinatorFiles),
   mTemp,
   networkUtils,
   bashAliases,
   tabbed: await tabbed(),
-  awscli: new InstallOsPackage("aws-cli"),
-  libreoffice: InstallOsPackage.parallel([
-    "libreoffice-fresh",
-    "libreoffice-fresh-en-gb",
-    "libreoffice-fresh-sv",
-  ]),
+  awscli: InstallOsPackage.of("aws-cli"),
+  libreoffice: Command.custom("libreoffice").withDependencies(
+    [
+      "libreoffice-fresh",
+      "libreoffice-fresh-en-gb",
+      "libreoffice-fresh-sv",
+    ].map(InstallOsPackage.of),
+  ),
 };
 
 export const getCommand = (name: string): Command =>
-  commands[name] || new InstallOsPackage(name);
+  commands[name] || InstallOsPackage.of(name);
 
 export const availableCommands: Array<string> = Object.keys(commands).sort();

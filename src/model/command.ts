@@ -1,6 +1,6 @@
+import { NOOP } from "../commands/common/noop.ts";
 import { defer, Deferred } from "../os/defer.ts";
 import {
-  Dependency,
   DependencyId,
   Lock,
   NeedsDependenciesDone,
@@ -32,17 +32,10 @@ export type CommandType =
   | "Custom"
   | "Noop";
 
-export interface Command
-  extends NeedsExclusiveLocks, NeedsDependenciesDone, Dependency {
-  readonly type: CommandType;
-  run(): Promise<CommandResult>;
-  toString(): string;
-}
-
-export abstract class AbstractCommand implements Command {
+export class Command implements NeedsExclusiveLocks, NeedsDependenciesDone {
   readonly type: CommandType;
   readonly id: DependencyId;
-  readonly dependencies: Array<Dependency> = [];
+  readonly dependencies: Array<Command> = [];
   readonly locks: Array<Lock> = [];
   readonly doneDeferred: Deferred<CommandResult> = defer();
   readonly done: Promise<CommandResult> = this.doneDeferred.promise;
@@ -55,36 +48,93 @@ export abstract class AbstractCommand implements Command {
   toString() {
     return JSON.stringify(this);
   }
-
-  run(): Promise<CommandResult> {
+  async runWhenDependenciesAreDone(): Promise<CommandResult> {
     if (this.doneDeferred.isDone) {
       return this.done;
     }
-    return this.resolve();
+
+    await Promise.all(this.dependencies.map(({ done }) => done));
+
+    const innerResult: RunResult = await (this.run().catch(
+      this.doneDeferred.reject,
+    ));
+    return this.resolve(innerResult);
   }
 
-  protected resolve(commandResult: CommandResult = {
-    status: { success: true, code: 0 },
-    stdout: "",
-    stderr: "",
-  }): Promise<CommandResult> {
+  static of(commandType: CommandType, id: DependencyId): Command {
+    return new Command(commandType, id);
+  }
+  static custom(id: DependencyId | string): Command {
+    return Command.of(
+      "Custom",
+      typeof id === "string" ? new DependencyId(id) : id,
+    );
+  }
+
+  async run(): Promise<RunResult> {
+  }
+
+  resolve(
+    commandResult: RunResult,
+  ): Promise<CommandResult> {
+    if (!commandResult) {
+      this.doneDeferred.resolve({
+        status: { success: true, code: 0 },
+        stdout: `Success: ${this.id.toString()}`,
+        stderr: "",
+      });
+      return this.done;
+    }
+    if (typeof commandResult === "string") {
+      this.doneDeferred.resolve({
+        status: { success: true, code: 0 },
+        stdout: commandResult,
+        stderr: "",
+      });
+      return this.done;
+    }
+
     this.doneDeferred.resolve(commandResult);
     return this.done;
   }
-}
-export class CustomCommand extends AbstractCommand {
-  constructor(id: DependencyId) {
-    super("Custom", id);
+
+  static sequential(commands: Array<Command>): Command {
+    if (commands.length === 0) {
+      return NOOP;
+    }
+    if (commands.length === 1) {
+      return commands[0];
+    }
+    const head = commands[0];
+    const tail = commands.slice(1);
+    return Command
+      .of("Custom", head.id.clone())
+      .withDependencies([...tail, ...head.dependencies])
+      .withLocks(head.locks)
+      .withRun(head.run);
   }
-  withDependencies(dependencies: Array<Dependency>): CustomCommand {
-    this.dependencies.push(...dependencies);
-    return this;
+
+  withDependencies(dependencies: Array<Command>): Command {
+    if (this.dependencies.length === 0) {
+      this.dependencies.push(...dependencies);
+      return this;
+    }
+    return Command.sequential([
+      Command.custom("withDependencies").withDependencies(dependencies),
+      this,
+    ]);
   }
-  withLocks(locks: Array<Lock>): CustomCommand {
+
+  withLocks(locks: Array<Lock>): Command {
     this.locks.push(...locks);
     return this;
   }
-  withRunInner(runInner: () => Promise<CommandResult>) {
-    runInner().then();
+
+  withRun(run: RunFunction): Command {
+    this.run = run;
+    return this;
   }
 }
+
+export type RunResult = CommandResult | void | string;
+export type RunFunction = () => Promise<RunResult>;

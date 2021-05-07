@@ -1,9 +1,5 @@
 import { memoize } from "../../deps.ts";
-import {
-  AbstractCommand,
-  CommandResult,
-  CommandType,
-} from "../../model/command.ts";
+import { Command, CommandType, RunResult } from "../../model/command.ts";
 import {
   DependencyId,
   FLATPAK,
@@ -12,7 +8,6 @@ import {
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
-import { flatpak } from "../flatpak.ts";
 import { REFRESH_OS_PACKAGES } from "../refresh-os-packages.ts";
 
 export type OsPackageName = string;
@@ -21,7 +16,7 @@ export type FlatpakPackageName = string;
 export type PackageName = OsPackageName | AurPackageName | FlatpakPackageName;
 
 export abstract class AbstractPackageCommand<T extends PackageName>
-  extends AbstractCommand {
+  extends Command {
   readonly packageName: T;
 
   protected constructor(commandType: CommandType, packageName: T) {
@@ -41,17 +36,9 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
     this.dependencies.push(REFRESH_OS_PACKAGES);
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (await isInstalledOsPackage(this.packageName)) {
-      return this.resolve({
-        stdout: `Already installed OS package ${this.packageName}.`,
-        stderr: "",
-        status: { success: true, code: 0 },
-      });
+      return `Already installed OS package ${this.packageName}.`;
     }
 
     await ensureSuccessful(ROOT, [
@@ -60,13 +47,9 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
       "--needed",
       "--noconfirm",
       this.packageName,
-    ]).catch(this.doneDeferred.reject);
+    ]);
 
-    return this.resolve({
-      stdout: `Installed OS package ${this.packageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Installed OS package ${this.packageName}.`;
   }
 
   static of: (packageName: OsPackageName) => InstallOsPackage = memoize(
@@ -82,17 +65,9 @@ export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
     this.dependencies.push(REFRESH_OS_PACKAGES);
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (!await isInstalledOsPackage(this.packageName)) {
-      return this.resolve({
-        stdout: `Already removed OS package ${this.packageName}.`,
-        stderr: "",
-        status: { success: true, code: 0 },
-      });
+      return `Already removed OS package ${this.packageName}.`;
     }
 
     await ensureSuccessful(ROOT, [
@@ -100,13 +75,9 @@ export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
       "--remove",
       "--noconfirm",
       this.packageName,
-    ]).catch(this.doneDeferred.reject);
+    ]);
 
-    return this.resolve({
-      stdout: `Removed package ${this.packageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Removed package ${this.packageName}.`;
   }
 
   static of: (packageName: OsPackageName) => RemoveOsPackage = (
@@ -114,7 +85,7 @@ export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
   ) => new RemoveOsPackage(packageName);
 }
 
-export class ReplaceOsPackage extends AbstractCommand {
+export class ReplaceOsPackage extends Command {
   readonly removePackageName: OsPackageName;
   readonly installPackageName: OsPackageName;
 
@@ -136,11 +107,7 @@ export class ReplaceOsPackage extends AbstractCommand {
     this.installPackageName = installPackageName;
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (await isInstalledOsPackage(this.removePackageName)) {
       await ensureSuccessful(ROOT, [
         "pacman",
@@ -149,7 +116,7 @@ export class ReplaceOsPackage extends AbstractCommand {
         "--nodeps",
         "--nodeps",
         this.removePackageName,
-      ]).catch(this.doneDeferred.reject);
+      ]);
     }
 
     await ensureSuccessful(ROOT, [
@@ -160,15 +127,15 @@ export class ReplaceOsPackage extends AbstractCommand {
       this.installPackageName,
     ]).catch(this.doneDeferred.reject);
 
-    return super.resolve({
-      stdout:
-        `Replaced package ${this.removePackageName} with ${this.installPackageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Replaced package ${this.removePackageName} with ${this.installPackageName}.`;
   }
-
-  static of: (
+  /**
+   * @deprecated Use .of2() instead.
+   */
+  static of(commandType: CommandType, id: DependencyId): Command {
+    throw new Error("Use .of2() instead.");
+  }
+  static of2: (
     removePackageName: OsPackageName,
     installPackageName: OsPackageName,
   ) => ReplaceOsPackage = (
@@ -186,17 +153,9 @@ export class InstallAurPackage extends AbstractPackageCommand<AurPackageName> {
     this.dependencies.push(InstallOsPackage.of("yay"));
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (await isInstalledAurPackage(this.packageName)) {
-      return this.resolve({
-        stdout: `Already installed AUR package ${this.packageName}.`,
-        stderr: "",
-        status: { success: true, code: 0 },
-      });
+      return `Already installed AUR package ${this.packageName}.`;
     }
 
     await ensureSuccessful(ROOT, [
@@ -206,13 +165,9 @@ export class InstallAurPackage extends AbstractPackageCommand<AurPackageName> {
       "--needed",
       "--noconfirm",
       this.packageName,
-    ]).catch(this.doneDeferred.reject);
+    ]);
 
-    return this.resolve({
-      stdout: `Installed AUR package ${this.packageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Installed AUR package ${this.packageName}.`;
   }
 
   static of: (packageName: AurPackageName) => InstallAurPackage = memoize(
@@ -230,17 +185,9 @@ export class RemoveAurPackage extends AbstractPackageCommand<AurPackageName> {
     this.dependencies.push(InstallOsPackage.of("yay"));
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (!await isInstalledAurPackage(this.packageName)) {
-      return this.resolve({
-        stdout: `Already removed AUR package ${this.packageName}.`,
-        stderr: "",
-        status: { success: true, code: 0 },
-      });
+      return `Already removed AUR package ${this.packageName}.`;
     }
 
     await ensureSuccessful(ROOT, [
@@ -249,19 +196,19 @@ export class RemoveAurPackage extends AbstractPackageCommand<AurPackageName> {
       "--nosave",
       "--noconfirm",
       this.packageName,
-    ]).catch(this.doneDeferred.reject);
+    ]);
 
-    return this.resolve({
-      stdout: `Removed AUR package ${this.packageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Removed AUR package ${this.packageName}.`;
   }
 
   static of: (packageName: AurPackageName) => RemoveAurPackage = (
     packageName: AurPackageName,
   ) => new RemoveAurPackage(packageName);
 }
+
+export const flatpakOsPackages = ["xdg-desktop-portal-gtk", "flatpak"];
+export const flatpak: Command = Command.custom("flatpak")
+  .withDependencies(flatpakOsPackages.map(InstallOsPackage.of));
 
 export class InstallFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
@@ -271,17 +218,9 @@ export class InstallFlatpakPackage
     this.dependencies.push(flatpak);
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (await isInstalledFlatpakPackage(this.packageName)) {
-      return this.resolve({
-        stdout: `Already installed Flatpak package ${this.packageName}.`,
-        stderr: "",
-        status: { success: true, code: 0 },
-      });
+      return `Already installed Flatpak package ${this.packageName}.`;
     }
 
     await ensureSuccessful(ROOT, [
@@ -292,13 +231,9 @@ export class InstallFlatpakPackage
       ...(isInsideDocker ? ["--no-deploy"] : []),
       "flathub",
       this.packageName,
-    ]).catch(this.doneDeferred.reject);
+    ]);
 
-    return this.resolve({
-      stdout: `Installed Flatpak package ${this.packageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Installed Flatpak package ${this.packageName}.`;
   }
 
   static of: (
@@ -317,17 +252,9 @@ export class RemoveFlatpakPackage
     this.dependencies.push(flatpak);
   }
 
-  async run(): Promise<CommandResult> {
-    if (this.doneDeferred.isDone) {
-      return this.done;
-    }
-
+  async run(): Promise<RunResult> {
     if (!await isInstalledFlatpakPackage(this.packageName)) {
-      return this.resolve({
-        stdout: `Already removed Flatpak package ${this.packageName}.`,
-        stderr: "",
-        status: { success: true, code: 0 },
-      });
+      return `Already removed Flatpak package ${this.packageName}.`;
     }
 
     await ensureSuccessful(ROOT, [
@@ -335,13 +262,9 @@ export class RemoveFlatpakPackage
       "uninstall",
       "--noninteractive",
       this.packageName,
-    ]).catch(this.doneDeferred.reject);
+    ]);
 
-    return this.resolve({
-      stdout: `Removed Flatpak package ${this.packageName}.`,
-      stderr: "",
-      status: { success: true, code: 0 },
-    });
+    return `Removed Flatpak package ${this.packageName}.`;
   }
 
   static of: (packageName: FlatpakPackageName) => RemoveFlatpakPackage = (

@@ -11,20 +11,22 @@ import { usageAndExit } from "./usage.ts";
 
 export const cli = async () => {
   if (!Deno.args.length) {
-    usageAndExit();
+    await usageAndExit();
   }
 
   if (!await isRunningAsRoot()) {
-    usageAndExit(
+    await usageAndExit(
       3,
       "You must run this program as root. Try again with sudo :)",
     );
   }
+
   if (Deno.env.get("VERBOSE") === "false") {
     config.verbose = false;
   } else {
     config.verbose = true;
   }
+
   await run(Deno.args).then(
     (results: Array<CommandResult>) => {
       results.forEach((result) => {

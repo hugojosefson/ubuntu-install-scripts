@@ -1,15 +1,15 @@
 import { PasswdEntry } from "../deps.ts";
-import { AbstractCommand, CommandResult } from "../model/command.ts";
-import { Dependency, DependencyId, Lock } from "../model/dependency.ts";
+import { Command, CommandResult, RunResult } from "../model/command.ts";
+import { DependencyId, Lock } from "../model/dependency.ts";
 import { ensureSuccessful, ExecOptions } from "../os/exec.ts";
 
-export class Exec extends AbstractCommand {
+export class Exec extends Command {
   private readonly asUser: PasswdEntry;
   private readonly cmd: Array<string>;
   private readonly options?: ExecOptions;
 
   constructor(
-    dependencies: Array<Dependency>,
+    dependencies: Array<Command>,
     locks: Array<Lock>,
     asUser: PasswdEntry,
     options: ExecOptions = {},
@@ -21,13 +21,49 @@ export class Exec extends AbstractCommand {
     this.options = options;
   }
 
-  async run(): Promise<CommandResult> {
-    ensureSuccessful(
+  async run(): Promise<RunResult> {
+    return ensureSuccessful(
       this.asUser,
       this.cmd,
       this.options,
-    ).then(this.doneDeferred.resolve, this.doneDeferred.reject);
+    );
+  }
 
-    return this.done;
+  static sequentialExec(
+    asUser: PasswdEntry,
+    options: ExecOptions,
+    cmds: Array<Array<string>>,
+  ): Command {
+    return Command
+      .of(
+        "Exec",
+        new DependencyId("Exec.sequentialExec", { asUser, options, cmds }),
+      )
+      .withRun(async () => {
+        const results: Array<CommandResult> = await Promise.all(
+          cmds.map(async (cmd) => await ensureSuccessful(asUser, cmd, options)),
+        );
+
+        const success: boolean = results
+          .map((result) => result.status.success)
+          .reduce((acc, curr) => acc && curr, true);
+
+        const stdout: string = results
+          .map(({ stdout }) => stdout.trim())
+          .filter((s) => s.length > 0)
+          .join("\n");
+
+        const stderr: string = results
+          .map(({ stderr }) => stderr.trim())
+          .filter((s) => s.length > 0)
+          .join("\n");
+
+        const result: CommandResult = {
+          stdout,
+          stderr,
+          status: success ? { success, code: 0 } : { success, code: 1 },
+        };
+        return result;
+      });
   }
 }
