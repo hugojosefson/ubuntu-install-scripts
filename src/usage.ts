@@ -22,6 +22,5 @@ ${
 
          ...or any valid OS-level package.
   `);
-  Deno.exit(code);
-  throw new Error(); // not really, because we already exited, but just to appease the compiler about "never" returning.
+  return Deno.exit(code);
 };
