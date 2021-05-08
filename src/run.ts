@@ -1,5 +1,4 @@
 import { NOOP } from "./commands/common/noop.ts";
-import { getCommand } from "./commands/index.ts";
 import { compose, toposort } from "./deps.ts";
 import { Command, CommandResult, CommandType } from "./model/command.ts";
 import { DependencyId, Lock } from "./model/dependency.ts";
@@ -15,9 +14,7 @@ function getDependencyPairs(command: Command): Array<[Command, Command]> {
     ) => [dep, command]);
 
   const dependenciesDependOnTheirDependencies: Array<[Command, Command]> =
-    command.dependencies.flatMap((
-      dep,
-    ) => getDependencyPairs(dep));
+    command.dependencies.flatMap((dep) => getDependencyPairs(dep));
 
   return [
     ...thisCommandDependsOnItsDependencies,
@@ -28,8 +25,8 @@ function getDependencyPairs(command: Command): Array<[Command, Command]> {
 type CommandForLog = {
   type?: CommandType;
   id?: DependencyId;
-  dependencies?: Array<CommandForLog>;
-  locks?: Array<Lock>;
+  dependencies?: CommandForLog[];
+  locks?: Lock[];
 };
 
 const forLog = (depth: number) =>
@@ -51,18 +48,12 @@ const forLog = (depth: number) =>
 const stringify = (o: any): string => JSON.stringify(o, null, 2);
 const stringifyLine = (o: any): string => JSON.stringify(o);
 
-export const run = async (
-  commandStrings: Array<string>,
-): Promise<Array<CommandResult>> => {
-  const commands: Array<Command> = await Promise.all(
-    commandStrings.map(getCommand),
-  );
-
-  const dependencyPairs: Array<[Command, Command]> = commands.flatMap(
+export const sortCommands = (commands: Command[]): Command[] => {
+  const dependencyPairs: [Command, Command][] = commands.flatMap(
     getDependencyPairs,
   );
 
-  const commandsInOrder: Array<Command> = toposort(dependencyPairs);
+  const commandsInOrder: Command[] = toposort(dependencyPairs);
 
   console.log(
     "=====================================================================================\n\ncommands:\n" +
@@ -91,13 +82,18 @@ export const run = async (
       ).join("\n") +
       "\n\n",
   );
+  return commandsInOrder;
+};
 
-  const commandResults: Array<CommandResult> = [];
-  for (const command of commandsInOrder) {
+export async function run(commands: Command[]): Promise<CommandResult[]> {
+  const sortedCommands: Command[] = sortCommands(commands);
+
+  const commandResults: CommandResult[] = [];
+  for (const command of sortedCommands) {
     console.log(`Running command `, command);
     commandResults.push(await command.runWhenDependenciesAreDone());
     console.log(`Running command `, command, "DONE.");
   }
 
   return commandResults;
-};
+}
