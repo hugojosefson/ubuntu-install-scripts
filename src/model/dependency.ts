@@ -24,8 +24,9 @@ export class FileSystemPath extends Lock {
     super();
     this.path = path;
   }
+
   toString(): string {
-    return this.path;
+    return `${this.constructor.name}(${this.path})`;
   }
 
   private static ofAbsolutePath(absolutePath: string): FileSystemPath {

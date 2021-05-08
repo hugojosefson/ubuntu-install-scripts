@@ -1,10 +1,5 @@
 import { dirname, PasswdEntry } from "../../deps.ts";
-import {
-  Command,
-  CommandResult,
-  CommandType,
-  RunResult,
-} from "../../model/command.ts";
+import { Command, CommandResult, RunResult } from "../../model/command.ts";
 import { FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
@@ -15,16 +10,19 @@ export abstract class AbstractFileCommand extends Command {
   readonly mode?: number;
 
   protected constructor(
-    commandType: CommandType,
     owner: PasswdEntry,
     path: FileSystemPath,
     mode?: number,
   ) {
-    super(commandType);
+    super();
     this.owner = owner;
     this.path = path;
     this.mode = mode;
     this.locks.push(this.path);
+  }
+
+  toString(): string {
+    return `${this.constructor.name}(${this.owner.username}, ${this.path}, ${this.mode})`;
   }
 
   abstract run(): Promise<RunResult>;
@@ -134,7 +132,6 @@ export class CreateFile extends AbstractFileCommand {
     mode?: number,
   ) {
     super(
-      "CreateFile",
       owner,
       path,
       mode,
@@ -168,10 +165,14 @@ export class CreateDir extends Command {
   readonly path: FileSystemPath;
 
   constructor(owner: PasswdEntry, path: FileSystemPath) {
-    super("CreateDir");
+    super();
     this.locks.push(path);
     this.owner = owner;
     this.path = path;
+  }
+
+  toString(): string {
+    return `${this.constructor.name}(${this.owner.username}, ${this.path})`;
   }
 
   async run(): Promise<RunResult> {
@@ -216,11 +217,16 @@ export class LineInFile extends AbstractFileCommand {
 
   constructor(owner: PasswdEntry, path: FileSystemPath, line: string) {
     super(
-      "LineInFile",
       owner,
       path,
     );
     this.line = line;
+  }
+
+  toString(): string {
+    return `${this.constructor.name}(${this.owner.username}, ${this.path}, ${
+      JSON.stringify(this.line)
+    })`;
   }
 
   async run(): Promise<RunResult> {
@@ -234,7 +240,7 @@ export class UserInGroup extends Command {
   readonly group: string;
 
   constructor(user: PasswdEntry, group: string) {
-    super("UserInGroup");
+    super();
     this.user = user;
     this.group = group;
   }
@@ -250,11 +256,10 @@ async function isDirectoryEmpty(directory: FileSystemPath) {
 }
 
 export class Symlink extends AbstractFileCommand {
-  readonly type: "Symlink" = "Symlink";
   readonly target: string;
 
   constructor(owner: PasswdEntry, from: string, to: FileSystemPath) {
-    super("Symlink", owner, to);
+    super(owner, to);
     this.target = from;
   }
 

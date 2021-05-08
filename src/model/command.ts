@@ -1,8 +1,7 @@
 import { NOOP } from "../commands/common/noop.ts";
 import { config } from "../config.ts";
-import { colorlog } from "../deps.ts";
 import { defer, Deferred } from "../os/defer.ts";
-import { Lock, LockReleaser } from "./dependency.ts";
+import { Lock } from "./dependency.ts";
 
 export interface CommandResult {
   status: Deno.ProcessStatus;
@@ -10,39 +9,16 @@ export interface CommandResult {
   stderr: string;
 }
 
-export type CommandType =
-  | "RefreshOsPackages"
-  | "InstallOsPackage"
-  | "RemoveOsPackage"
-  | "ReplaceOsPackage"
-  | "UpgradeOsPackages"
-  | "InstallAurPackage"
-  | "RemoveAurPackage"
-  | "InstallFlatpakPackage"
-  | "RemoveFlatpakPackage"
-  | "Symlink"
-  | "CreateFile"
-  | "CreateDir"
-  | "LineInFile"
-  | "UserInGroup"
-  | "Exec"
-  | "Custom"
-  | "Noop";
-
 export class Command {
-  readonly type: CommandType;
   readonly dependencies: Array<Command> = new Array(0);
   readonly locks: Array<Lock> = new Array(0);
   readonly doneDeferred: Deferred<CommandResult> = defer();
   readonly done: Promise<CommandResult> = this.doneDeferred.promise;
 
-  protected constructor(commandType: CommandType) {
-    this.type = commandType;
+  toString(): string {
+    return this.constructor.name;
   }
 
-  toString() {
-    return JSON.stringify(this);
-  }
   async runWhenDependenciesAreDone(): Promise<CommandResult> {
     config.verbose && console.log(`Running command `, this);
     if (this.doneDeferred.isDone) {
@@ -65,12 +41,8 @@ export class Command {
     }
   }
 
-  static of(commandType: CommandType): Command {
-    return new Command(commandType);
-  }
-
   static custom(): Command {
-    return Command.of("Custom");
+    return (new Command());
   }
 
   async run(): Promise<RunResult> {
@@ -82,7 +54,7 @@ export class Command {
     if (!commandResult) {
       this.doneDeferred.resolve({
         status: { success: true, code: 0 },
-        stdout: `Success: ${this.type}`,
+        stdout: `Success: ${this}`,
         stderr: "",
       });
       return this.done;
@@ -109,8 +81,7 @@ export class Command {
     }
     const head = commands[0];
     const tail = commands.slice(1);
-    return Command
-      .of("Custom")
+    return (new Command())
       .withDependencies([...tail, ...head.dependencies])
       .withLocks(head.locks)
       .withRun(head.run);

@@ -1,5 +1,5 @@
 import { memoize } from "../../deps.ts";
-import { Command, CommandType, RunResult } from "../../model/command.ts";
+import { Command, RunResult } from "../../model/command.ts";
 import { FLATPAK, OS_PACKAGE_SYSTEM } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
@@ -15,19 +15,19 @@ export abstract class AbstractPackageCommand<T extends PackageName>
   extends Command {
   readonly packageName: T;
 
-  protected constructor(commandType: CommandType, packageName: T) {
-    super(commandType);
+  protected constructor(packageName: T) {
+    super();
     this.packageName = packageName;
   }
 
   toString() {
-    return JSON.stringify({ type: this.type, packageName: this.packageName });
+    return JSON.stringify({ packageName: this.packageName });
   }
 }
 
 export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
   private constructor(packageName: OsPackageName) {
-    super("InstallOsPackage", packageName);
+    super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
   }
@@ -56,7 +56,7 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
 
 export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
   private constructor(packageName: OsPackageName) {
-    super("RemoveOsPackage", packageName);
+    super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
   }
@@ -89,7 +89,7 @@ export class ReplaceOsPackage extends Command {
     removePackageName: OsPackageName,
     installPackageName: OsPackageName,
   ) {
-    super("ReplaceOsPackage");
+    super();
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
 
@@ -122,7 +122,7 @@ export class ReplaceOsPackage extends Command {
   /**
    * @deprecated Use .of2() instead.
    */
-  static of(commandType: CommandType): Command {
+  static of(): Command {
     throw new Error("Use .of2() instead.");
   }
   static of2: (
@@ -136,7 +136,7 @@ export class ReplaceOsPackage extends Command {
 
 export class InstallAurPackage extends AbstractPackageCommand<AurPackageName> {
   private constructor(packageName: AurPackageName) {
-    super("InstallAurPackage", packageName);
+    super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
     this.dependencies.push(InstallOsPackage.of("base-devel"));
@@ -168,7 +168,7 @@ export class InstallAurPackage extends AbstractPackageCommand<AurPackageName> {
 
 export class RemoveAurPackage extends AbstractPackageCommand<AurPackageName> {
   private constructor(packageName: AurPackageName) {
-    super("RemoveAurPackage", packageName);
+    super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
     this.dependencies.push(InstallOsPackage.of("base-devel"));
@@ -203,7 +203,7 @@ export const flatpak: Command = Command.custom()
 export class InstallFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
   private constructor(packageName: FlatpakPackageName) {
-    super("InstallFlatpakPackage", packageName);
+    super(packageName);
     this.locks.push(FLATPAK);
     this.dependencies.push(flatpak);
   }
@@ -237,7 +237,7 @@ export class InstallFlatpakPackage
 export class RemoveFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
   private constructor(packageName: FlatpakPackageName) {
-    super("RemoveFlatpakPackage", packageName);
+    super(packageName);
     this.locks.push(FLATPAK);
     this.dependencies.push(flatpak);
   }

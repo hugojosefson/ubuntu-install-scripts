@@ -1,7 +1,7 @@
 import { NOOP } from "./commands/common/noop.ts";
 import { config } from "./config.ts";
 import { compose, toposort } from "./deps.ts";
-import { Command, CommandResult, CommandType } from "./model/command.ts";
+import { Command, CommandResult } from "./model/command.ts";
 import { Lock } from "./model/dependency.ts";
 
 function getDependencyPairs(command: Command): Array<[Command, Command]> {
@@ -24,23 +24,19 @@ function getDependencyPairs(command: Command): Array<[Command, Command]> {
 }
 
 type CommandForLog = {
-  type?: CommandType;
   dependencies?: CommandForLog[];
   locks?: Lock[];
 };
 
 const forLog = (depth: number) =>
   (command: Command): CommandForLog => {
-    const { type, dependencies, locks } = command;
+    const { dependencies, locks } = command;
     return (depth > 0)
       ? {
-        type,
         dependencies: dependencies.map(forLog(depth - 1)),
         locks,
       }
-      : {
-        type,
-      };
+      : {};
   };
 
 const stringify = (o: any): string => JSON.stringify(o, null, 2);
