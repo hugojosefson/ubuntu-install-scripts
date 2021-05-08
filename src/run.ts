@@ -88,9 +88,7 @@ export async function run(commands: Command[]): Promise<CommandResult[]> {
 
   const commandResults: CommandResult[] = [];
   for (const command of sortedCommands) {
-    config.verbose && console.log(`Running command `, command);
     commandResults.push(await command.runWhenDependenciesAreDone());
-    config.verbose && console.log(`Running command `, command, "DONE.");
   }
 
   return commandResults;

@@ -44,49 +44,24 @@ export class Command {
     return JSON.stringify(this);
   }
   async runWhenDependenciesAreDone(): Promise<CommandResult> {
+    config.verbose && console.log(`Running command `, this);
     if (this.doneDeferred.isDone) {
       return this.done;
     }
 
-    config.verbose && console.log(colorlog.warning(
-      `Command.runWhenDependenciesAreDone: waiting for ${
-        [...this.dependencies].length
-      } dependencies...       ${this.type}`,
-    ));
-    config.verbose && console.log(
-      colorlog.warning(
-        `Command.runWhenDependenciesAreDone: waiting for this.dependencies:        ${this.type}`,
-      ),
-      this.dependencies,
-    );
-    if ([...this.dependencies].length) {
-      await Promise.all(this.dependencies.map(({ done }) => done));
-    }
-    config.verbose && console.log(colorlog.warning(
-      `Command.runWhenDependenciesAreDone: waiting for ${
-        [...this.dependencies].length
-      } dependencies... DONE. ${this.type}`,
-    ));
-    config.verbose && console.log(colorlog.warning(
-      `Command.runWhenDependenciesAreDone: waiting for ${
-        [...this.locks].length
-      } locks...              ${this.type}`,
-    ));
-    const releaseLockFns: Array<LockReleaser> = await Promise.all(
-      this.locks.map((lock) => lock.take()),
-    );
-    config.verbose && console.log(colorlog.warning(
-      `Command.runWhenDependenciesAreDone: waiting for ${
-        [...this.locks].length
-      } locks... DONE.        ${this.type}`,
-    ));
+    const dependenciesDone = this.dependencies.map(({ done }) => done);
+    const lockReleaserPromises = this.locks.map((lock) => lock.take());
+    await Promise.all(dependenciesDone);
+
+    const lockReleasers = await Promise.all(lockReleaserPromises);
     try {
       const innerResult: RunResult = await (this.run().catch(
         this.doneDeferred.reject,
       ));
+      config.verbose && console.log(`Running command `, this, "DONE.");
       return this.resolve(innerResult);
     } finally {
-      releaseLockFns.forEach((releaseLock) => releaseLock());
+      lockReleasers.forEach((releaseLock) => releaseLock());
     }
   }
 
