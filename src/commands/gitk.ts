@@ -10,7 +10,7 @@ arg=\${1:---all}
 gitk "\${arg}" &>/dev/null &
 `;
 
-export const gitk: Command = Command.custom("gitk")
+export const gitk: Command = Command.custom()
   .withDependencies([
     addHomeBinToPath,
     InstallOsPackage.of("git"),

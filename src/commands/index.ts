@@ -38,7 +38,7 @@ import { virtualbox } from "./virtualbox.ts";
 import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
-  ["all"]: Command.custom("all").withDependencies([
+  ["all"]: Command.custom().withDependencies([
     all3DeveloperWeb,
     all4DeveloperJava,
     all5Personal,
@@ -53,7 +53,7 @@ const commands: Record<string, Command> = {
   UPGRADE_OS_PACKAGES,
   gitk,
   vim,
-  nullCommand: Command.custom("nullCommand"),
+  nullCommand: Command.custom(),
   disableSomeKeyboardShortcuts,
   saveBashHistory,
   bashGitPrompt,
@@ -76,14 +76,14 @@ const commands: Record<string, Command> = {
   keybase,
   nordvpn,
   tmuxinatorByobuBash_aliases,
-  tmuxinatorFiles: Command.custom("tmuxinatorFiles")
+  tmuxinatorFiles: Command.custom()
     .withDependencies(createTmuxinatorFiles),
   mTemp,
   networkUtils,
   bashAliases,
   tabbed: await tabbed(),
   awscli: InstallOsPackage.of("aws-cli"),
-  libreoffice: Command.custom("libreoffice").withDependencies(
+  libreoffice: Command.custom().withDependencies(
     [
       "libreoffice-fresh",
       "libreoffice-fresh-en-gb",

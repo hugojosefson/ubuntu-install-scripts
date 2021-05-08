@@ -5,7 +5,7 @@ import { targetUser } from "../os/user/target-user.ts";
 import { CreateFile, MODE_EXECUTABLE_775 } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 
-export const mTemp = Command.custom("mTemp")
+export const mTemp = Command.custom()
   .withDependencies([
     InstallOsPackage.of("gettext"),
     new CreateFile(

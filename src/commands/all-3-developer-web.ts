@@ -5,7 +5,7 @@ import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
 import { networkUtils } from "./network-utils.ts";
 import { webstorm } from "./webstorm.ts";
 
-export const all3DeveloperWeb = Command.custom("all3DeveloperWeb")
+export const all3DeveloperWeb = Command.custom()
   .withDependencies([
     all2DeveloperBase,
     networkUtils,

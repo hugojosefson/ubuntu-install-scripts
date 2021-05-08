@@ -1,10 +1,6 @@
 import { memoize } from "../../deps.ts";
 import { Command, CommandType, RunResult } from "../../model/command.ts";
-import {
-  DependencyId,
-  FLATPAK,
-  OS_PACKAGE_SYSTEM,
-} from "../../model/dependency.ts";
+import { FLATPAK, OS_PACKAGE_SYSTEM } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
@@ -20,7 +16,7 @@ export abstract class AbstractPackageCommand<T extends PackageName>
   readonly packageName: T;
 
   protected constructor(commandType: CommandType, packageName: T) {
-    super(commandType, new DependencyId(commandType, packageName));
+    super(commandType);
     this.packageName = packageName;
   }
 
@@ -93,13 +89,7 @@ export class ReplaceOsPackage extends Command {
     removePackageName: OsPackageName,
     installPackageName: OsPackageName,
   ) {
-    super(
-      "ReplaceOsPackage",
-      new DependencyId("ReplaceOsPackage", {
-        removePackageName,
-        installPackageName,
-      }),
-    );
+    super("ReplaceOsPackage");
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
 
@@ -132,7 +122,7 @@ export class ReplaceOsPackage extends Command {
   /**
    * @deprecated Use .of2() instead.
    */
-  static of(commandType: CommandType, id: DependencyId): Command {
+  static of(commandType: CommandType): Command {
     throw new Error("Use .of2() instead.");
   }
   static of2: (
@@ -207,7 +197,7 @@ export class RemoveAurPackage extends AbstractPackageCommand<AurPackageName> {
 }
 
 export const flatpakOsPackages = ["xdg-desktop-portal-gtk", "flatpak"];
-export const flatpak: Command = Command.custom("flatpak")
+export const flatpak: Command = Command.custom()
   .withDependencies(flatpakOsPackages.map(InstallOsPackage.of));
 
 export class InstallFlatpakPackage

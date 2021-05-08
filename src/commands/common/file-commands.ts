@@ -5,7 +5,7 @@ import {
   CommandType,
   RunResult,
 } from "../../model/command.ts";
-import { DependencyId, FileSystemPath } from "../../model/dependency.ts";
+import { FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
 
@@ -16,12 +16,11 @@ export abstract class AbstractFileCommand extends Command {
 
   protected constructor(
     commandType: CommandType,
-    id: DependencyId,
     owner: PasswdEntry,
     path: FileSystemPath,
     mode?: number,
   ) {
-    super(commandType, id);
+    super(commandType);
     this.owner = owner;
     this.path = path;
     this.mode = mode;
@@ -136,7 +135,6 @@ export class CreateFile extends AbstractFileCommand {
   ) {
     super(
       "CreateFile",
-      new DependencyId("CreateFile", path),
       owner,
       path,
       mode,
@@ -170,7 +168,7 @@ export class CreateDir extends Command {
   readonly path: FileSystemPath;
 
   constructor(owner: PasswdEntry, path: FileSystemPath) {
-    super("CreateDir", new DependencyId("CreateDir", path));
+    super("CreateDir");
     this.locks.push(path);
     this.owner = owner;
     this.path = path;
@@ -219,7 +217,6 @@ export class LineInFile extends AbstractFileCommand {
   constructor(owner: PasswdEntry, path: FileSystemPath, line: string) {
     super(
       "LineInFile",
-      new DependencyId("LineInFile", { path, line }),
       owner,
       path,
     );
@@ -237,10 +234,7 @@ export class UserInGroup extends Command {
   readonly group: string;
 
   constructor(user: PasswdEntry, group: string) {
-    super(
-      "UserInGroup",
-      new DependencyId("UserInGroup", { user, group }),
-    );
+    super("UserInGroup");
     this.user = user;
     this.group = group;
   }
@@ -260,7 +254,7 @@ export class Symlink extends AbstractFileCommand {
   readonly target: string;
 
   constructor(owner: PasswdEntry, from: string, to: FileSystemPath) {
-    super("Symlink", new DependencyId("Symlink", { from, to }), owner, to);
+    super("Symlink", owner, to);
     this.target = from;
   }
 

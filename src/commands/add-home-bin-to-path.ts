@@ -3,7 +3,7 @@ import { FileSystemPath } from "../model/dependency.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { CreateDir, LineInFile } from "./common/file-commands.ts";
 
-export const addHomeBinToPath = Command.custom("addHomeBinToPath")
+export const addHomeBinToPath = Command.custom()
   .withDependencies([
     new CreateDir(targetUser, FileSystemPath.of(targetUser, "~/bin")),
     new LineInFile(

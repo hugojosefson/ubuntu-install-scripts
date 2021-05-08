@@ -35,7 +35,7 @@ export const tabbed = async () => {
     console.error(
       colorlog.error(`tabbed: tempDir: ${JSON.stringify(tempDir)}`),
     );
-  // return Command.custom("tabbed").withLocks([tempDir]);
+  // return Command.custom().withLocks([tempDir]);
   const cwd: string = tempDir.path;
 
   const gitClone = new Exec(
@@ -83,7 +83,7 @@ export const tabbed = async () => {
     ["make", "install"],
   );
 
-  return Command.custom("tabbed")
+  return Command.custom()
     .withDependencies([
       copyExtraTools,
       makeInstall,

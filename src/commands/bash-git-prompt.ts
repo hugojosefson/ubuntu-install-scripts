@@ -4,7 +4,7 @@ import { targetUser } from "../os/user/target-user.ts";
 import { LineInFile } from "./common/file-commands.ts";
 import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
 
-export const bashGitPrompt: Command = Command.custom("bashGitPrompt")
+export const bashGitPrompt: Command = Command.custom()
   .withDependencies([
     InstallOsPackage.of("git"),
     InstallAurPackage.of("bash-git-prompt"),

@@ -4,7 +4,7 @@ import { ROOT } from "../os/user/target-user.ts";
 import { LineInFile } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 
-export const vim: Command = Command.custom("vim")
+export const vim: Command = Command.custom()
   .withDependencies([
     InstallOsPackage.of("vim"),
     new LineInFile(

@@ -7,7 +7,7 @@ import { Exec } from "./exec.ts";
 
 export const sdkmanSourceLine = ". ~/.sdkman/bin/sdkman-init.sh";
 
-export const sdkman = Command.custom("sdkman")
+export const sdkman = Command.custom()
   .withDependencies([
     new Exec([], [], targetUser, {}, [
       "bash",

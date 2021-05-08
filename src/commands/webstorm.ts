@@ -10,7 +10,7 @@ webstorm "\${arg}" &>/dev/null &
 `;
 
 export const webstorm: Command = Command
-  .custom("webstorm")
+  .custom()
   .withDependencies([
     // Not installing package locally. Using webstorm via isolate-in-docker.
     // InstallOsPackage.of("webstorm"),

@@ -16,9 +16,7 @@ const setEmpty = (key: string) => set(key, "['']");
 const gsettingsExecCommand = (cmd: Array<string>) =>
   new Exec([InstallOsPackage.of("glib2")], [], targetUser, {}, cmd);
 
-export const disableSomeKeyboardShortcuts = Command.custom(
-  "disableSomeKeyboardShortcuts",
-)
+export const disableSomeKeyboardShortcuts = Command.custom()
   .withDependencies([
     set("unmaximize", "['<Primary><Super>Down', '<Super>Down']"),
     ...["toggle-shaded", "begin-resize", "begin-move", "cycle-group"].map(

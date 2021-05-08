@@ -2,7 +2,7 @@ import { NOOP } from "../commands/common/noop.ts";
 import { config } from "../config.ts";
 import { colorlog } from "../deps.ts";
 import { defer, Deferred } from "../os/defer.ts";
-import { DependencyId, Lock, ReleaseLockFn } from "./dependency.ts";
+import { Lock, LockReleaser } from "./dependency.ts";
 
 export interface CommandResult {
   status: Deno.ProcessStatus;
@@ -31,15 +31,13 @@ export type CommandType =
 
 export class Command {
   readonly type: CommandType;
-  readonly id: DependencyId;
   readonly dependencies: Array<Command> = new Array(0);
   readonly locks: Array<Lock> = new Array(0);
   readonly doneDeferred: Deferred<CommandResult> = defer();
   readonly done: Promise<CommandResult> = this.doneDeferred.promise;
 
-  protected constructor(commandType: CommandType, id: DependencyId) {
+  protected constructor(commandType: CommandType) {
     this.type = commandType;
-    this.id = id;
   }
 
   toString() {
@@ -53,11 +51,11 @@ export class Command {
     config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.dependencies].length
-      } dependencies...       ${this.type} ${this.id}`,
+      } dependencies...       ${this.type}`,
     ));
     config.verbose && console.log(
       colorlog.warning(
-        `Command.runWhenDependenciesAreDone: waiting for this.dependencies:        ${this.type} ${this.id}`,
+        `Command.runWhenDependenciesAreDone: waiting for this.dependencies:        ${this.type}`,
       ),
       this.dependencies,
     );
@@ -67,20 +65,20 @@ export class Command {
     config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.dependencies].length
-      } dependencies... DONE. ${this.type} ${this.id}`,
+      } dependencies... DONE. ${this.type}`,
     ));
     config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.locks].length
-      } locks...              ${this.type} ${this.id}`,
+      } locks...              ${this.type}`,
     ));
-    const releaseLockFns: Array<ReleaseLockFn> = await Promise.all(
+    const releaseLockFns: Array<LockReleaser> = await Promise.all(
       this.locks.map((lock) => lock.take()),
     );
     config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.locks].length
-      } locks... DONE.        ${this.type} ${this.id}`,
+      } locks... DONE.        ${this.type}`,
     ));
     try {
       const innerResult: RunResult = await (this.run().catch(
@@ -92,15 +90,12 @@ export class Command {
     }
   }
 
-  static of(commandType: CommandType, id: DependencyId): Command {
-    return new Command(commandType, id);
+  static of(commandType: CommandType): Command {
+    return new Command(commandType);
   }
 
-  static custom(id: DependencyId | string): Command {
-    return Command.of(
-      "Custom",
-      typeof id === "string" ? new DependencyId(id) : id,
-    );
+  static custom(): Command {
+    return Command.of("Custom");
   }
 
   async run(): Promise<RunResult> {
@@ -112,7 +107,7 @@ export class Command {
     if (!commandResult) {
       this.doneDeferred.resolve({
         status: { success: true, code: 0 },
-        stdout: `Success: ${this.id.toString()}`,
+        stdout: `Success: ${this.type}`,
         stderr: "",
       });
       return this.done;
@@ -140,7 +135,7 @@ export class Command {
     const head = commands[0];
     const tail = commands.slice(1);
     return Command
-      .of("Custom", head.id.clone())
+      .of("Custom")
       .withDependencies([...tail, ...head.dependencies])
       .withLocks(head.locks)
       .withRun(head.run);
@@ -152,7 +147,7 @@ export class Command {
       return this;
     }
     return Command.sequential([
-      Command.custom("withDependencies").withDependencies(dependencies),
+      Command.custom().withDependencies(dependencies),
       this,
     ]);
   }

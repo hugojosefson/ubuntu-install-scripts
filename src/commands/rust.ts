@@ -8,7 +8,7 @@ import { Exec } from "./exec.ts";
 const split = (separator: string | RegExp) =>
   (a: string): Array<string> => a.split(separator);
 
-export const rust = Command.custom("rust")
+export const rust = Command.custom()
   .withDependencies([
     (Exec.sequentialExec(
       targetUser,

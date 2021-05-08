@@ -9,7 +9,7 @@ arg=\${1:-.}
 idea "\${arg}" &>/dev/null &
 `;
 
-export const idea: Command = Command.custom("idea")
+export const idea: Command = Command.custom()
   .withDependencies([
     // Not installing package locally. Using idea via isolate-in-docker.
     // InstallOsPackage.of("intellij-idea-community-edition"),

@@ -11,7 +11,7 @@ const addUserToDockerGroup = new UserInGroup(targetUser, "docker")
   ]);
 
 const installDocker = Command
-  .custom("docker:install")
+  .custom()
   .withDependencies([
     InstallOsPackage.of("docker"),
     InstallOsPackage.of("docker-compose"),
@@ -19,7 +19,7 @@ const installDocker = Command
   ]);
 
 const activateDocker = Command
-  .custom("docker:activate")
+  .custom()
   .withDependencies([
     installDocker,
   ])
@@ -30,7 +30,7 @@ const activateDocker = Command
   });
 
 const testDocker = Command
-  .custom("docker:test")
+  .custom()
   .withDependencies([
     activateDocker,
     addUserToDockerGroup,
@@ -45,7 +45,7 @@ const testDocker = Command
   );
 
 export const docker = Command
-  .custom("docker")
+  .custom()
   .withDependencies(
     isInsideDocker
       ? [installDocker]

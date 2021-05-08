@@ -4,7 +4,7 @@ import { readRelativeFile } from "../os/read-relative-file.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { CreateFile, LineInFile } from "./common/file-commands.ts";
 
-export const bashAliases = Command.custom("bashAliases")
+export const bashAliases = Command.custom()
   .withDependencies([
     new LineInFile(
       targetUser,

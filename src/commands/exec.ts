@@ -1,6 +1,6 @@
 import { PasswdEntry } from "../deps.ts";
 import { Command, CommandResult, RunResult } from "../model/command.ts";
-import { DependencyId, Lock } from "../model/dependency.ts";
+import { Lock } from "../model/dependency.ts";
 import { ensureSuccessful, ExecOptions } from "../os/exec.ts";
 
 export class Exec extends Command {
@@ -15,7 +15,7 @@ export class Exec extends Command {
     options: ExecOptions = {},
     cmd: Array<string>,
   ) {
-    super("Exec", new DependencyId("Exec", { asUser, cmd, options }));
+    super("Exec");
     this.asUser = asUser;
     this.cmd = cmd;
     this.options = options;
@@ -37,10 +37,7 @@ export class Exec extends Command {
     cmds: Array<Array<string>>,
   ): Command {
     return Command
-      .of(
-        "Exec",
-        new DependencyId("Exec.sequentialExec", { asUser, options, cmds }),
-      )
+      .of("Exec")
       .withRun(async () => {
         const results: Array<CommandResult> = [];
         for (const cmd of cmds) {

@@ -16,7 +16,7 @@ const withDependencies = (dependencies: Array<Command>) =>
 
 const replaceJack = ReplaceOsPackage.of2("jack", "jack2");
 
-export const all5Personal = Command.custom("all5Personal")
+export const all5Personal = Command.custom()
   .withDependencies([
     disableSomeKeyboardShortcuts,
     ...[

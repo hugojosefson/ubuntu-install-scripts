@@ -5,14 +5,14 @@ import { InstallOsPackage, ReplaceOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 
 const activateLibvirtd: Command = isInsideDocker
-  ? Command.custom("activateLibvirtd")
+  ? Command.custom()
   : Exec.sequentialExec(ROOT, {}, [
     ["systemctl", "enable", "libvirtd.service"],
     ["systemctl", "start", "libvirtd.service"],
   ]);
 
 export const virtManager = Command
-  .custom("virt-manager")
+  .custom()
   .withDependencies([
     activateLibvirtd
       .withDependencies(

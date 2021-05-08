@@ -6,7 +6,7 @@ import { docker } from "./docker.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { virtManager } from "./virt-manager.ts";
 
-export const all2DeveloperBase = Command.custom("all2DeveloperBase")
+export const all2DeveloperBase = Command.custom()
   .withDependencies([
     all1MinimalSanity,
     ...[

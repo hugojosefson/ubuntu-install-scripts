@@ -8,7 +8,7 @@ import { tmuxinatorByobuBash_aliases } from "./tmuxinator_byobu_bash_aliases.ts"
 import { UPGRADE_OS_PACKAGES } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 
-export const all1MinimalSanity = Command.custom("all1MinimalSanity")
+export const all1MinimalSanity = Command.custom()
   .withDependencies([
     UPGRADE_OS_PACKAGES,
     ...[

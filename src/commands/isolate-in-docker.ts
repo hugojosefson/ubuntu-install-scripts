@@ -9,7 +9,7 @@ import {
 } from "./common/file-commands.ts";
 import { docker } from "./docker.ts";
 
-export const isolateInDocker = Command.custom("isolateInDocker")
+export const isolateInDocker = Command.custom()
   .withDependencies([
     docker,
     new CreateFile(
