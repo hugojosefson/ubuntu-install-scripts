@@ -68,3 +68,8 @@ import {
   pipelineUnary,
 } from "https://deno.land/x/compose@1.3.2/index.js";
 export { compose, composeUnary, pipe, pipeline, pipelineUnary };
+
+import { paramCase } from "https://deno.land/x/case@v2.1.0/mod.ts";
+export function kebabCase(s: string): string {
+  return paramCase(s);
+}

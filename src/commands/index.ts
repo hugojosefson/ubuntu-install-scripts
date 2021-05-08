@@ -1,3 +1,5 @@
+import { kebabCase } from "../deps.ts";
+import { toObject } from "../fn.ts";
 import { Command } from "../model/command.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { addNodeModulesBinToPath } from "./add-node_modules-bin-to-path.ts";
@@ -38,18 +40,18 @@ import { virtualbox } from "./virtualbox.ts";
 import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
-  ["all"]: Command.custom().withDependencies([
+  all: Command.custom().withDependencies([
     all3DeveloperWeb,
     all4DeveloperJava,
     all5Personal,
     all6Gaming,
   ]),
-  ["all-1-minimal-sanity"]: all1MinimalSanity,
-  ["all-2-developer-base"]: all2DeveloperBase,
-  ["all-3-developer-web"]: all3DeveloperWeb,
-  ["all-4-developer-java"]: all4DeveloperJava,
-  ["all-5-personal"]: all5Personal,
-  ["all-6-gaming"]: all6Gaming,
+  all1MinimalSanity,
+  all2DeveloperBase,
+  all3DeveloperWeb,
+  all4DeveloperJava,
+  all5Personal,
+  all6Gaming,
   UPGRADE_OS_PACKAGES,
   gitk,
   vim,
@@ -91,7 +93,15 @@ const commands: Record<string, Command> = {
   ),
 };
 
-export const getCommand = (name: string): Command =>
-  commands[name] || InstallOsPackage.of(name);
+const kebabCommands: Record<string, Command> = Object.entries(commands)
+  .map(([key, value]) => [kebabCase(key), value] as [string, Command])
+  .reduce(
+    toObject<string, Command>(),
+    {},
+  );
 
-export const availableCommands: Array<string> = Object.keys(commands).sort();
+export const getCommand = (name: string): Command =>
+  kebabCommands[name] || InstallOsPackage.of(name);
+
+export const availableCommands: Array<string> = Object.keys(kebabCommands)
+  .sort();
