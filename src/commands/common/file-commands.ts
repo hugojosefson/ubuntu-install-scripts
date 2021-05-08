@@ -265,11 +265,12 @@ export class Symlink extends AbstractFileCommand {
   }
 
   async run(): Promise<RunResult> {
-    const ifExists = async (pathStat: Deno.FileInfo) => {
+    const ifExists = async (
+      pathStat: Deno.FileInfo,
+    ) => {
       if (
         pathStat.isSymlink &&
-        await Deno.readLink(this.path.path) ===
-          await Deno.readLink(this.target)
+        await Deno.realPath(this.path.path) === this.target
       ) {
         if (
           pathStat.uid === this.owner.uid && pathStat.gid === this.owner.gid

@@ -19,6 +19,8 @@ export class Exec extends Command {
     this.asUser = asUser;
     this.cmd = cmd;
     this.options = options;
+    this.dependencies.push(...dependencies);
+    this.locks.push(...locks);
   }
 
   async run(): Promise<RunResult> {
@@ -40,9 +42,10 @@ export class Exec extends Command {
         new DependencyId("Exec.sequentialExec", { asUser, options, cmds }),
       )
       .withRun(async () => {
-        const results: Array<CommandResult> = await Promise.all(
-          cmds.map(async (cmd) => await ensureSuccessful(asUser, cmd, options)),
-        );
+        const results: Array<CommandResult> = [];
+        for (const cmd of cmds) {
+          results.push(await ensureSuccessful(asUser, cmd, options));
+        }
 
         const success: boolean = results
           .map((result) => result.status.success)

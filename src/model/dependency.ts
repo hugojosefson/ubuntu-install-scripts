@@ -1,8 +1,9 @@
 import { memoize, PasswdEntry } from "../deps.ts";
+import { defer, deferAlreadyResolvedVoid, Deferred } from "../os/defer.ts";
 import { resolvePath } from "../os/resolve-path.ts";
 import { ROOT } from "../os/user/target-user.ts";
 import { Cloneable } from "./cloneable.ts";
-import { Command, CommandResult } from "./command.ts";
+import { Command } from "./command.ts";
 
 function cloneValue(
   value?: string | Record<string, any>,
@@ -32,23 +33,24 @@ export class DependencyId implements Cloneable<DependencyId> {
   }
 }
 
-export interface NeedsDependenciesDone {
-  readonly dependencies: Array<Command>;
+export type ReleaseLockFn = () => void;
+export class Lock {
+  private currentLock: Deferred<void> = deferAlreadyResolvedVoid();
+
+  async take(): Promise<ReleaseLockFn> {
+    const previousLock = this.currentLock.promise;
+    this.currentLock = defer();
+    await previousLock;
+    return this.currentLock.resolve;
+  }
 }
 
-export interface NeedsExclusiveLocks {
-  readonly locks: Array<Lock>;
-}
-
-/** Marker interface. Will be handled by p-queue. */
-export interface Lock {
-}
-
-export class FileSystemPath implements Lock {
+export class FileSystemPath extends Lock {
   readonly id: DependencyId;
   readonly path: string;
 
   private constructor(path: string) {
+    super();
     this.id = new DependencyId("FileSystemPath", path);
     this.path = path;
   }
@@ -56,12 +58,56 @@ export class FileSystemPath implements Lock {
     return this.id.toString();
   }
 
-  private static ofAbsolutePath: (path: string) => FileSystemPath = memoize(
-    (absolutePath: string): FileSystemPath => new FileSystemPath(absolutePath),
-  );
+  private static ofAbsolutePath(absolutePath: string): FileSystemPath {
+    console.warn(
+      `ofAbsolutePath(absolutePath: ${JSON.stringify(absolutePath)})`,
+    );
+    if (!absolutePath) {
+      throw new Error(
+        `ofAbsolutePath(absolutePath: ${
+          JSON.stringify(absolutePath)
+        }): absolutePath is not.`,
+      );
+    }
+    const fileSystemPath = new FileSystemPath(absolutePath);
+    console.warn(
+      `ofAbsolutePath(absolutePath: ${
+        JSON.stringify(absolutePath)
+      }): fileSystemPath is: ${JSON.stringify(fileSystemPath)}`,
+    );
+    return fileSystemPath;
+  }
 
-  static of = (user: PasswdEntry, path: string): FileSystemPath =>
-    FileSystemPath.ofAbsolutePath(resolvePath(user, path));
+  private static ofAbsolutePathMemoized: (path: string) => FileSystemPath =
+    memoize(
+      FileSystemPath.ofAbsolutePath,
+    );
+
+  static of(user: PasswdEntry, path: string): FileSystemPath {
+    console.warn(
+      `of(user: ${JSON.stringify(user)}, path: ${JSON.stringify(path)})`,
+    );
+    const resolvedPath: string = resolvePath(user, path);
+    if (!resolvedPath) {
+      throw new Error(
+        `of(user: ${JSON.stringify(user)}, path: ${
+          JSON.stringify(path)
+        }): resolvedPath is not.`,
+      );
+    }
+    console.warn(
+      `of(user: ${JSON.stringify(user)}, path: ${
+        JSON.stringify(path)
+      }): resolvedPath is: ${resolvedPath}`,
+    );
+    const fileSystemPath = FileSystemPath.ofAbsolutePathMemoized(resolvedPath);
+    console.warn(
+      `of(user: ${JSON.stringify(user)}, path: ${
+        JSON.stringify(path)
+      }): fileSystemPath is: ${fileSystemPath}`,
+    );
+    return fileSystemPath;
+  }
 }
 
 export const OS_PACKAGE_SYSTEM: Lock = FileSystemPath.of(

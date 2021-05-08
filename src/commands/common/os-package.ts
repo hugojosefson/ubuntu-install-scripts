@@ -158,7 +158,7 @@ export class InstallAurPackage extends AbstractPackageCommand<AurPackageName> {
       return `Already installed AUR package ${this.packageName}.`;
     }
 
-    await ensureSuccessful(ROOT, [
+    await ensureSuccessful(targetUser, [
       "yay",
       "--sync",
       "--refresh",
@@ -190,7 +190,7 @@ export class RemoveAurPackage extends AbstractPackageCommand<AurPackageName> {
       return `Already removed AUR package ${this.packageName}.`;
     }
 
-    await ensureSuccessful(ROOT, [
+    await ensureSuccessful(targetUser, [
       "yay",
       "--remove",
       "--nosave",

@@ -53,6 +53,7 @@ const commands: Record<string, Command> = {
   UPGRADE_OS_PACKAGES,
   gitk,
   vim,
+  nullCommand: Command.custom("nullCommand"),
   disableSomeKeyboardShortcuts,
   saveBashHistory,
   bashGitPrompt,

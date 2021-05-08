@@ -1,12 +1,11 @@
 import { Command } from "../model/command.ts";
 import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { ROOT } from "../os/user/target-user.ts";
-import { NOOP } from "./common/noop.ts";
 import { InstallOsPackage, ReplaceOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 
 const activateLibvirtd: Command = isInsideDocker
-  ? NOOP
+  ? Command.custom("activateLibvirtd")
   : Exec.sequentialExec(ROOT, {}, [
     ["systemctl", "enable", "libvirtd.service"],
     ["systemctl", "start", "libvirtd.service"],

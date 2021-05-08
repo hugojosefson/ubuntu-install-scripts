@@ -62,3 +62,12 @@ export { isDocker };
 import toposort_ from "https://cdn.skypack.dev/toposort@v2.0.2?dts";
 export const toposort = <T>(things: Array<[T, T]>): Array<T> =>
   toposort_(things);
+
+import {
+  compose,
+  composeUnary,
+  pipe,
+  pipeline,
+  pipelineUnary,
+} from "https://deno.land/x/compose@1.3.2/index.js";
+export { compose, composeUnary, pipe, pipeline, pipelineUnary };

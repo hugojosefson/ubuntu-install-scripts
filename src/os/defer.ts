@@ -36,3 +36,9 @@ export const defer = <T>(): Deferred<T> => {
   const deferred = { promise, resolve, reject, isDone: false };
   return deferred;
 };
+
+export function deferAlreadyResolvedVoid(): Deferred<void> {
+  const deferred: Deferred<void> = defer<void>();
+  deferred.resolve();
+  return deferred;
+}

@@ -1,11 +1,7 @@
 import { NOOP } from "../commands/common/noop.ts";
+import { colorlog } from "../deps.ts";
 import { defer, Deferred } from "../os/defer.ts";
-import {
-  DependencyId,
-  Lock,
-  NeedsDependenciesDone,
-  NeedsExclusiveLocks,
-} from "./dependency.ts";
+import { DependencyId, Lock, ReleaseLockFn } from "./dependency.ts";
 
 export interface CommandResult {
   status: Deno.ProcessStatus;
@@ -32,11 +28,11 @@ export type CommandType =
   | "Custom"
   | "Noop";
 
-export class Command implements NeedsExclusiveLocks, NeedsDependenciesDone {
+export class Command {
   readonly type: CommandType;
   readonly id: DependencyId;
-  readonly dependencies: Array<Command> = [];
-  readonly locks: Array<Lock> = [];
+  readonly dependencies: Array<Command> = new Array(0);
+  readonly locks: Array<Lock> = new Array(0);
   readonly doneDeferred: Deferred<CommandResult> = defer();
   readonly done: Promise<CommandResult> = this.doneDeferred.promise;
 
@@ -53,17 +49,52 @@ export class Command implements NeedsExclusiveLocks, NeedsDependenciesDone {
       return this.done;
     }
 
-    await Promise.all(this.dependencies.map(({ done }) => done));
-
-    const innerResult: RunResult = await (this.run().catch(
-      this.doneDeferred.reject,
+    console.log(colorlog.warning(
+      `Command.runWhenDependenciesAreDone: waiting for ${
+        [...this.dependencies].length
+      } dependencies...       ${this.type} ${this.id}`,
     ));
-    return this.resolve(innerResult);
+    console.log(
+      colorlog.warning(
+        `Command.runWhenDependenciesAreDone: waiting for this.dependencies:        ${this.type} ${this.id}`,
+      ),
+      this.dependencies,
+    );
+    if ([...this.dependencies].length) {
+      await Promise.all(this.dependencies.map(({ done }) => done));
+    }
+    console.log(colorlog.warning(
+      `Command.runWhenDependenciesAreDone: waiting for ${
+        [...this.dependencies].length
+      } dependencies... DONE. ${this.type} ${this.id}`,
+    ));
+    console.log(colorlog.warning(
+      `Command.runWhenDependenciesAreDone: waiting for ${
+        [...this.locks].length
+      } locks...              ${this.type} ${this.id}`,
+    ));
+    const releaseLockFns: Array<ReleaseLockFn> = await Promise.all(
+      this.locks.map((lock) => lock.take()),
+    );
+    console.log(colorlog.warning(
+      `Command.runWhenDependenciesAreDone: waiting for ${
+        [...this.locks].length
+      } locks... DONE.        ${this.type} ${this.id}`,
+    ));
+    try {
+      const innerResult: RunResult = await (this.run().catch(
+        this.doneDeferred.reject,
+      ));
+      return this.resolve(innerResult);
+    } finally {
+      releaseLockFns.forEach((releaseLock) => releaseLock());
+    }
   }
 
   static of(commandType: CommandType, id: DependencyId): Command {
     return new Command(commandType, id);
   }
+
   static custom(id: DependencyId | string): Command {
     return Command.of(
       "Custom",
@@ -100,7 +131,7 @@ export class Command implements NeedsExclusiveLocks, NeedsDependenciesDone {
 
   static sequential(commands: Array<Command>): Command {
     if (commands.length === 0) {
-      return NOOP;
+      return NOOP();
     }
     if (commands.length === 1) {
       return commands[0];
