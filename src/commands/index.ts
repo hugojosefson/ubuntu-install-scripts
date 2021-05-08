@@ -29,7 +29,7 @@ import { saveBashHistory } from "./save-bash-history.ts";
 import { tabbed } from "./tabbed.ts";
 import {
   createTmuxinatorFiles,
-  tmuxinatorByobuBash_aliases,
+  tmuxinatorByobuBashAliases,
 } from "./tmuxinator_byobu_bash_aliases.ts";
 import { UPGRADE_OS_PACKAGES } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
@@ -75,9 +75,8 @@ const commands: Record<string, Command> = {
   yubikey,
   keybase,
   nordvpn,
-  tmuxinatorByobuBash_aliases,
-  tmuxinatorFiles: Command.custom()
-    .withDependencies(createTmuxinatorFiles),
+  tmuxinatorByobuBashAliases,
+  tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
   mTemp,
   networkUtils,
   bashAliases,

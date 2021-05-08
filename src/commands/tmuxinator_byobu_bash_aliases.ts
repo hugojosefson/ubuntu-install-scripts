@@ -49,7 +49,7 @@ const installTmuxinator = RemoveOsPackage.of("screen")
     ].map(InstallOsPackage.of)),
   ]);
 
-export const tmuxinatorByobuBash_aliases = Command.custom()
+export const tmuxinatorByobuBashAliases = Command.custom()
   .withDependencies([
     await tabbed(),
     installTmuxinator,
