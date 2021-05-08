@@ -1,4 +1,5 @@
 import { NOOP } from "./commands/common/noop.ts";
+import { config } from "./config.ts";
 import { compose, toposort } from "./deps.ts";
 import { Command, CommandResult, CommandType } from "./model/command.ts";
 import { DependencyId, Lock } from "./model/dependency.ts";
@@ -55,20 +56,20 @@ export const sortCommands = (commands: Command[]): Command[] => {
 
   const commandsInOrder: Command[] = toposort(dependencyPairs);
 
-  console.log(
+  config.verbose && console.log(
     "=====================================================================================\n\ncommands:\n" +
       commands.map(compose(stringify, forLog(1))).join("\n") +
       "\n\n",
   );
 
-  console.log(
+  config.verbose && console.log(
     "=====================================================================================\n\dependencyPairs:\n" +
       dependencyPairs.map((pair) => pair.map(compose(stringifyLine, forLog(0))))
         .join("\n") +
       "\n\n",
   );
 
-  console.log(
+  config.verbose && console.log(
     "=====================================================================================\n\commandsInOrder:\n" +
       commandsInOrder.map(
         compose(
@@ -90,9 +91,9 @@ export async function run(commands: Command[]): Promise<CommandResult[]> {
 
   const commandResults: CommandResult[] = [];
   for (const command of sortedCommands) {
-    console.log(`Running command `, command);
+    config.verbose && console.log(`Running command `, command);
     commandResults.push(await command.runWhenDependenciesAreDone());
-    console.log(`Running command `, command, "DONE.");
+    config.verbose && console.log(`Running command `, command, "DONE.");
   }
 
   return commandResults;

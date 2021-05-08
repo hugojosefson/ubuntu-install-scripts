@@ -1,3 +1,4 @@
+import { config } from "../config.ts";
 import { colorlog } from "../deps.ts";
 import { Command } from "../model/command.ts";
 import { FileSystemPath } from "../model/dependency.ts";
@@ -9,7 +10,7 @@ import { Exec } from "./exec.ts";
 
 export const tabbed = async () => {
   const fileSystemPathPromise = createTempDir(targetUser);
-  console.error(
+  config.verbose && console.error(
     colorlog.error(
       `tabbed: fileSystemPathPromise:`,
     ),
@@ -17,7 +18,7 @@ export const tabbed = async () => {
   );
   fileSystemPathPromise.then(
     (tempD) => {
-      console.log(
+      config.verbose && console.log(
         colorlog.success(`tabbed: tempD: ${JSON.stringify(tempD)}`),
         tempD,
       );
@@ -30,7 +31,10 @@ export const tabbed = async () => {
     },
   );
   const tempDir: FileSystemPath = await fileSystemPathPromise;
-  console.error(colorlog.error(`tabbed: tempDir: ${JSON.stringify(tempDir)}`));
+  config.verbose &&
+    console.error(
+      colorlog.error(`tabbed: tempDir: ${JSON.stringify(tempDir)}`),
+    );
   // return Command.custom("tabbed").withLocks([tempDir]);
   const cwd: string = tempDir.path;
 

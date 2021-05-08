@@ -49,7 +49,7 @@ export const ensureSuccessful = async (
       : ["sudo", `--user=${asUser.username}`, "--non-interactive", "--"]),
     ...cmd,
   ];
-  console.error(
+  config.verbose && console.error(
     colorlog.warning(
       JSON.stringify({ options, user: asUser.username, cmd, effectiveCmd }),
     ),

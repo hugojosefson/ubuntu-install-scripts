@@ -1,4 +1,5 @@
 import { NOOP } from "../commands/common/noop.ts";
+import { config } from "../config.ts";
 import { colorlog } from "../deps.ts";
 import { defer, Deferred } from "../os/defer.ts";
 import { DependencyId, Lock, ReleaseLockFn } from "./dependency.ts";
@@ -49,12 +50,12 @@ export class Command {
       return this.done;
     }
 
-    console.log(colorlog.warning(
+    config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.dependencies].length
       } dependencies...       ${this.type} ${this.id}`,
     ));
-    console.log(
+    config.verbose && console.log(
       colorlog.warning(
         `Command.runWhenDependenciesAreDone: waiting for this.dependencies:        ${this.type} ${this.id}`,
       ),
@@ -63,12 +64,12 @@ export class Command {
     if ([...this.dependencies].length) {
       await Promise.all(this.dependencies.map(({ done }) => done));
     }
-    console.log(colorlog.warning(
+    config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.dependencies].length
       } dependencies... DONE. ${this.type} ${this.id}`,
     ));
-    console.log(colorlog.warning(
+    config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.locks].length
       } locks...              ${this.type} ${this.id}`,
@@ -76,7 +77,7 @@ export class Command {
     const releaseLockFns: Array<ReleaseLockFn> = await Promise.all(
       this.locks.map((lock) => lock.take()),
     );
-    console.log(colorlog.warning(
+    config.verbose && console.log(colorlog.warning(
       `Command.runWhenDependenciesAreDone: waiting for ${
         [...this.locks].length
       } locks... DONE.        ${this.type} ${this.id}`,

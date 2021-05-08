@@ -1,3 +1,4 @@
+import { config } from "../config.ts";
 import { memoize, PasswdEntry } from "../deps.ts";
 import { defer, deferAlreadyResolvedVoid, Deferred } from "../os/defer.ts";
 import { resolvePath } from "../os/resolve-path.ts";
@@ -59,7 +60,7 @@ export class FileSystemPath extends Lock {
   }
 
   private static ofAbsolutePath(absolutePath: string): FileSystemPath {
-    console.warn(
+    config.verbose && console.warn(
       `ofAbsolutePath(absolutePath: ${JSON.stringify(absolutePath)})`,
     );
     if (!absolutePath) {
@@ -70,7 +71,7 @@ export class FileSystemPath extends Lock {
       );
     }
     const fileSystemPath = new FileSystemPath(absolutePath);
-    console.warn(
+    config.verbose && console.warn(
       `ofAbsolutePath(absolutePath: ${
         JSON.stringify(absolutePath)
       }): fileSystemPath is: ${JSON.stringify(fileSystemPath)}`,
@@ -84,7 +85,7 @@ export class FileSystemPath extends Lock {
     );
 
   static of(user: PasswdEntry, path: string): FileSystemPath {
-    console.warn(
+    config.verbose && console.warn(
       `of(user: ${JSON.stringify(user)}, path: ${JSON.stringify(path)})`,
     );
     const resolvedPath: string = resolvePath(user, path);
@@ -95,13 +96,13 @@ export class FileSystemPath extends Lock {
         }): resolvedPath is not.`,
       );
     }
-    console.warn(
+    config.verbose && console.warn(
       `of(user: ${JSON.stringify(user)}, path: ${
         JSON.stringify(path)
       }): resolvedPath is: ${resolvedPath}`,
     );
     const fileSystemPath = FileSystemPath.ofAbsolutePathMemoized(resolvedPath);
-    console.warn(
+    config.verbose && console.warn(
       `of(user: ${JSON.stringify(user)}, path: ${
         JSON.stringify(path)
       }): fileSystemPath is: ${fileSystemPath}`,
