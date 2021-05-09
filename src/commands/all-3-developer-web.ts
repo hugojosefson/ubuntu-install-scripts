@@ -12,6 +12,7 @@ export const all3DeveloperWeb = Command.custom()
     ...[
       "brave",
       "chromium",
+      "firefox",
     ].map(InstallOsPackage.of),
     ...[
       "google-chrome",
