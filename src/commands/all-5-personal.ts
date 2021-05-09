@@ -29,6 +29,7 @@ export const all5Personal = Command.custom()
       "ttf-ibm-plex",
       "ttf-liberation",
       "signal-desktop",
+      "android-tools",
       "arandr",
       "audacity",
       "cheese",
