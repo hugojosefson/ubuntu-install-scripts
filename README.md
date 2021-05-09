@@ -2,7 +2,7 @@
 
 _Install scripts for various things I like to install on a fresh Manjaro._
 
-They save some keystrokes :) Use the `./all-*` commands to save even more!
+They save some keystrokes :) Use the `all*` commands to save even more!
 
 Still Work-in-progress. Happy testing!
 
