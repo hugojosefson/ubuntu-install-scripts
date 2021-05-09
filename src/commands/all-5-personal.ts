@@ -42,6 +42,7 @@ export const all5Personal = Command.custom()
       "imagemagick",
       "inkscape",
       "neofetch",
+      "pass",
       "xpra",
     ]
       .map(InstallOsPackage.of)
