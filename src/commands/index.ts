@@ -16,6 +16,7 @@ import { desktopIsHome } from "./desktop-is-home.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
 import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
+import { fzf } from "./fzf.ts";
 import { gitk } from "./gitk.ts";
 import { idea } from "./idea.ts";
 import { insync } from "./insync.ts";
@@ -62,6 +63,7 @@ const commands: Record<string, Command> = {
   docker,
   downloadsIsTmp,
   flatpak,
+  fzf: await fzf(),
   gitk,
   idea,
   insync,
