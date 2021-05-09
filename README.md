@@ -11,6 +11,6 @@ Still Work-in-progress. Happy testing!
 This will show you the usage/help text:
 
 ```bash
-curl https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts | sudo sh -s
+curl -sL https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts | sudo sh -s
 ```
 
