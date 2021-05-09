@@ -14,18 +14,32 @@ import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
-import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
+import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
+import {
+  gsettingsAll,
+  gsettingsDisableSomeKeyboardShortcuts,
+  gsettingsEnableSomeKeyboardShortcuts,
+  gsettingsInput,
+  gsettingsLocalisation,
+  gsettingsLookAndFeel,
+  gsettingsPrivacy,
+  gsettingsScreenshot,
+  gsettingsUsefulDefaults,
+  gsettingsWindows,
+} from "./gsettings.ts";
 import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { fzf } from "./fzf.ts";
+import { gedit } from "./gedit.ts";
 import { gitk } from "./gitk.ts";
-import { gnomeExtensions } from "./gnome-extensions.ts";
+import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { idea } from "./idea.ts";
 import { insync } from "./insync.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { java, sdkmanJava } from "./java.ts";
 import { keybase } from "./keybase.ts";
 import { mTemp } from "./m-temp.ts";
+import { meld } from "./meld.ts";
 import { minecraft } from "./minecraft.ts";
 import { networkUtils } from "./network-utils.ts";
 import { nordvpn } from "./nordvpn.ts";
@@ -62,13 +76,25 @@ const commands: Record<string, Command> = {
   bashAliases,
   bashGitPrompt,
   desktopIsHome,
-  disableSomeKeyboardShortcuts,
   docker,
   downloadsIsTmp,
   flatpak,
   fzf: await fzf(),
+  gedit,
   gitk,
-  gnomeExtensions,
+  gnomeShellExtensions,
+  gnomeShellExtensionInstaller,
+  gsettingsAll,
+  gsettingsDisableSomeKeyboardShortcuts,
+  gsettingsEnableSomeKeyboardShortcuts,
+  gsettingsInput,
+  gsettingsLocalisation,
+  gsettingsLocalization: gsettingsLocalisation,
+  gsettingsLookAndFeel,
+  gsettingsPrivacy,
+  gsettingsScreenshot,
+  gsettingsUsefulDefaults,
+  gsettingsWindows,
   idea,
   insync,
   isolateInDocker,
@@ -82,6 +108,7 @@ const commands: Record<string, Command> = {
     ].map(InstallOsPackage.of),
   ),
   mTemp,
+  meld,
   minecraft,
   networkUtils,
   nordvpn,

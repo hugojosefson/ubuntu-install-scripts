@@ -7,11 +7,7 @@ const getUsers = async () =>
   parsePasswd(await ensureSuccessfulStdOut(ROOT, ["getent", "passwd"]))
     .sort(byUid);
 
-export const ENV_TARGET_USER = "TARGET_USER";
-const UID_MIN_INCLUSIVE = 1000;
-const UID_MAX_EXCLUSIVE = 32000;
-const GID_MIN_INCLUSIVE = 1000;
-const GID_MAX_EXCLUSIVE = 32000;
+const SUDO_USER = "SUDO_USER";
 
 export const ROOT: PasswdEntry = {
   uid: 0,
@@ -22,33 +18,28 @@ export const ROOT: PasswdEntry = {
 
 const getTargetUser = async (): Promise<PasswdEntry> => {
   const users: Array<PasswdEntry> = await getUsers();
-  const requestedTargetUserName: string | undefined = Deno.env.get(
-    ENV_TARGET_USER,
+  const sudoUser: string | undefined = Deno.env.get(
+    SUDO_USER,
   );
-  if (requestedTargetUserName) {
-    const requestedTargetUser: PasswdEntry | undefined = users.find((
+  if (sudoUser) {
+    const targetUser: PasswdEntry | undefined = users.find((
       { username },
-    ) => username === requestedTargetUserName);
+    ) => username === sudoUser);
 
-    if (requestedTargetUser) {
-      return requestedTargetUser;
+    if (targetUser) {
+      return targetUser;
     }
     throw new Error(
-      `ERROR: Could not find requested ${ENV_TARGET_USER} "${requestedTargetUserName}".`,
+      `ERROR: Could not find requested ${SUDO_USER} "${sudoUser}".`,
     );
   }
-  const firstWithSensibleUidGid: PasswdEntry | undefined = users.find((
-    { uid, gid },
-  ) =>
-    uid >= UID_MIN_INCLUSIVE && uid < UID_MAX_EXCLUSIVE &&
-    gid >= GID_MIN_INCLUSIVE && gid < GID_MAX_EXCLUSIVE
-  );
-  if (firstWithSensibleUidGid) {
-    return firstWithSensibleUidGid;
-  }
+
   throw new Error(
-    `ERROR: No target user found. Create a user with ${UID_MIN_INCLUSIVE} >= uid > ${UID_MAX_EXCLUSIVE} && ${GID_MIN_INCLUSIVE} >= gid > ${GID_MAX_EXCLUSIVE}, or override with env variable ${ENV_TARGET_USER}.`,
+    `ERROR: No target user found. Log in graphically as the target user. Then use sudo.`,
   );
 };
 
 export const targetUser = await getTargetUser();
+
+export const DBUS_SESSION_BUS_ADDRESS =
+  `unix:path=/run/user/${targetUser.uid}/bus`;

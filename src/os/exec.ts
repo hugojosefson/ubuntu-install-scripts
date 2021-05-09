@@ -2,7 +2,7 @@ import { config } from "../config.ts";
 import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
 import { FileSystemPath } from "../model/dependency.ts";
-import { ROOT } from "./user/target-user.ts";
+import { DBUS_SESSION_BUS_ADDRESS, ROOT } from "./user/target-user.ts";
 
 export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
   verbose?: boolean;
@@ -39,15 +39,31 @@ export const pipeAndCollect = async (
   return new TextDecoder().decode(all);
 };
 
+function runOptions(
+  asUser: PasswdEntry,
+  opts: ExecOptions,
+): Pick<Deno.RunOptions, "cwd" | "env"> {
+  return {
+    ...(opts.cwd ? { cwd: opts.cwd } : {}),
+    ...(asUser === ROOT
+      ? { ...(opts.env ? { env: opts.env } : {}) }
+      : { env: { DBUS_SESSION_BUS_ADDRESS, ...(opts.env || {}) } }),
+  };
+}
+
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
   cmd: Array<string>,
   options: ExecOptions = {},
 ): Promise<CommandResult> => {
   const effectiveCmd = [
-    ...(asUser === ROOT
-      ? []
-      : ["sudo", `--user=${asUser.username}`, "--non-interactive", "--"]),
+    ...(asUser === ROOT ? [] : [
+      "sudo",
+      `--preserve-env=DBUS_SESSION_BUS_ADDRESS,XAUTHORITY,DISPLAY`,
+      `--user=${asUser.username}`,
+      "--non-interactive",
+      "--",
+    ]),
     ...cmd,
   ];
   console.error(
@@ -55,12 +71,6 @@ export const ensureSuccessful = async (
       JSON.stringify({ options, user: asUser.username, cmd, effectiveCmd }),
     ),
   );
-  function runOptions(opts: ExecOptions): Pick<Deno.RunOptions, "cwd" | "env"> {
-    if (opts.cwd && opts.env) return { cwd: opts.cwd, env: opts.env };
-    if (opts.cwd) return { cwd: opts.cwd };
-    if (opts.env) return { env: opts.env };
-    return {};
-  }
   const stdinString = typeof options.stdin === "string" ? options.stdin : "";
   const shouldPipeStdin: boolean = stdinString.length > 0;
 
@@ -69,7 +79,7 @@ export const ensureSuccessful = async (
     stdout: "piped",
     stderr: "piped",
     cmd: effectiveCmd,
-    ...runOptions(options),
+    ...runOptions(asUser, options),
   });
 
   if (shouldPipeStdin) {

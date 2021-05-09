@@ -5,8 +5,8 @@ import {
   InstallOsPackage,
   ReplaceOsPackage,
 } from "./common/os-package.ts";
-import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
-import { gnomeExtensions } from "./gnome-extensions.ts";
+import { gsettingsAll } from "./gsettings.ts";
+import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { nordvpn } from "./nordvpn.ts";
@@ -20,7 +20,6 @@ const replaceJack = ReplaceOsPackage.of2("jack", "jack2");
 
 export const all5Personal = Command.custom()
   .withDependencies([
-    disableSomeKeyboardShortcuts,
     ...[
       "gnu-free-fonts",
       "noto-fonts",
@@ -60,8 +59,9 @@ export const all5Personal = Command.custom()
     rust,
     yubikey,
     keybase,
-    gnomeExtensions,
+    gnomeShellExtensions,
     nordvpn,
     insync,
     android,
+    gsettingsAll,
   ]);

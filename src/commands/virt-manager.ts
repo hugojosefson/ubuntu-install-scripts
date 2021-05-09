@@ -3,6 +3,7 @@ import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { ROOT } from "../os/user/target-user.ts";
 import { InstallOsPackage, ReplaceOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
+import { gsettingsVirtManager } from "./gsettings.ts";
 
 const activateLibvirtd: Command = isInsideDocker
   ? Command.custom()
@@ -36,4 +37,5 @@ export const virtManager = Command
             ])
           ),
       ),
+    gsettingsVirtManager,
   ]);

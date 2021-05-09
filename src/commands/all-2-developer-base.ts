@@ -4,13 +4,13 @@ import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
 import { docker } from "./docker.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
+import { meld } from "./meld.ts";
 import { virtManager } from "./virt-manager.ts";
 
 export const all2DeveloperBase = Command.custom()
   .withDependencies([
     all1MinimalSanity,
     ...[
-      "meld",
       "moreutils",
       "tig",
       "github-cli",
@@ -21,8 +21,9 @@ export const all2DeveloperBase = Command.custom()
       "git-revise",
       "mdr",
     ].map(InstallAurPackage.of),
-    docker,
-    virtManager,
     bashGitPrompt,
+    docker,
+    meld,
     isolateInDocker,
+    virtManager,
   ]);
