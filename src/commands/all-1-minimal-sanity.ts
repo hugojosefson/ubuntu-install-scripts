@@ -18,7 +18,6 @@ export const all1MinimalSanity = Command.custom()
       "jq",
       "ncdu",
       "networkmanager-openvpn",
-      "solaar",
       "openssh",
       "tree",
     ].map(InstallOsPackage.of),
