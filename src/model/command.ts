@@ -20,7 +20,7 @@ export class Command {
   }
 
   async runWhenDependenciesAreDone(): Promise<CommandResult> {
-    config.verbose && console.log(`Running command `, this);
+    config.VERBOSE && console.log(`Running command `, this);
     if (this.doneDeferred.isDone) {
       return this.done;
     }
@@ -34,7 +34,7 @@ export class Command {
       const innerResult: RunResult = await (this.run().catch(
         this.doneDeferred.reject,
       ));
-      config.verbose && console.log(`Running command `, this, "DONE.");
+      config.VERBOSE && console.log(`Running command `, this, "DONE.");
       return this.resolve(innerResult);
     } finally {
       lockReleasers.forEach((releaseLock) => releaseLock());

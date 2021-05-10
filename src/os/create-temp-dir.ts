@@ -8,7 +8,7 @@ export const createTempDir = async (
 ): Promise<FileSystemPath> => {
   const path = await ensureSuccessfulStdOut(asUser, ["mktemp", "-d"]);
   const fileSystemPath = FileSystemPath.of(asUser, path);
-  config.verbose && console.warn(
+  config.VERBOSE && console.warn(
     colorlog.warning(
       `createTempDir: fileSystemPath: ${JSON.stringify(fileSystemPath)}`,
     ),

@@ -9,7 +9,7 @@ import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
 const androidRemoteScreen = new CreateFile(
   targetUser,
   FileSystemPath.of(targetUser, "~/bin/android-remote-screen"),
-  `#!/bin/sh\nadb connect ${config.androidHostname} && scrcpy --prefer-text`,
+  `#!/bin/sh\nadb connect ${config.ANDROID_HOSTNAME} && scrcpy --prefer-text`,
   false,
   MODE_EXECUTABLE_775,
 );

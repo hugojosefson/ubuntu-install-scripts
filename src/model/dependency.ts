@@ -30,7 +30,7 @@ export class FileSystemPath extends Lock {
   }
 
   private static ofAbsolutePath(absolutePath: string): FileSystemPath {
-    config.verbose && console.warn(
+    config.VERBOSE && console.warn(
       `ofAbsolutePath(absolutePath: ${JSON.stringify(absolutePath)})`,
     );
     if (!absolutePath) {
@@ -41,7 +41,7 @@ export class FileSystemPath extends Lock {
       );
     }
     const fileSystemPath = new FileSystemPath(absolutePath);
-    config.verbose && console.warn(
+    config.VERBOSE && console.warn(
       `ofAbsolutePath(absolutePath: ${
         JSON.stringify(absolutePath)
       }): fileSystemPath is: ${JSON.stringify(fileSystemPath)}`,
@@ -55,7 +55,7 @@ export class FileSystemPath extends Lock {
     );
 
   static of(user: PasswdEntry, path: string): FileSystemPath {
-    config.verbose && console.warn(
+    config.VERBOSE && console.warn(
       `of(user: ${JSON.stringify(user)}, path: ${JSON.stringify(path)})`,
     );
     const resolvedPath: string = resolvePath(user, path);
@@ -66,13 +66,13 @@ export class FileSystemPath extends Lock {
         }): resolvedPath is not.`,
       );
     }
-    config.verbose && console.warn(
+    config.VERBOSE && console.warn(
       `of(user: ${JSON.stringify(user)}, path: ${
         JSON.stringify(path)
       }): resolvedPath is: ${resolvedPath}`,
     );
     const fileSystemPath = FileSystemPath.ofAbsolutePathMemoized(resolvedPath);
-    config.verbose && console.warn(
+    config.VERBOSE && console.warn(
       `of(user: ${JSON.stringify(user)}, path: ${
         JSON.stringify(path)
       }): fileSystemPath is: ${fileSystemPath}`,

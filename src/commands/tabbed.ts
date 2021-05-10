@@ -10,7 +10,7 @@ import { Exec } from "./exec.ts";
 
 export const tabbed = async () => {
   const fileSystemPathPromise = createTempDir(targetUser);
-  config.verbose && console.error(
+  config.VERBOSE && console.error(
     colorlog.error(
       `tabbed: fileSystemPathPromise:`,
     ),
@@ -18,7 +18,7 @@ export const tabbed = async () => {
   );
   fileSystemPathPromise.then(
     (tempD) => {
-      config.verbose && console.log(
+      config.VERBOSE && console.log(
         colorlog.success(`tabbed: tempD: ${JSON.stringify(tempD)}`),
         tempD,
       );
@@ -31,7 +31,7 @@ export const tabbed = async () => {
     },
   );
   const tempDir: FileSystemPath = await fileSystemPathPromise;
-  config.verbose &&
+  config.VERBOSE &&
     console.error(
       colorlog.error(`tabbed: tempDir: ${JSON.stringify(tempDir)}`),
     );

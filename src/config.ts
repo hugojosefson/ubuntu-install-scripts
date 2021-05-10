@@ -1,8 +1,8 @@
 export type Config = {
-  androidHostname: string;
-  verbose: boolean;
+  ANDROID_HOSTNAME: string;
+  VERBOSE: boolean;
 };
 export const config: Config = {
-  verbose: Deno.env.get("VERBOSE") !== "false",
-  androidHostname: Deno.env.get("ANDROID_HOSTNAME") || "my-android-device",
+  VERBOSE: Deno.env.get("VERBOSE") !== "false",
+  ANDROID_HOSTNAME: Deno.env.get("ANDROID_HOSTNAME") || "my-android-device",
 };

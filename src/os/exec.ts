@@ -17,7 +17,7 @@ export const pipeAndCollect = async (
 
   const isVerbose: boolean = typeof verbose === "boolean"
     ? verbose
-    : config.verbose;
+    : config.VERBOSE;
 
   const buf: Uint8Array = new Uint8Array(1024);
   let all: Uint8Array = Uint8Array.from([]);
