@@ -5,6 +5,7 @@ import {
   ReplaceOsPackage,
 } from "./common/os-package.ts";
 import { disableSomeKeyboardShortcuts } from "./disable-some-keyboard-shortcuts.ts";
+import { gnomeExtensions } from "./gnome-extensions.ts";
 import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { nordvpn } from "./nordvpn.ts";
@@ -58,6 +59,7 @@ export const all5Personal = Command.custom()
     rust,
     yubikey,
     keybase,
+    gnomeExtensions,
     nordvpn,
     insync,
   ]);

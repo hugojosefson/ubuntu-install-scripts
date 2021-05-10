@@ -18,6 +18,7 @@ import { docker } from "./docker.ts";
 import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { fzf } from "./fzf.ts";
 import { gitk } from "./gitk.ts";
+import { gnomeExtensions } from "./gnome-extensions.ts";
 import { idea } from "./idea.ts";
 import { insync } from "./insync.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
@@ -65,6 +66,7 @@ const commands: Record<string, Command> = {
   flatpak,
   fzf: await fzf(),
   gitk,
+  gnomeExtensions,
   idea,
   insync,
   isolateInDocker,
