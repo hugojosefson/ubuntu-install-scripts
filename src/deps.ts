@@ -71,5 +71,7 @@ export { compose, composeUnary, pipe, pipeline, pipelineUnary };
 
 import { paramCase } from "https://deno.land/x/case@v2.1.0/mod.ts";
 export function kebabCase(s: string): string {
-  return paramCase(s);
+  const kebab: string = paramCase(s);
+  // Insert '-' between 'all' and the number.
+  return kebab.replace(/([a-z])([0-9])/, "$1-$2");
 }
