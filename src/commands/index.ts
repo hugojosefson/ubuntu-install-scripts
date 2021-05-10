@@ -9,6 +9,7 @@ import { all3DeveloperWeb } from "./all-3-developer-web.ts";
 import { all4DeveloperJava } from "./all-4-developer-java.ts";
 import { all5Personal } from "./all-5-personal.ts";
 import { all6Gaming } from "./all-6-gaming.ts";
+import { android } from "./android.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
@@ -56,6 +57,7 @@ const commands: Record<string, Command> = {
   all6Gaming,
   addHomeBinToPath,
   addNodeModulesBinToPath,
+  android,
   awscli: InstallOsPackage.of("aws-cli"),
   bashAliases,
   bashGitPrompt,

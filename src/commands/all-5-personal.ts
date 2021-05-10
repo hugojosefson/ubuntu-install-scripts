@@ -1,4 +1,5 @@
 import { Command } from "../model/command.ts";
+import { android } from "./android.ts";
 import {
   InstallFlatpakPackage,
   InstallOsPackage,
@@ -30,7 +31,6 @@ export const all5Personal = Command.custom()
       "ttf-ibm-plex",
       "ttf-liberation",
       "signal-desktop",
-      "android-tools",
       "arandr",
       "audacity",
       "baobab",
@@ -63,4 +63,5 @@ export const all5Personal = Command.custom()
     gnomeExtensions,
     nordvpn,
     insync,
+    android,
   ]);
