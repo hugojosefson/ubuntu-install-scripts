@@ -12,6 +12,7 @@ export const all1MinimalSanity = Command.custom()
   .withDependencies([
     UPGRADE_OS_PACKAGES,
     ...[
+      "bash-completion",
       "bmenu",
       "dos2unix",
       "jq",
