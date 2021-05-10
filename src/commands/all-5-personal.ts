@@ -33,6 +33,7 @@ export const all5Personal = Command.custom()
       "android-tools",
       "arandr",
       "audacity",
+      "baobab",
       "cheese",
       "docx2txt",
       "dosbox",
