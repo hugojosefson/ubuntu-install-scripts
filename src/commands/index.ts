@@ -36,7 +36,6 @@ import {
   createTmuxinatorFiles,
   tmuxinatorByobuBashAliases,
 } from "./tmuxinator_byobu_bash_aliases.ts";
-import { UPGRADE_OS_PACKAGES } from "./upgrade-os-packages.ts";
 import { vim } from "./vim.ts";
 import { virtManager } from "./virt-manager.ts";
 import { virtualbox } from "./virtualbox.ts";
@@ -92,7 +91,7 @@ const commands: Record<string, Command> = {
   tabbed: await tabbed(),
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
-  UPGRADE_OS_PACKAGES,
+  upgradeOsPackages: InstallOsPackage.upgradePackages(),
   vim,
   virtManager,
   virtualbox,

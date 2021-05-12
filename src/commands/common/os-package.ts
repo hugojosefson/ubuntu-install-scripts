@@ -29,7 +29,11 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
   private constructor(packageName: OsPackageName) {
     super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
-    this.dependencies.push(REFRESH_OS_PACKAGES);
+    this.dependencies.push(
+      packageName === "--sysupgrade"
+        ? REFRESH_OS_PACKAGES
+        : InstallOsPackage.upgradePackages(),
+    );
   }
 
   async run(): Promise<RunResult> {
@@ -52,6 +56,11 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
     (packageName: OsPackageName): InstallOsPackage =>
       new InstallOsPackage(packageName),
   );
+  static upgradePackages(): InstallOsPackage {
+    return InstallOsPackage.of(
+      "--sysupgrade",
+    );
+  }
 }
 
 export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
