@@ -7,19 +7,19 @@ import { colorlog } from "./deps.ts";
 import { Command, CommandResult } from "./model/command.ts";
 import { isRunningAsRoot } from "./os/user/is-running-as-root.ts";
 import { run } from "./run.ts";
-import { usageAndExit } from "./usage.ts";
+import { errorAndExit, usageAndExit } from "./usage.ts";
 
 export const cli = async () => {
-  const args: string[] = Deno.args;
-  if (!args.length) {
-    await usageAndExit();
-  }
-
   if (!await isRunningAsRoot()) {
-    await usageAndExit(
+    await errorAndExit(
       3,
       "You must run this program as root. Try again with sudo :)",
     );
+  }
+
+  const args: string[] = Deno.args;
+  if (!args.length) {
+    await usageAndExit();
   }
 
   const commands: Command[] = await Promise.all(args.map(getCommand));

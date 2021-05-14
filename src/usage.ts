@@ -23,4 +23,14 @@ ${
          ...or any valid OS-level package.
   `);
   return Deno.exit(code);
-};
+}
+
+export async function errorAndExit(
+  code: number = 1,
+  message?: string,
+): Promise<never> {
+  if (message) {
+    console.error(colorlog.error(message));
+  }
+  return Deno.exit(code);
+}
