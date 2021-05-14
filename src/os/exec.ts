@@ -6,6 +6,7 @@ import { ROOT } from "./user/target-user.ts";
 
 export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
   verbose?: boolean;
+  stdin?: string;
 };
 
 export const pipeAndCollect = async (
@@ -54,19 +55,32 @@ export const ensureSuccessful = async (
       JSON.stringify({ options, user: asUser.username, cmd, effectiveCmd }),
     ),
   );
-  const runOptions = (opts: ExecOptions): Exclude<ExecOptions, "verbose"> => {
+  function runOptions(opts: ExecOptions): Pick<Deno.RunOptions, "cwd" | "env"> {
     if (opts.cwd && opts.env) return { cwd: opts.cwd, env: opts.env };
     if (opts.cwd) return { cwd: opts.cwd };
     if (opts.env) return { env: opts.env };
     return {};
-  };
+  }
+  const stdinString = typeof options.stdin === "string" ? options.stdin : "";
+  const shouldPipeStdin: boolean = stdinString.length > 0;
+
   const process: Deno.Process = Deno.run({
-    stdin: "null",
+    stdin: shouldPipeStdin ? "piped" : "null",
     stdout: "piped",
     stderr: "piped",
     cmd: effectiveCmd,
     ...runOptions(options),
   });
+
+  if (shouldPipeStdin) {
+    const stdinBytes = new TextEncoder().encode(stdinString);
+    try {
+      await process.stdin?.write(stdinBytes);
+    } finally {
+      await process.stdin?.close();
+    }
+  }
+
   const stdoutPromise = pipeAndCollect(
     process.stdout,
     Deno.stdout,
