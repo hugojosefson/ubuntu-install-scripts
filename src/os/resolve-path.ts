@@ -1,6 +1,8 @@
 import { PasswdEntry } from "../deps.ts";
 
-export const resolvePath = (
+export function resolvePath(
   user: PasswdEntry,
   path: string,
-): string => path.replace("~", user.homedir);
+): string {
+  return path.replace("~", user.homedir);
+}

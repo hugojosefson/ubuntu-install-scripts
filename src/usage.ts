@@ -1,10 +1,10 @@
 import { availableCommands } from "./commands/index.ts";
 import { colorlog } from "./deps.ts";
 
-export const usageAndExit = async (
+export async function usageAndExit(
   code: number = 1,
   message?: string,
-): Promise<never> => {
+): Promise<never> {
   if (message) {
     console.error(colorlog.error(message));
   }

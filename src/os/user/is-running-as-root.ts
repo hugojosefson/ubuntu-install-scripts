@@ -1,5 +1,9 @@
-export const isRunningAsRoot = async (): Promise<boolean> =>
-  (new TextDecoder()).decode(
-    await Deno.run({ cmd: ["bash", "-c", "echo $EUID"], stdout: "piped" })
-      .output(),
-  ).trim() === "0";
+export async function isRunningAsRoot(): Promise<boolean> {
+  const runOptions: Deno.RunOptions = {
+    cmd: ["bash", "-c", "echo $EUID"],
+    stdout: "piped",
+  };
+  const outputBytes: Uint8Array = await Deno.run(runOptions).output();
+  const outputString = new TextDecoder().decode(outputBytes);
+  return outputString.trim() === "0";
+}
