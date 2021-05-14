@@ -31,6 +31,7 @@ import { networkUtils } from "./network-utils.ts";
 import { nordvpn } from "./nordvpn.ts";
 import { rust } from "./rust.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
+import { starship } from "./starship.ts";
 import { tabbed } from "./tabbed.ts";
 import {
   createTmuxinatorFiles,
@@ -88,6 +89,7 @@ const commands: Record<string, Command> = {
   rust,
   saveBashHistory,
   sdkmanJava,
+  starship,
   tabbed: await tabbed(),
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
