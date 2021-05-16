@@ -16,7 +16,6 @@ export const rust = Command.custom()
       [
         "rustup toolchain install stable",
         "rustup default stable",
-        "cargo install bat exa fd-find ripgrep",
       ].map(split(" ")),
     ))
       .withDependencies(["base-devel", "rustup"].map(InstallOsPackage.of)),

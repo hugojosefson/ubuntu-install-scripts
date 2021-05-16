@@ -17,6 +17,10 @@ export const all2DeveloperBase = Command.custom()
       "github-cli",
       "hub",
       "fzf",
+      "bat",
+      "exa",
+      "fd",
+      "ripgrep",
     ].map(InstallOsPackage.of),
     ...[
       "git-revise",
