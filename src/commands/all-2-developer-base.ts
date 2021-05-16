@@ -25,7 +25,7 @@ export const all2DeveloperBase = Command.custom()
     bashGitPrompt,
     docker,
     gitk,
-    meld,
     isolateInDocker,
+    meld,
     virtManager,
   ]);
