@@ -12,7 +12,7 @@ export const sdkman = Command.custom()
     new Exec([], [], targetUser, {}, [
       "bash",
       "-c",
-      "curl -s https://get.sdkman.io/ | bash",
+      "curl -fsSL https://get.sdkman.io/ | bash",
     ])
       .withDependencies(["unzip", "zip", "curl"].map(InstallOsPackage.of)),
     new LineInFile(
