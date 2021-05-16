@@ -1,5 +1,6 @@
 FROM manjarolinux/base
 
+RUN pacman --sync --refresh --noconfirm --needed --sysupgrade
 RUN pacman --sync --refresh --noconfirm --needed sudo
 RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel-nopasswd
 
