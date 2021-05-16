@@ -49,20 +49,20 @@ export const sortCommands = (commands: Command[]): Command[] => {
 
   const commandsInOrder: Command[] = toposort(dependencyPairs);
 
-  config.VERBOSE && console.log(
+  config.VERBOSE && console.error(
     "=====================================================================================\n\ncommands:\n" +
       commands.map(compose(stringify, forLog(1))).join("\n") +
       "\n\n",
   );
 
-  config.VERBOSE && console.log(
+  config.VERBOSE && console.error(
     "=====================================================================================\n\dependencyPairs:\n" +
       dependencyPairs.map((pair) => pair.map(compose(stringifyLine, forLog(0))))
         .join("\n") +
       "\n\n",
   );
 
-  config.VERBOSE && console.log(
+  config.VERBOSE && console.error(
     "=====================================================================================\n\commandsInOrder:\n" +
       commandsInOrder.map(
         compose(

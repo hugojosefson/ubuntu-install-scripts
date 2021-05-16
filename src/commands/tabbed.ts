@@ -18,7 +18,7 @@ export const tabbed = async () => {
   );
   fileSystemPathPromise.then(
     (tempD) => {
-      config.VERBOSE && console.log(
+      config.VERBOSE && console.error(
         colorlog.success(`tabbed: tempD: ${JSON.stringify(tempD)}`),
         tempD,
       );
