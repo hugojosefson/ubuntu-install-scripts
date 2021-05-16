@@ -30,8 +30,7 @@ org.gnome.mutter.keybindings toggle-tiled-left ['<Super>Left']
 org.gnome.mutter.keybindings toggle-tiled-right ['<Super>Right']
 org.gnome.settings-daemon.plugins.media-keys custom-keybindings ['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/']
 org.gnome.settings-daemon.plugins.media-keys screensaver ['<Super>Escape']
-org.gnome.settings-daemon.plugins.media-keys terminal ['<Primary><Alt>t']
-org.gnome.settings-daemon.plugins.power power-button-action 'shutdown'
+org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
 `).map(gsettingsExecCommand([
       "mutter",
     ].map(InstallOsPackage.of))),
@@ -56,7 +55,6 @@ org.gnome.mutter dynamic-workspaces false
 org.gnome.mutter workspaces-only-on-primary false
 org.gnome.nautilus.window-state start-with-location-bar true
 org.gnome.nautilus.window-state start-with-sidebar true
-org.gnome.shell disabled-extensions ['dash-to-dock@micxgx.gmail.com', 'desktop-icons@csoriano', 'overview-improved@human.experience']
 org.gnome.shell.overrides attach-modal-dialogs false
 org.gnome.shell.overrides workspaces-only-on-primary false
 `).map(gsettingsExecCommand([
@@ -156,8 +154,6 @@ org.gnome.mutter.wayland.keybindings restore-shortcuts @as []
 org.gnome.settings-daemon.plugins.media-keys logout ['']
 org.gnome.settings-daemon.plugins.media-keys screencast @as []
 org.gnome.settings-daemon.plugins.media-keys screenreader @as []
-org.gnome.shell.extensions.dash-to-dock shortcut ['']
-org.gnome.shell.extensions.dash-to-dock shortcut-text ''
 org.gnome.shell.extensions.pop-shell focus-down @as []
 org.gnome.shell.extensions.pop-shell focus-left @as []
 org.gnome.shell.extensions.pop-shell focus-right @as []
@@ -179,6 +175,7 @@ org.gnome.shell.keybindings toggle-overview @as []
 `).map(gsettingsExecCommand([
       "ibus",
       "mutter",
+      "gnome-shell-extension-pop-shell",
     ].map(InstallOsPackage.of))),
   );
 
@@ -205,16 +202,17 @@ org.gnome.desktop.screensaver lock-enabled true
 org.gnome.desktop.screensaver logout-delay uint32 7200
 org.gnome.desktop.screensaver logout-enabled false
 org.gnome.desktop.screensaver show-full-name-in-top-bar true
-org.gnome.desktop.screensaver show-notifications false
 org.gnome.desktop.screensaver status-message-enabled true
 org.gnome.desktop.screensaver user-switch-enabled true
 org.gnome.desktop.search-providers disabled ['org.gnome.Nautilus.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.seahorse.Application.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Characters.desktop', 'org.gnome.Epiphany.desktop']
 org.gnome.desktop.session idle-delay uint32 900
-org.gnome.settings-daemon.plugins.rfkill active true
 org.gnome.shell.weather automatic-location true
 org.gnome.system.location enabled true
 `).map(gsettingsExecCommand([
       "tracker",
+      "tracker-miners",
+      "tracker3-miners",
+      "gnome-shell-extension-openweather",
     ].map(InstallOsPackage.of))),
   );
 
@@ -225,14 +223,14 @@ org.gnome.desktop.background color-shading-type 'solid'
 org.gnome.desktop.background picture-opacity 100
 org.gnome.desktop.background picture-options 'stretched'
 org.gnome.desktop.background picture-uri 'file://${targetUser.homedir}/Pictures/backgrounds/current/desktop'
-org.gnome.desktop.background primary-color '#ffffff'
+org.gnome.desktop.background primary-color '#333333'
 org.gnome.desktop.background secondary-color '#000000'
 org.gnome.desktop.background show-desktop-icons true
 org.gnome.desktop.screensaver color-shading-type 'solid'
 org.gnome.desktop.screensaver picture-opacity 100
 org.gnome.desktop.screensaver picture-options 'zoom'
 org.gnome.desktop.screensaver picture-uri 'file://${targetUser.homedir}/Pictures/backgrounds/current/screensaver'
-org.gnome.desktop.screensaver primary-color '#ffffff'
+org.gnome.desktop.screensaver primary-color '#333333'
 org.gnome.desktop.screensaver secondary-color '#000000'
 org.gnome.desktop.session session-name 'gnome'
 org.gnome.gnome-system-monitor cpu-smooth-graph true
@@ -258,7 +256,9 @@ org.gnome.settings-daemon.plugins.color night-light-temperature uint32 2330
 org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
 org.gnome.settings-daemon.plugins.xsettings hinting 'full'
 `).map(gsettingsExecCommand([
+      "gnome-settings-daemon",
       "gnome-system-monitor",
+      "nautilus",
     ].map(InstallOsPackage.of))),
   );
 
@@ -270,10 +270,12 @@ org.gnome.FileRoller.Dialogs.Extract recreate-folders true
 org.gnome.SessionManager auto-save-session false
 org.gnome.SessionManager auto-save-session-one-shot false
 org.gnome.desktop.notifications show-banners true
-org.gnome.nautilus.compression default-compression-format 'tar.gz'
-org.gnome.nautilus.preferences executable-text-activation 'display'
+org.gnome.nautilus.compression default-compression-format 'tar.xz'
 `).map(gsettingsExecCommand([
       "epiphany",
+      "file-roller",
+      "gnome-session",
+      "nautilus",
     ].map(InstallOsPackage.of))),
   );
 
@@ -297,13 +299,10 @@ export const gsettingsInput = Command.custom()
   .withDependencies(
     gsettingsToCmds(`
 org.gnome.desktop.input-sources xkb-options ['compose:ralt']
-org.gnome.desktop.interface show-input-method-menu true
-org.gnome.desktop.interface show-unicode-menu true
 org.gnome.desktop.peripherals.keyboard remember-numlock-state true
 org.gnome.desktop.peripherals.mouse natural-scroll true
 org.gnome.desktop.peripherals.touchpad click-method 'fingers'
 org.gnome.desktop.peripherals.touchpad natural-scroll true
-org.gnome.desktop.peripherals.touchpad scroll-method 'two-finger-scrolling'
 org.gnome.desktop.peripherals.touchpad tap-and-drag true
 org.gnome.desktop.peripherals.touchpad tap-and-drag-lock false
 org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
@@ -373,12 +372,11 @@ export const gsettingsVirtManager = Command.custom()
 org.virt-manager.virt-manager xmleditor-enabled true
 org.virt-manager.virt-manager.confirm delete-storage false
 org.virt-manager.virt-manager.confirm forcepoweroff false
-org.virt-manager.virt-manager.confirm interface-power false
 org.virt-manager.virt-manager.confirm pause false
 org.virt-manager.virt-manager.confirm poweroff false
 org.virt-manager.virt-manager.confirm removedev false
 org.virt-manager.virt-manager.confirm unapplied-dev true
-org.virt-manager.virt-manager.console grab-keyboard true
+org.virt-manager.virt-manager.console grab-keys true
 org.virt-manager.virt-manager.console resize-guest 1
 org.virt-manager.virt-manager.stats enable-disk-poll true
 org.virt-manager.virt-manager.stats enable-memory-poll true
