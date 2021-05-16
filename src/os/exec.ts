@@ -66,7 +66,7 @@ export const ensureSuccessful = async (
     ]),
     ...cmd,
   ];
-  console.error(
+  config.VERBOSE && console.error(
     colorlog.warning(
       JSON.stringify({ options, user: asUser.username, cmd, effectiveCmd }),
     ),
