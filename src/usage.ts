@@ -9,10 +9,21 @@ export async function usageAndExit(
     console.error(colorlog.error(message));
   }
   console.error(`
-Usage:   sudo ./src/cli.ts <command...>
+Usage, if you only have curl, unzip and sh:
 
-Usage:   curl https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts \\
+         curl -fsSL https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts \\
          | sudo sh -s <command...>
+
+
+Usage, if you have deno:
+
+         sudo deno -A --unstable https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts <command...>
+
+
+Usage, if you have deno, and have cloned this git repo:
+
+         sudo deno -A --unstable ./src/cli.ts <command...>
+
 
          Available commands:
 ${
