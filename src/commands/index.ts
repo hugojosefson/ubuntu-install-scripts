@@ -14,6 +14,7 @@ import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
+import { gnomeCustomKeybindingsBackup } from "./gnome-custom-keybindings-backup.ts";
 import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
 import {
   gsettingsAll,
@@ -82,6 +83,7 @@ const commands: Record<string, Command> = {
   fzf: await fzf(),
   gedit,
   gitk,
+  gnomeCustomKeybindingsBackup,
   gnomeShellExtensions,
   gnomeShellExtensionInstaller,
   gsettingsAll,
