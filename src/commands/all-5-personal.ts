@@ -10,7 +10,6 @@ import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { nordvpn } from "./nordvpn.ts";
-import { rust } from "./rust.ts";
 import { yubikey } from "./yubikey.ts";
 
 const withDependencies = (dependencies: Array<Command>) =>
@@ -56,7 +55,6 @@ export const all5Personal = Command.custom()
     ]
       .map(InstallFlatpakPackage.of)
       .map(withDependencies([replaceJack])),
-    rust,
     yubikey,
     keybase,
     gnomeShellExtensions,

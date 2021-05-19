@@ -34,6 +34,9 @@ export const isolateInDocker = Command.custom()
       `jetbrains-toolbox`,
       `aws`,
       `firefox40`,
+      `cargo`,
+      `rustc`,
+      `rustup`,
     ].map((name) =>
       new Symlink(
         ROOT,
