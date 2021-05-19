@@ -13,7 +13,7 @@ export const bash = Command.custom()
     await ensureSuccessful(ROOT, [
       "chsh",
       "--shell",
-      await ensureSuccessfulStdOut(ROOT, ["sh", "-c", "command -v bash"]),
+      "/bin/bash",
       targetUser.username,
     ]);
   });
