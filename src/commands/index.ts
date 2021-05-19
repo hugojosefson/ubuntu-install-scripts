@@ -14,6 +14,7 @@ import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { bash } from "./bash.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
+import { deno } from "./deno.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { gnomeCustomKeybindingsBackup } from "./gnome-custom-keybindings-backup.ts";
 import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
@@ -78,6 +79,7 @@ const commands: Record<string, Command> = {
   bash,
   bashAliases,
   bashGitPrompt,
+  deno,
   desktopIsHome,
   docker,
   downloadsIsTmp,
