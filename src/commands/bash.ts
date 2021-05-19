@@ -6,6 +6,7 @@ import { InstallOsPackage } from "./common/os-package.ts";
 export const bash = Command.custom()
   .withDependencies([
     InstallOsPackage.of("bash"),
+    InstallOsPackage.of("bash-completion"),
     InstallOsPackage.of("util-linux"),
   ])
   .withRun(async () => {
