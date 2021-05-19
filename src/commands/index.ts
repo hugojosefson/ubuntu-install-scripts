@@ -12,6 +12,7 @@ import { all6Gaming } from "./all-6-gaming.ts";
 import { android } from "./android.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
+import { bash } from "./bash.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { gnomeCustomKeybindingsBackup } from "./gnome-custom-keybindings-backup.ts";
@@ -74,6 +75,7 @@ const commands: Record<string, Command> = {
   addNodeModulesBinToPath,
   android,
   awscli: InstallOsPackage.of("aws-cli"),
+  bash,
   bashAliases,
   bashGitPrompt,
   desktopIsHome,
