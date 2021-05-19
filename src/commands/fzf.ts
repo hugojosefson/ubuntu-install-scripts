@@ -2,8 +2,8 @@ import { Command } from "../model/command.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 import { createTempDir } from "../os/create-temp-dir.ts";
 import { targetUser } from "../os/user/target-user.ts";
-import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
+import { git } from "./git.ts";
 
 export const fzf = async () => {
   const fileSystemPathPromise = createTempDir(targetUser);
@@ -11,7 +11,7 @@ export const fzf = async () => {
   const cwd: string = tempDir.path;
 
   const gitClone = new Exec(
-    [InstallOsPackage.of("git")],
+    [git],
     [tempDir],
     targetUser,
     { cwd },

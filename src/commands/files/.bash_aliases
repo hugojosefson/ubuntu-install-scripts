@@ -53,6 +53,7 @@ _tmuxinator() {
 complete -F _tmuxinator tmuxinator mux m
 
 # Git
+. ~/.git-completion
 command -v gh > /dev/null && . <(gh completion)
 
 __git_complete g __git_main

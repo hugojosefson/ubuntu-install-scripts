@@ -16,6 +16,7 @@ import { bash } from "./bash.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { deno } from "./deno.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
+import { git } from "./git.ts";
 import { gnomeCustomKeybindingsBackup } from "./gnome-custom-keybindings-backup.ts";
 import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
 import {
@@ -86,6 +87,7 @@ const commands: Record<string, Command> = {
   flatpak,
   fzf: await fzf(),
   gedit,
+  git,
   gitk,
   gnomeCustomKeybindingsBackup,
   gnomeShellExtensions,

@@ -7,6 +7,7 @@ import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
+import { git } from "./git.ts";
 
 export const tabbed = async () => {
   const fileSystemPathPromise = createTempDir(targetUser);
@@ -39,7 +40,7 @@ export const tabbed = async () => {
   const cwd: string = tempDir.path;
 
   const gitClone = new Exec(
-    [InstallOsPackage.of("git")],
+    [git],
     [tempDir],
     targetUser,
     { cwd },
