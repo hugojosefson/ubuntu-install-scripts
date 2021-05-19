@@ -70,11 +70,11 @@ export const tabbed = async () => {
   );
 
   const copyExtraTools = new Exec(
-    [make, addHomeBinToPath],
+    [make],
     [tempDir],
-    targetUser,
+    ROOT,
     { cwd },
-    ["sh", "-c", "cp extra-tools/* ~/bin/"],
+    ["sh", "-c", "cp extra-tools/* /usr/local/bin/"],
   );
   const makeInstall = new Exec(
     [make],
