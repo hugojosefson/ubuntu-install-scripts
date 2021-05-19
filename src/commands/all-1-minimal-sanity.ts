@@ -15,6 +15,7 @@ export const all1MinimalSanity = Command.custom()
       "bmenu",
       "dos2unix",
       "jq",
+      "man-db",
       "man-pages",
       "ncdu",
       "networkmanager-openvpn",
