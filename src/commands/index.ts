@@ -16,6 +16,7 @@ import { bash } from "./bash.ts";
 import { flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { deno } from "./deno.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
+import { eog } from "./eog.ts";
 import { git } from "./git.ts";
 import { gnomeCustomKeybindingsBackup } from "./gnome-custom-keybindings-backup.ts";
 import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
@@ -85,6 +86,7 @@ const commands: Record<string, Command> = {
   desktopIsHome,
   docker,
   downloadsIsTmp,
+  eog,
   flatpak,
   fzf: await fzf(),
   gedit,
