@@ -4,10 +4,10 @@ import { Command } from "../model/command.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 import { createTempDir } from "../os/create-temp-dir.ts";
 import { ROOT, targetUser } from "../os/user/target-user.ts";
-import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { git } from "./git.ts";
+import { xorg } from "./xorg.ts";
 
 export const tabbed = async () => {
   const fileSystemPathPromise = createTempDir(targetUser);
@@ -88,5 +88,6 @@ export const tabbed = async () => {
     .withDependencies([
       copyExtraTools,
       makeInstall,
+      xorg,
     ]);
 };

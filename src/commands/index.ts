@@ -58,6 +58,7 @@ import {
 import { vim } from "./vim.ts";
 import { virtManager } from "./virt-manager.ts";
 import { virtualbox } from "./virtualbox.ts";
+import { xorg } from "./xorg.ts";
 import { yubikey } from "./yubikey.ts";
 
 const commands: Record<string, Command> = {
@@ -132,6 +133,7 @@ const commands: Record<string, Command> = {
   vim,
   virtManager,
   virtualbox,
+  xorg,
   yubikey,
 };
 
