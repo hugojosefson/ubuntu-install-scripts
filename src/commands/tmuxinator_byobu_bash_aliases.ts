@@ -14,7 +14,6 @@ import {
   tmuxinatorTempTemplate,
 } from "./files/tmuxinator-files.ts";
 import { mTemp } from "./m-temp.ts";
-import { tabbed } from "./tabbed.ts";
 
 const files: Array<[string, string]> = [
   ["base.yml", tmuxinatorBaseYml],
@@ -51,7 +50,6 @@ const installTmuxinator = RemoveOsPackage.of("screen")
 
 export const tmuxinatorByobuBashAliases = Command.custom()
   .withDependencies([
-    await tabbed(),
     installTmuxinator,
     ...createTmuxinatorFiles,
     createCodeDir,
