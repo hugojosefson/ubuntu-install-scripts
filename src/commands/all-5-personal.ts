@@ -10,6 +10,7 @@ import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { nordvpn } from "./nordvpn.ts";
+import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
 import { yubikey } from "./yubikey.ts";
 
 const withDependencies = (dependencies: Array<Command>) =>
@@ -51,12 +52,12 @@ export const all5Personal = Command.custom()
       "com.spotify.Client",
       "com.slack.Slack",
       "com.microsoft.Teams",
-      "org.signal.Signal",
     ]
       .map(InstallFlatpakPackage.of)
       .map(withDependencies([replaceJack])),
     yubikey,
     keybase,
+    signalDesktopViaDocker,
     gnomeShellExtensions,
     nordvpn,
     insync,
