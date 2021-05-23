@@ -2,6 +2,7 @@ import { Command } from "../model/command.ts";
 import { all1MinimalSanity } from "./all-1-minimal-sanity.ts";
 import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
 import { docker } from "./docker.ts";
+import { fzf } from "./fzf.ts";
 import { gitk } from "./gitk.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { meld } from "./meld.ts";
@@ -16,7 +17,6 @@ export const all2DeveloperBase = Command.custom()
       "tig",
       "github-cli",
       "hub",
-      "fzf",
       "bat",
       "exa",
       "fd",
@@ -31,5 +31,6 @@ export const all2DeveloperBase = Command.custom()
     isolateInDocker,
     meld,
     starship,
+    await fzf(),
     virtManager,
   ]);
