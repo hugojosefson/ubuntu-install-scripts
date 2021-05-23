@@ -1,6 +1,7 @@
 import { NOOP } from "../commands/common/noop.ts";
 import { config } from "../config.ts";
 import { defer, Deferred } from "../os/defer.ts";
+import { run } from "../run.ts";
 import { Lock } from "./dependency.ts";
 
 export interface CommandResult {
@@ -67,6 +68,12 @@ export class Command {
       });
       return this.done;
     }
+    if (Array.isArray(commandResult)) {
+      const postCommands: Command[] = commandResult;
+      return run(postCommands).then((postCommandResults: CommandResult[]) =>
+        this.resolve(postCommandResults[postCommandResults.length])
+      );
+    }
 
     this.doneDeferred.resolve(commandResult);
     return this.done;
@@ -109,5 +116,5 @@ export class Command {
   }
 }
 
-export type RunResult = CommandResult | void | string;
+export type RunResult = CommandResult | void | string | Command[];
 export type RunFunction = () => Promise<RunResult>;
