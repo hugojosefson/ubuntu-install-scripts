@@ -4,6 +4,7 @@ import { all2DeveloperBase } from "./all-2-developer-base.ts";
 import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
 import { eog } from "./eog.ts";
 import { networkUtils } from "./network-utils.ts";
+import { rust } from "./rust.ts";
 import { webstorm } from "./webstorm.ts";
 
 export const all3DeveloperWeb = Command.custom()
@@ -19,6 +20,7 @@ export const all3DeveloperWeb = Command.custom()
     ...[
       "google-chrome",
     ].map(InstallAurPackage.of),
+    rust,
     webstorm,
     addNodeModulesBinToPath,
   ]);
