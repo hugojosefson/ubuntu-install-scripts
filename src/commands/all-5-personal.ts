@@ -11,6 +11,7 @@ import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { nordvpn } from "./nordvpn.ts";
 import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
+import { v4l2loopback } from "./v4l2loopback.ts";
 import { yubikey } from "./yubikey.ts";
 
 const withDependencies = (dependencies: Array<Command>) =>
@@ -55,6 +56,7 @@ export const all5Personal = Command.custom()
     ]
       .map(InstallFlatpakPackage.of)
       .map(withDependencies([replaceJack])),
+    v4l2loopback,
     yubikey,
     keybase,
     signalDesktopViaDocker,

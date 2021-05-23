@@ -57,6 +57,7 @@ import {
   createTmuxinatorFiles,
   tmuxinatorByobuBashAliases,
 } from "./tmuxinator_byobu_bash_aliases.ts";
+import { v4l2loopback } from "./v4l2loopback.ts";
 import { vim } from "./vim.ts";
 import { virtManager } from "./virt-manager.ts";
 import { virtualbox } from "./virtualbox.ts";
@@ -134,6 +135,7 @@ const commands: Record<string, Command> = {
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
   upgradeOsPackages: InstallOsPackage.upgradePackages(),
+  v4l2loopback,
   vim,
   virtManager,
   virtualbox,
