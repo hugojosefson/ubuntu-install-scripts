@@ -587,10 +587,10 @@ unknown_indicator = ''
 disabled = true
 
 [shlvl]
-threshold = 2
+threshold = 1
 format = '[$symbol$shlvl]($style) '
 symbol = '↕️  '
-repeat = false
+repeat = true
 style = 'bold yellow'
 disabled = false
 
