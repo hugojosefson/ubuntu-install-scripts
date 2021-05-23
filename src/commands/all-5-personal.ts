@@ -28,7 +28,6 @@ export const all5Personal = Command.custom()
       "ttf-droid",
       "ttf-ibm-plex",
       "ttf-liberation",
-      "signal-desktop",
       "arandr",
       "audacity",
       "baobab",
@@ -52,6 +51,7 @@ export const all5Personal = Command.custom()
       "com.spotify.Client",
       "com.slack.Slack",
       "com.microsoft.Teams",
+      "org.signal.Signal",
     ]
       .map(InstallFlatpakPackage.of)
       .map(withDependencies([replaceJack])),
