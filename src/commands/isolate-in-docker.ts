@@ -9,6 +9,14 @@ import {
 } from "./common/file-commands.ts";
 import { docker } from "./docker.ts";
 
+export function symlinkToIsolateInDocker(name: string) {
+  return new Symlink(
+    ROOT,
+    "isolate-in-docker",
+    FileSystemPath.of(ROOT, `/usr/local/bin/${name}`),
+  );
+}
+
 export const isolateInDocker = Command.custom()
   .withDependencies([
     docker,
@@ -34,11 +42,5 @@ export const isolateInDocker = Command.custom()
       `jetbrains-toolbox`,
       `aws`,
       `firefox40`,
-    ].map((name) =>
-      new Symlink(
-        ROOT,
-        "isolate-in-docker",
-        FileSystemPath.of(ROOT, `/usr/local/bin/${name}`),
-      )
-    ),
+    ].map(symlinkToIsolateInDocker),
   ]);
