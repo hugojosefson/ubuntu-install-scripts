@@ -1,32 +1,42 @@
 import { FileSystemPath } from "../model/dependency.ts";
-import { createTempDir } from "../os/create-temp-dir.ts";
 import { targetUser } from "../os/user/target-user.ts";
+import { CreateDir } from "./common/file-commands.ts";
 import { Exec } from "./exec.ts";
 import { git } from "./git.ts";
 
 export const fzf = async () => {
-  const fileSystemPathPromise = createTempDir(targetUser);
-  const tempDir: FileSystemPath = await fileSystemPathPromise;
-  const cwd: string = tempDir.path;
+  const installDir = FileSystemPath.of(targetUser, "~/.fzf");
 
-  const gitClone = new Exec(
-    [git],
-    [tempDir],
+  const deleteDir = new Exec(
+    [new CreateDir(targetUser, installDir)],
+    [installDir],
     targetUser,
-    { cwd },
+    {},
+    [
+      "rm",
+      "-rf",
+      "--",
+      installDir.path,
+    ],
+  );
+  const gitClone = new Exec(
+    [git, deleteDir],
+    [installDir],
+    targetUser,
+    {},
     [
       "git",
       "clone",
       "https://github.com/junegunn/fzf",
-      cwd,
+      installDir.path,
     ],
   );
 
   return new Exec(
     [gitClone],
-    [tempDir],
+    [installDir],
     targetUser,
-    { cwd },
+    { cwd: installDir.path },
     ["./install", "--all"],
   );
 };
