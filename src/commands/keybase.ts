@@ -2,10 +2,21 @@ import { targetUser } from "../os/user/target-user.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 
-export const keybase = new Exec(
-  ["keybase", "keybase-gui", "kbfs"].map(InstallOsPackage.of),
-  [],
+const cmds = [
+  "systemctl --user enable keybase kbfs",
+  "systemctl --user start keybase kbfs",
+  "keybase ctl autostart --enable",
+].map((s) => s.split(" "));
+
+export const keybase = Exec.sequentialExec(
   targetUser,
   {},
-  "keybase ctl autostart --enable".split(" "),
-);
+  cmds,
+)
+  .withDependencies(
+    [
+      "keybase",
+      "keybase-gui",
+      "kbfs",
+    ].map(InstallOsPackage.of),
+  );
