@@ -14,9 +14,9 @@ alias lla='exa -Fla'
 # ssh TERM
 function ssh {
   if [[ "${TERM}" = alacritty ]]; then
-    env TERM=xterm-256color ssh "$@"
+    env TERM=xterm-256color /usr/bin/ssh "$@"
   else
-    ssh "$@"
+    /usr/bin/ssh "$@"
   fi
 }
 
