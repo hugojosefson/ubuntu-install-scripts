@@ -7,7 +7,7 @@ import { InstallOsPackage } from "./common/os-package.ts";
 
 async function installedKernels(): Promise<string[]> {
   const output: string = await ensureSuccessfulStdOut(targetUser, [
-    "mhwd",
+    "mhwd-kernel",
     "--listinstalled",
   ]);
   return output
