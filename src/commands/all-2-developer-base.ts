@@ -14,9 +14,9 @@ export const all2DeveloperBase = Command.custom()
     all1MinimalSanity,
     ...[
       "moreutils",
+      "bind",
       "tig",
       "github-cli",
-      "hub",
       "bat",
       "exa",
       "fd",
