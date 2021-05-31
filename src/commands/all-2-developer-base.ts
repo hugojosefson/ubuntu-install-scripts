@@ -15,6 +15,7 @@ export const all2DeveloperBase = Command.custom()
     ...[
       "moreutils",
       "bind",
+      "stunnel",
       "tig",
       "github-cli",
       "bat",
