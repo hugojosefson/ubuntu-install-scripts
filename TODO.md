@@ -21,3 +21,7 @@ pkgfile --search --binaries --verbose docker
 See also built-in `pacman -F`:
 
 https://unix.stackexchange.com/questions/14858/in-arch-linux-how-can-i-find-out-which-package-to-install-that-will-contain-file/14865#14865
+
+## deskreen
+
+https://aur.archlinux.org/packages/deskreen/
