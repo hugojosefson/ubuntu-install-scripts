@@ -22,6 +22,8 @@ See also built-in `pacman -F`:
 
 https://unix.stackexchange.com/questions/14858/in-arch-linux-how-can-i-find-out-which-package-to-install-that-will-contain-file/14865#14865
 
-## deskreen
+## barrier
 
-https://aur.archlinux.org/packages/deskreen/
+## Printing
+
+https://wiki.manjaro.org/index.php?title=Printing
