@@ -31,3 +31,7 @@ https://wiki.manjaro.org/index.php?title=Printing
 ## Try cash
 
 https://github.com/ihack2712/cash
+
+## Symlinks
+
+Don't create unnecessary numbered symlinks.
