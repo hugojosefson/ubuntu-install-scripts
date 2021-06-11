@@ -103,7 +103,7 @@ const createFile = async (
   owner: PasswdEntry,
   path: FileSystemPath,
   contents: string,
-  shouldBackupAnyExistingFile: boolean = false,
+  shouldBackupAnyExistingFile = false,
   mode?: number,
 ): Promise<FileSystemPath | undefined> => {
   await mkdirp(owner, dirname(path.path).split("/"));
@@ -181,7 +181,7 @@ export class CreateDir extends Command {
   }
 }
 
-export const MODE_EXECUTABLE_775: number = 0o755;
+export const MODE_EXECUTABLE_775 = 0o755;
 
 const ensureLineInFile = (
   line: string,

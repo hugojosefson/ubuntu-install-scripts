@@ -1,5 +1,5 @@
 import { Command } from "../model/command.ts";
-import { ensureSuccessful, ensureSuccessfulStdOut } from "../os/exec.ts";
+import { ensureSuccessful } from "../os/exec.ts";
 import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 

@@ -12,6 +12,6 @@ export function gsettingsToCmds(gsettings: string): string[][] {
     .filter(isNotEmpty)
     .filter(isNotComment)
     .map(split)
-    .map(([line, schema, key, value]) => [schema, key, value])
+    .map(([_line, schema, key, value]) => [schema, key, value])
     .map(([schema, key, value]) => ["gsettings", "set", schema, key, value]);
 }

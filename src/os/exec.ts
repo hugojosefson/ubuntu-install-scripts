@@ -110,8 +110,10 @@ export const ensureSuccessful = async (
         stderr: await stderrPromise,
       };
     }
-  } catch (e) {
+  } catch (_e) {
+    // ignore
   }
+
   return Promise.reject({
     status: await process.status(),
     stdout: await stdoutPromise,
@@ -138,7 +140,7 @@ export const ensureSuccessfulStdOut = async (
 ): Promise<string> =>
   (await ensureSuccessful(asUser, cmd, options)).stdout.trim();
 
-export const isSuccessful = async (
+export const isSuccessful = (
   asUser: PasswdEntry,
   cmd: Array<string>,
   options: ExecOptions = {},

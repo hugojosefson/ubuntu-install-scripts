@@ -7,6 +7,7 @@ import {
   warning,
 } from "https://deno.land/x/colorlog@v1.0/mod.ts";
 
+// deno-lint-ignore no-explicit-any : colorlog uses any
 type LogColorer = (val: any) => string;
 export const colorlog: {
   error: LogColorer;
@@ -21,9 +22,13 @@ export interface PasswdEntry {
   homedir: string;
 }
 interface PasswdEntry_ {
+  // deno-lint-ignore no-explicit-any : parse-passwd has no typings
   username: any;
+  // deno-lint-ignore no-explicit-any : parse-passwd has no typings
   homedir: any;
+  // deno-lint-ignore no-explicit-any : parse-passwd has no typings
   uid: any;
+  // deno-lint-ignore no-explicit-any : parse-passwd has no typings
   gid: any;
 }
 
@@ -44,6 +49,7 @@ export const parsePasswd = (content: string): Array<PasswdEntry> => {
 };
 
 import { stringify as stringifyYaml_ } from "https://cdn.skypack.dev/yaml@v2.0.0-5";
+// deno-lint-ignore no-explicit-any : yaml can stringify any-thing.
 export const stringifyYaml = (value: any): string =>
   stringifyYaml_(value, undefined, undefined) || "";
 

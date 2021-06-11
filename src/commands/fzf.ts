@@ -4,7 +4,7 @@ import { CreateDir } from "./common/file-commands.ts";
 import { Exec } from "./exec.ts";
 import { git } from "./git.ts";
 
-export const fzf = async () => {
+export const fzf = () => {
   const installDir = FileSystemPath.of(targetUser, "~/.fzf");
 
   const deleteDir = new Exec(

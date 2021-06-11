@@ -23,13 +23,12 @@ function installGnomeExtension(id: number): string[] {
   return ["gnome-shell-extension-installer", `${id}`, "--yes"];
 }
 
-const uninstallOrDisableGnomeExtension = async (
-  uuid: string,
-): Promise<string[]> => [
-  "sh",
-  "-c",
-  `gnome-extensions uninstall "${uuid}" 2>/dev/null || gnome-extensions disable "${uuid}"`,
-];
+const uninstallOrDisableGnomeExtension = (uuid: string): Promise<string[]> =>
+  Promise.resolve([
+    "sh",
+    "-c",
+    `gnome-extensions uninstall "${uuid}" 2>/dev/null || gnome-extensions disable "${uuid}"`,
+  ]);
 
 const restartGnomeShell = [
   "busctl",

@@ -3,6 +3,7 @@ export interface ResolveFn<T> {
 }
 
 export interface RejectFn {
+  // deno-lint-ignore no-explicit-any : because Promise defines it as ?any
   (reason?: any): void;
 }
 
@@ -30,9 +31,7 @@ export const defer = <T>(): Deferred<T> => {
     },
   );
 
-  // Promise constructor argument is called immediately, so our resolve
-  // and reject variables have been initialised by the time we get here.
-  // @ts-ignore
+  // @ts-ignore: Promise constructor argument is called immediately, so our resolve and reject variables have been initialised by the time we get here.
   const deferred = { promise, resolve, reject, isDone: false };
   return deferred;
 };

@@ -23,7 +23,7 @@ export class Exec extends Command {
     this.locks.push(...locks);
   }
 
-  async run(): Promise<RunResult> {
+  run(): Promise<RunResult> {
     return ensureSuccessful(
       this.asUser,
       this.cmd,

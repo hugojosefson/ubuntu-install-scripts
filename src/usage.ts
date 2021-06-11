@@ -2,7 +2,7 @@ import { availableCommands } from "./commands/index.ts";
 import { colorlog } from "./deps.ts";
 
 export function usageAndExit(
-  code: number = 1,
+  code = 1,
   message?: string,
 ): never {
   if (message) {
@@ -37,7 +37,7 @@ ${
 }
 
 export function errorAndExit(
-  code: number = 1,
+  code = 1,
   message?: string,
 ): never {
   if (message) {

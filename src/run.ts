@@ -39,7 +39,9 @@ const forLog = (depth: number) =>
       : {};
   };
 
-const stringify = (o: any): string => JSON.stringify(o, null, 2);
+// deno-lint-ignore no-explicit-any
+const stringify = (o?: any): string => JSON.stringify(o, null, 2);
+// deno-lint-ignore no-explicit-any
 const stringifyLine = (o: any): string => JSON.stringify(o);
 
 export const sortCommands = (commands: Command[]): Command[] => {

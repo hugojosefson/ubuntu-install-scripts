@@ -6,6 +6,7 @@ import { config } from "./config.ts";
 import { colorlog } from "./deps.ts";
 
 import { Command, CommandResult } from "./model/command.ts";
+import { RejectFn } from "./os/defer.ts";
 import { isRunningAsRoot } from "./os/user/is-running-as-root.ts";
 import { sudoKeepalive } from "./os/user/sudo-keepalive.ts";
 import { targetUser } from "./os/user/target-user.ts";
@@ -47,18 +48,19 @@ export const cli = async () => {
           Deno.exit(err.status.code);
         }
       },
-      (err: any) => {
+      // deno-lint-ignore no-explicit-any : because Promise defines it as ?any
+      (err?: any): RejectFn => {
         if (config.VERBOSE) {
-          if (err.message) {
+          if (err?.message) {
             console.error("err.message: " + colorlog.error(err.message));
           }
-          if (err.stack) {
+          if (err?.stack) {
             console.error("err.stack: " + colorlog.warning(err.stack));
           }
-          if (err.stdout) {
+          if (err?.stdout) {
             console.error("err.stdout: " + colorlog.success(err.stdout));
           }
-          if (err.stderr) {
+          if (err?.stderr) {
             console.error("err.stderr: " + colorlog.error(err.stderr));
           }
 
