@@ -27,3 +27,7 @@ https://unix.stackexchange.com/questions/14858/in-arch-linux-how-can-i-find-out-
 ## Printing
 
 https://wiki.manjaro.org/index.php?title=Printing
+
+## Try cash
+
+https://github.com/ihack2712/cash
