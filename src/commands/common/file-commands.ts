@@ -269,7 +269,7 @@ export class Symlink extends AbstractFileCommand {
     ) => {
       if (
         pathStat.isSymlink &&
-        await Deno.realPath(this.path.path) === this.target
+        await Deno.readLink(this.path.path) === this.target
       ) {
         if (
           pathStat.uid === this.owner.uid && pathStat.gid === this.owner.gid

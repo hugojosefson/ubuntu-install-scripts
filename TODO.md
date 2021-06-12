@@ -1,9 +1,5 @@
 # TODO
 
-## Symlinks
-
-Don't create unnecessary numbered symlinks.
-
 ## barrier
 
 ## Printing
