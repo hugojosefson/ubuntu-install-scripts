@@ -281,6 +281,18 @@ function isInstalledOsPackage(
   ], { verbose: false });
 }
 
+export function isInstallableOsPackage(
+  packageName: OsPackageName,
+): Promise<boolean> {
+  return isSuccessful(ROOT, [
+    `pacman`,
+    `--sync`,
+    `--refresh`,
+    `--search`,
+    `^${packageName}$`,
+  ], { verbose: false });
+}
+
 function isInstalledAurPackage(
   packageName: AurPackageName,
 ): Promise<boolean> {

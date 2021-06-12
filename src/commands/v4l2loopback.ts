@@ -3,9 +3,12 @@ import { FileSystemPath } from "../model/dependency.ts";
 import { ensureSuccessfulStdOut } from "../os/exec.ts";
 import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { LineInFile } from "./common/file-commands.ts";
-import { InstallOsPackage } from "./common/os-package.ts";
+import {
+  InstallOsPackage,
+  isInstallableOsPackage,
+} from "./common/os-package.ts";
 
-async function installedKernels(): Promise<string[]> {
+async function getInstalledKernels(): Promise<string[]> {
   const output: string = await ensureSuccessfulStdOut(targetUser, [
     "mhwd-kernel",
     "--listinstalled",
@@ -18,22 +21,60 @@ async function installedKernels(): Promise<string[]> {
     .filter((kernel) => kernel.length > 0);
 }
 
+async function getBestKernel(): Promise<string> {
+  const output: string = await ensureSuccessfulStdOut(targetUser, [
+    "sh",
+    "-c",
+    "mhwd-kernel --list | grep -Ev -- '-rt$' | sort --version-sort | tail -n 2 | awk '{print $2}'",
+  ]);
+  const twoNewestNonRealtimeKernels: string[] = output
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((kernel) => kernel.length > 0);
+
+  const theNewestNonReleaseCandidateKernel = twoNewestNonRealtimeKernels[0];
+  return theNewestNonReleaseCandidateKernel;
+}
+
 export const v4l2loopback = Command.custom()
   .withDependencies([InstallOsPackage.of("mhwd")])
   .withRun(async () => {
-    const kernels = await installedKernels();
+    const bestKernel: string = await getBestKernel();
+    const installedKernels: string[] = await getInstalledKernels();
 
-    const installKernelHeaders = kernels
-      .map((kernel) => `${kernel}-headers`)
+    const packageNamesToConsider: string[] = [
+      ...installedKernels,
+      bestKernel,
+    ].flatMap((kernel) => [kernel, `${kernel}-headers`]);
+
+    const dependencies: InstallOsPackage[] = (await Promise.all(
+      packageNamesToConsider
+        .map((packageName) =>
+          [
+            packageName,
+            isInstallableOsPackage(packageName),
+          ] as [
+            string,
+            Promise<boolean>,
+          ]
+        )
+        .map(async ([packageName, isInstallablePromise]) =>
+          [
+            packageName,
+            await isInstallablePromise,
+          ] as [
+            string,
+            boolean,
+          ]
+        ),
+    ))
+      .filter(([_packageName, installable]) => installable)
+      .map(([packageName, _installable]) => packageName)
       .map(InstallOsPackage.of);
 
-    const installV4l2loopback = InstallOsPackage.of("v4l2loopback-dkms")
-      .withDependencies(
-        installKernelHeaders,
-      );
-
     return [
-      installV4l2loopback,
+      ...dependencies,
+      InstallOsPackage.of("v4l2loopback-dkms"),
       new LineInFile(
         ROOT,
         FileSystemPath.of(ROOT, "/etc/modprobe.d/v4l2loopback.conf"),
