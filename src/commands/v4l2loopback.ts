@@ -1,3 +1,4 @@
+import { filterAsync } from "../fn.ts";
 import { Command } from "../model/command.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 import { ensureSuccessfulStdOut } from "../os/exec.ts";
@@ -47,33 +48,13 @@ export const v4l2loopback = Command.custom()
       bestKernel,
     ].flatMap((kernel) => [kernel, `${kernel}-headers`]);
 
-    const dependencies: InstallOsPackage[] = (await Promise.all(
-      packageNamesToConsider
-        .map((packageName) =>
-          [
-            packageName,
-            isInstallableOsPackage(packageName),
-          ] as [
-            string,
-            Promise<boolean>,
-          ]
-        )
-        .map(async ([packageName, isInstallablePromise]) =>
-          [
-            packageName,
-            await isInstallablePromise,
-          ] as [
-            string,
-            boolean,
-          ]
-        ),
-    ))
-      .filter(([_packageName, installable]) => installable)
-      .map(([packageName, _installable]) => packageName)
-      .map(InstallOsPackage.of);
+    const dependencies: string[] = await filterAsync(
+      isInstallableOsPackage,
+      packageNamesToConsider,
+    );
 
     return [
-      ...dependencies,
+      ...dependencies.map(InstallOsPackage.of),
       InstallOsPackage.of("v4l2loopback-dkms"),
       new LineInFile(
         ROOT,
