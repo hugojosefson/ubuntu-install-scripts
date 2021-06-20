@@ -7,6 +7,7 @@ import { downloadsIsTmp } from "./downloads-is-tmp.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { tmuxinatorByobuBashAliases } from "./tmuxinator_byobu_bash_aliases.ts";
 import { vim } from "./vim.ts";
+import { starship } from "./starship.ts";
 
 export const all1MinimalSanity = Command.custom()
   .withDependencies([
@@ -24,6 +25,7 @@ export const all1MinimalSanity = Command.custom()
     ].map(InstallOsPackage.of),
     bash,
     vim,
+    starship,
     saveBashHistory,
     desktopIsHome,
     downloadsIsTmp,
