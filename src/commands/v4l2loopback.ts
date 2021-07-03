@@ -26,15 +26,9 @@ async function getBestKernel(): Promise<string> {
   const output: string = await ensureSuccessfulStdOut(targetUser, [
     "sh",
     "-c",
-    "mhwd-kernel --list | grep -Ev -- '-rt$' | sort --version-sort | tail -n 2 | awk '{print $2}'",
+    "mhwd-kernel --list | awk -F ' ' '/^ +\\* +linux[0-9]+$/{print $2}' | tail -n 1",
   ]);
-  const twoNewestNonRealtimeKernels: string[] = output
-    .split("\n")
-    .map((s) => s.trim())
-    .filter((kernel) => kernel.length > 0);
-
-  const theNewestNonReleaseCandidateKernel = twoNewestNonRealtimeKernels[0];
-  return theNewestNonReleaseCandidateKernel;
+  return output.trim();
 }
 
 export const v4l2loopback = Command.custom()
