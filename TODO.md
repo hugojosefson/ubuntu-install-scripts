@@ -1,5 +1,11 @@
 # TODO
 
+## enable cronie
+
+sudo pacman -S cronie
+sudo systemctl enable --now cronie.service
+sudo touch /etc/crontab
+
 ## barrier
 
 ## Printing
