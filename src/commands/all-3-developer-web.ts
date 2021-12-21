@@ -13,11 +13,11 @@ export const all3DeveloperWeb = Command.custom()
     eog,
     networkUtils,
     ...[
-      "brave",
       "chromium",
       "firefox",
     ].map(InstallOsPackage.of),
     ...[
+      "brave-bin",
       "google-chrome",
     ].map(InstallAurPackage.of),
     rust,
