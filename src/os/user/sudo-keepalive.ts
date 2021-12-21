@@ -11,5 +11,5 @@ export function sudoKeepalive(asUser: PasswdEntry): () => void {
     stdout: "null",
     stderr: "null",
   });
-  return () => process.kill(Deno.Signal.SIGTERM);
+  return () => process.kill("SIGTERM");
 }
