@@ -21,6 +21,7 @@ export const all1MinimalSanity = Command.custom()
       "ncdu",
       "networkmanager-openvpn",
       "openssh",
+      "pamac",
       "tree",
     ].map(InstallOsPackage.of),
     bash,
