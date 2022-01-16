@@ -112,6 +112,10 @@ function rv() {
     git revise "$@"
 }
 
+__git_complete gl _git_log
+function gl() {
+    git log "$@"
+}
 
 # Docker
 function d() {
