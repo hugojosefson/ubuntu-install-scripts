@@ -124,6 +124,12 @@ function d() {
     docker ${cmd} "$@"
 }
 
+# kubernetes / kubectl
+function k() {
+    local cmd=${1-get services,pods -A}
+    shift
+    kubectl ${cmd} "$@"
+}
 
 # npm completion, takes about 1/4 second extra when starting every shell
 # which npm >/dev/null 2>&1 && . <(npm completion)
