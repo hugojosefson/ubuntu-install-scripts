@@ -11,6 +11,9 @@ alias ll='exa -lF'
 alias la='exa -aF'
 alias lla='exa -Fla'
 
+# clear
+alias cc='clear && printf '\''\e[3J'\'
+
 # ssh TERM
 function ssh {
   if [[ "${TERM}" = alacritty ]]; then
