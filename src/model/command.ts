@@ -1,5 +1,6 @@
 import { NOOP } from "../commands/common/noop.ts";
 import { config } from "../config.ts";
+import { resolveValue } from "../fn.ts";
 import { defer, Deferred } from "../os/defer.ts";
 import { run } from "../run.ts";
 import { Lock } from "./dependency.ts";
@@ -13,6 +14,7 @@ export interface CommandResult {
 export class Command {
   readonly dependencies: Array<Command> = new Array(0);
   readonly locks: Array<Lock> = new Array(0);
+  readonly skipIfAll: Array<Predicate> = new Array(0);
   readonly doneDeferred: Deferred<CommandResult> = defer();
   readonly done: Promise<CommandResult> = this.doneDeferred.promise;
 
@@ -114,7 +116,61 @@ export class Command {
     this.run = run;
     return this;
   }
+
+  withSkipIfAll(predicates: Array<Predicate>): Command {
+    this.skipIfAll.push(...predicates);
+    return this;
+  }
+
+  private _shouldSkip: boolean | undefined = undefined;
+  async shouldSkip(): Promise<boolean> {
+    if (this._shouldSkip === true) {
+      if (!this.doneDeferred.isDone) {
+        this.doneDeferred.resolve(this.alreadyDoneResult());
+      }
+      return true;
+    }
+
+    if (this._shouldSkip === false) {
+      return false;
+    }
+
+    if (this.skipIfAll.length === 0) {
+      this._shouldSkip = false;
+      return false;
+    }
+
+    try {
+      for (const predicate of this.skipIfAll) {
+        const shouldSkipBecauseOfThisPredicate: boolean = await resolveValue(
+          predicate(),
+        );
+        if (!shouldSkipBecauseOfThisPredicate) {
+          this._shouldSkip = false;
+          return false;
+        }
+      }
+      this._shouldSkip = true;
+      if (!this.doneDeferred.isDone) {
+        this.doneDeferred.resolve(this.alreadyDoneResult());
+      }
+      return true;
+    } catch (e) {
+      console.warn(`Some predicate failed, so we should run the command.`, e);
+    }
+    this._shouldSkip = false;
+    return this._shouldSkip;
+  }
+
+  private alreadyDoneResult(): CommandResult {
+    return {
+      status: { success: true, code: 0 },
+      stdout: `Already done: ${this.toString()}`,
+      stderr: "",
+    };
+  }
 }
 
+export type Predicate = () => boolean | Promise<boolean>;
 export type RunResult = CommandResult | void | string | Command[];
 export type RunFunction = () => Promise<RunResult>;

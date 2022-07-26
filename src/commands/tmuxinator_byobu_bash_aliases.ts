@@ -3,11 +3,7 @@ import { FileSystemPath } from "../model/dependency.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { CreateDir, CreateFile } from "./common/file-commands.ts";
-import {
-  InstallAurPackage,
-  InstallOsPackage,
-  RemoveOsPackage,
-} from "./common/os-package.ts";
+import { InstallOsPackage, RemoveOsPackage } from "./common/os-package.ts";
 import {
   tmuxinatorBaseYml,
   tmuxinatorMuxYml,
@@ -40,10 +36,10 @@ const createCodeDir = new CreateDir(
 
 const installTmuxinator = RemoveOsPackage.of("screen")
   .withDependencies([
-    InstallAurPackage.of("tmuxinator"),
     ...([
       "byobu",
       "tmux",
+      "tmuxinator",
       "alacritty",
       "xsel",
     ].map(InstallOsPackage.of)),

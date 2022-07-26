@@ -4,12 +4,15 @@ import { FLATPAK, OS_PACKAGE_SYSTEM } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
+import { FileSystemPath } from "../../model/dependency.ts";
+import { LineInFile } from "../common/file-commands.ts";
+import { Exec } from "../exec.ts";
 import { REFRESH_OS_PACKAGES } from "../refresh-os-packages.ts";
 
 export type OsPackageName = string;
-export type AurPackageName = string;
+export type BrewPackageName = string;
 export type FlatpakPackageName = string;
-export type PackageName = OsPackageName | AurPackageName | FlatpakPackageName;
+export type PackageName = OsPackageName | BrewPackageName | FlatpakPackageName;
 
 export abstract class AbstractPackageCommand<T extends PackageName>
   extends Command {
@@ -29,11 +32,7 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
   private constructor(packageName: OsPackageName) {
     super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
-    this.dependencies.push(
-      packageName === "--sysupgrade"
-        ? REFRESH_OS_PACKAGES
-        : InstallOsPackage.upgradePackages(),
-    );
+    this.dependencies.push(REFRESH_OS_PACKAGES);
   }
 
   async run(): Promise<RunResult> {
@@ -42,10 +41,9 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
     }
 
     await ensureSuccessful(ROOT, [
-      "pacman",
-      "--sync",
-      "--needed",
-      "--noconfirm",
+      "apt",
+      "install",
+      "-y",
       this.packageName,
     ]);
 
@@ -56,11 +54,6 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
     (packageName: OsPackageName): InstallOsPackage =>
       new InstallOsPackage(packageName),
   );
-  static upgradePackages(): InstallOsPackage {
-    return InstallOsPackage.of(
-      "--sysupgrade",
-    );
-  }
 }
 
 export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
@@ -76,9 +69,10 @@ export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
     }
 
     await ensureSuccessful(ROOT, [
-      "pacman",
-      "--remove",
-      "--noconfirm",
+      "apt",
+      "purge",
+      "-y",
+      "--auto-remove",
       this.packageName,
     ]);
 
@@ -107,23 +101,12 @@ export class ReplaceOsPackage extends Command {
   }
 
   async run(): Promise<RunResult> {
-    if (await isInstalledOsPackage(this.removePackageName)) {
-      await ensureSuccessful(ROOT, [
-        "pacman",
-        "--remove",
-        "--noconfirm",
-        "--nodeps",
-        "--nodeps",
-        this.removePackageName,
-      ]);
-    }
-
     await ensureSuccessful(ROOT, [
-      "pacman",
-      "--sync",
-      "--needed",
-      "--noconfirm",
-      this.installPackageName,
+      "apt",
+      "purge",
+      "-y",
+      this.removePackageName,
+      this.installPackageName + "+",
     ]).catch(this.doneDeferred.reject);
 
     return `Replaced package ${this.removePackageName} with ${this.installPackageName}.`;
@@ -143,66 +126,96 @@ export class ReplaceOsPackage extends Command {
   ) => new ReplaceOsPackage(removePackageName, installPackageName);
 }
 
-export class InstallAurPackage extends AbstractPackageCommand<AurPackageName> {
-  private constructor(packageName: AurPackageName) {
+const bashRc = FileSystemPath.of(targetUser, "~/.bashrc");
+
+const brewDeps = [
+  ...["build-essential", "procps", "curl", "file", "git"]
+    .map(
+      InstallOsPackage.of,
+    ),
+  new LineInFile(
+    targetUser,
+    bashRc,
+    `eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`,
+  ),
+];
+
+export const HOME_LINUXBREW = FileSystemPath.of(ROOT, "/home/linuxbrew");
+const brewInstall = new Exec(
+  brewDeps,
+  [HOME_LINUXBREW],
+  ROOT,
+  { env: { NONINTERACTIVE: `1` } },
+  [
+    "bash",
+    "-c",
+    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
+  ],
+);
+
+export const brew = brewInstall.withSkipIfAll([
+  () =>
+    isSuccessful(targetUser, [
+      "bash",
+      "-c",
+      `. "${bashRc.path}" && command -v brew`,
+    ], {}),
+]);
+
+export class InstallBrewPackage
+  extends AbstractPackageCommand<BrewPackageName> {
+  private constructor(packageName: BrewPackageName) {
     super(packageName);
-    this.locks.push(OS_PACKAGE_SYSTEM);
-    this.dependencies.push(REFRESH_OS_PACKAGES);
-    this.dependencies.push(InstallOsPackage.of("base-devel"));
-    this.dependencies.push(InstallOsPackage.of("yay"));
+    this.locks.push(HOME_LINUXBREW);
+    this.dependencies.push(brew);
   }
 
   async run(): Promise<RunResult> {
-    if (await isInstalledAurPackage(this.packageName)) {
-      return `Already installed AUR package ${this.packageName}.`;
+    if (await isInstalledBrewPackage(this.packageName)) {
+      return `Already installed Brew package ${this.packageName}.`;
     }
 
     await ensureSuccessful(targetUser, [
-      "yay",
-      "--sync",
-      "--refresh",
-      "--needed",
-      "--noconfirm",
+      "brew",
+      "install",
+      "--quiet",
       this.packageName,
     ]);
 
-    return `Installed AUR package ${this.packageName}.`;
+    return `Installed Brew package ${this.packageName}.`;
   }
 
-  static of: (packageName: AurPackageName) => InstallAurPackage = memoize(
-    (packageName: AurPackageName): InstallAurPackage =>
-      new InstallAurPackage(packageName),
+  static of: (packageName: BrewPackageName) => InstallBrewPackage = memoize(
+    (packageName: BrewPackageName): InstallBrewPackage =>
+      new InstallBrewPackage(packageName),
   );
 }
 
-export class RemoveAurPackage extends AbstractPackageCommand<AurPackageName> {
-  private constructor(packageName: AurPackageName) {
+export class RemoveBrewPackage extends AbstractPackageCommand<BrewPackageName> {
+  private constructor(packageName: BrewPackageName) {
     super(packageName);
-    this.locks.push(OS_PACKAGE_SYSTEM);
-    this.dependencies.push(REFRESH_OS_PACKAGES);
-    this.dependencies.push(InstallOsPackage.of("base-devel"));
-    this.dependencies.push(InstallOsPackage.of("yay"));
+    this.locks.push(HOME_LINUXBREW);
+    this.dependencies.push(brew);
   }
 
   async run(): Promise<RunResult> {
-    if (!await isInstalledAurPackage(this.packageName)) {
-      return `Already removed AUR package ${this.packageName}.`;
+    if (!await isInstalledBrewPackage(this.packageName)) {
+      return `Already removed Brew package ${this.packageName}.`;
     }
 
     await ensureSuccessful(targetUser, [
-      "yay",
-      "--remove",
-      "--nosave",
-      "--noconfirm",
+      "brew",
+      "remove",
+      "--quiet",
       this.packageName,
     ]);
 
-    return `Removed AUR package ${this.packageName}.`;
+    return `Removed Brew package ${this.packageName}.`;
   }
 
-  static of: (packageName: AurPackageName) => RemoveAurPackage = (
-    packageName: AurPackageName,
-  ) => new RemoveAurPackage(packageName);
+  static of: (packageName: BrewPackageName) => RemoveBrewPackage = (
+    packageName: BrewPackageName,
+  ) => new RemoveBrewPackage(packageName);
 }
 
 export const flatpakOsPackages = ["xdg-desktop-portal-gtk", "flatpak"];
@@ -277,7 +290,7 @@ function isInstalledOsPackage(
   return isSuccessful(ROOT, [
     "bash",
     "-c",
-    `pacman --query --info ${packageName} | grep -E '^Name +: ${packageName}$'`,
+    `[[ "$(dpkg-query --show -f '\${status}' "${packageName}" 2>/dev/null)" == "install ok installed" ]]`,
   ], { verbose: false });
 }
 
@@ -285,22 +298,20 @@ export function isInstallableOsPackage(
   packageName: OsPackageName,
 ): Promise<boolean> {
   return isSuccessful(ROOT, [
-    `pacman`,
-    `--sync`,
-    `--refresh`,
-    `--search`,
-    `^${packageName}$`,
+    `dpkg`,
+    `-l`,
+    packageName,
   ], { verbose: false });
 }
 
-function isInstalledAurPackage(
-  packageName: AurPackageName,
+function isInstalledBrewPackage(
+  packageName: BrewPackageName,
 ): Promise<boolean> {
   return isSuccessful(targetUser, [
-    "yay",
-    "--query",
-    "--info",
-    packageName,
+    "brew",
+    "search",
+    "--formula",
+    `/^${packageName}$/`,
   ], { verbose: false });
 }
 

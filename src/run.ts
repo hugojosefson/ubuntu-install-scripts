@@ -28,16 +28,15 @@ type CommandForLog = {
   locks?: Lock[];
 };
 
-const forLog = (depth: number) =>
-  (command: Command): CommandForLog => {
-    const { dependencies, locks } = command;
-    return (depth > 0)
-      ? {
-        dependencies: dependencies.map(forLog(depth - 1)),
-        locks,
-      }
-      : {};
-  };
+const forLog = (depth: number) => (command: Command): CommandForLog => {
+  const { dependencies, locks } = command;
+  return (depth > 0)
+    ? {
+      dependencies: dependencies.map(forLog(depth - 1)),
+      locks,
+    }
+    : {};
+};
 
 // deno-lint-ignore no-explicit-any
 const stringify = (o?: any): string => JSON.stringify(o, null, 2);
@@ -86,7 +85,18 @@ export async function run(commands: Command[]): Promise<CommandResult[]> {
 
   const commandResults: CommandResult[] = [];
   for (const command of sortedCommands) {
-    commandResults.push(await command.runWhenDependenciesAreDone());
+    if (command.doneDeferred.isDone) {
+      console.log(`Already done, so not enqueueing: ${command.toString()}\n`);
+    } else if (await command.shouldSkip()) {
+      console.log(`Should skip, so not enqueueing: ${command.toString()}\n`);
+    } else {
+      console.log(`\nWill enqueue: ${command.toString()}\n`);
+      if (!config.NON_INTERACTIVE && prompt("OK to continue?", "y") === "n") {
+        console.log("You did not answer 'y'. Quitting.");
+        Deno.exit(0);
+      }
+      commandResults.push(await command.runWhenDependenciesAreDone());
+    }
   }
 
   return commandResults;

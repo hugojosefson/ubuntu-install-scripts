@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
-set -e
-
-deno fmt lib src
+exec deno fmt lib src

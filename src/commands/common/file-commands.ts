@@ -187,19 +187,19 @@ const ensureLineInFile = (
   line: string,
   endWithNewline = true,
 ) =>
-  async (owner: PasswdEntry, file: FileSystemPath): Promise<void> => {
-    if (await isSuccessful(ROOT, ["grep", line, file.path])) {
-      return;
-    }
-    const prefix = "\n";
-    const suffix = endWithNewline ? "\n" : "";
-    const data = new TextEncoder().encode(prefix + line + suffix);
-    await Deno.writeFile(file.path, data, {
-      append: true,
-      create: true,
-    });
-    await Deno.chown(file.path, owner.uid, owner.gid);
-  };
+async (owner: PasswdEntry, file: FileSystemPath): Promise<void> => {
+  if (await isSuccessful(ROOT, ["grep", line, file.path])) {
+    return;
+  }
+  const prefix = "\n";
+  const suffix = endWithNewline ? "\n" : "";
+  const data = new TextEncoder().encode(prefix + line + suffix);
+  await Deno.writeFile(file.path, data, {
+    append: true,
+    create: true,
+  });
+  await Deno.chown(file.path, owner.uid, owner.gid);
+};
 
 function ensureUserInGroup(
   user: PasswdEntry,

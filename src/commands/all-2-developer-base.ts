@@ -1,6 +1,6 @@
 import { Command } from "../model/command.ts";
 import { all1MinimalSanity } from "./all-1-minimal-sanity.ts";
-import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
+import { InstallBrewPackage, InstallOsPackage } from "./common/os-package.ts";
 import { docker } from "./docker.ts";
 import { fzf } from "./fzf.ts";
 import { gitk } from "./gitk.ts";
@@ -25,8 +25,7 @@ export const all2DeveloperBase = Command.custom()
     ].map(InstallOsPackage.of),
     ...[
       "git-revise",
-      "mdr",
-    ].map(InstallAurPackage.of),
+    ].map(InstallBrewPackage.of),
     docker,
     gitk,
     isolateInDocker,

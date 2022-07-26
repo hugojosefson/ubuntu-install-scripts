@@ -1,5 +1,5 @@
 export interface ResolveFn<T> {
-  (value: (PromiseLike<T> | T)): void;
+  (value: PromiseLike<T> | T): void;
 }
 
 export interface RejectFn {

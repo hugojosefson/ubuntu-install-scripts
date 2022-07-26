@@ -4,15 +4,14 @@ import { gsettingsToCmds } from "./common/gsettings-to-cmds.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 
-const gsettingsExecCommand = (deps: Command[] = []) =>
-  (cmd: Array<string>) =>
-    new Exec(
-      [InstallOsPackage.of("glib2"), ...deps],
-      [],
-      targetUser,
-      {},
-      cmd,
-    );
+const gsettingsExecCommand = (deps: Command[] = []) => (cmd: Array<string>) =>
+  new Exec(
+    [InstallOsPackage.of("glib2"), ...deps],
+    [],
+    targetUser,
+    {},
+    cmd,
+  );
 
 export const gsettingsEnableSomeKeyboardShortcuts = Command.custom()
   .withDependencies(

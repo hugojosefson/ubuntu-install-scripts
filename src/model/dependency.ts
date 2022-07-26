@@ -83,7 +83,7 @@ export class FileSystemPath extends Lock {
 
 export const OS_PACKAGE_SYSTEM: Lock = FileSystemPath.of(
   ROOT,
-  "/var/lib/pacman",
+  "/var/lib/apt",
 );
 
 export const FLATPAK = OS_PACKAGE_SYSTEM;

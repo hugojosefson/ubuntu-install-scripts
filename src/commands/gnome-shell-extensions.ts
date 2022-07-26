@@ -2,7 +2,7 @@ import { Command } from "../model/command.ts";
 import { ensureSuccessful } from "../os/exec.ts";
 import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { targetUser } from "../os/user/target-user.ts";
-import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
+import { InstallBrewPackage, InstallOsPackage } from "./common/os-package.ts";
 import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
 
 function findGnomeExtensionId(url: string): number {
@@ -56,7 +56,7 @@ export const gnomeShellExtensions = Command.custom()
     ...[
       "gnome-shell-extension-middleclickclose",
       "gnome-shell-extension-sound-output-device-chooser",
-    ].map(InstallAurPackage.of),
+    ].map(InstallBrewPackage.of),
   ])
   .withRun(async () => {
     const installExtensions: string[][] = await Promise.all(

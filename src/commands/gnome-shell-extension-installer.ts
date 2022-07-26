@@ -1,5 +1,5 @@
-import { InstallAurPackage } from "./common/os-package.ts";
+import { InstallBrewPackage } from "./common/os-package.ts";
 
-export const gnomeShellExtensionInstaller = InstallAurPackage.of(
+export const gnomeShellExtensionInstaller = InstallBrewPackage.of(
   "gnome-shell-extension-installer",
 );

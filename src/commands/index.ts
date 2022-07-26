@@ -64,6 +64,7 @@ import { virtManager } from "./virt-manager.ts";
 import { virtualbox } from "./virtualbox.ts";
 import { xorg } from "./xorg.ts";
 import { yubikey } from "./yubikey.ts";
+import { UPGRADE_OS_PACKAGES } from "./refresh-os-packages.ts";
 
 const commands: Record<string, Command> = {
   all: Command.custom().withDependencies([
@@ -136,7 +137,7 @@ const commands: Record<string, Command> = {
   tabbed: await tabbed(),
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
-  upgradeOsPackages: InstallOsPackage.upgradePackages(),
+  upgradeOsPackages: UPGRADE_OS_PACKAGES,
   v4l2loopback,
   vim,
   virtManager,

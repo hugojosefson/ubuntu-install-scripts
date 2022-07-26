@@ -11,13 +11,14 @@ export function usageAndExit(
   console.error(`
 Usage, if you only have curl, unzip and sh:
 
-         curl -fsSL https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts \\
+         curl -fsSL https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/ubuntu-22.04/src/cli.ts \\
          | sudo sh -s <command...>
 
 
 Usage, if you have deno:
 
-         sudo deno -A --unstable https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/manjaro-wip/src/cli.ts <command...>
+         sudo deno -A --unstable https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/ubuntu-22.04/src/cli.ts \\
+         <command...>
 
 
 Usage, if you have deno, and have cloned this git repo:

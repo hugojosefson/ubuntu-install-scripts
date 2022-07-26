@@ -11,7 +11,8 @@ export const tmuxinatorBaseYml = stringifyYaml({
       "top": "top",
     },
     {
-      "": "clear && sudo pacman --sync --refresh --needed --sysupgrade",
+      "":
+        "clear && sudo apt update && sudo apt full-upgrade -y --purge --auto-remove",
     },
   ],
 });

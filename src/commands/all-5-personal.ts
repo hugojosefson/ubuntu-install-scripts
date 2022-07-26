@@ -14,8 +14,8 @@ import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
 import { v4l2loopback } from "./v4l2loopback.ts";
 import { yubikey } from "./yubikey.ts";
 
-const withDependencies = (dependencies: Array<Command>) =>
-  (command: Command) => command.withDependencies(dependencies);
+const withDependencies = (dependencies: Array<Command>) => (command: Command) =>
+  command.withDependencies(dependencies);
 
 const replaceJack = ReplaceOsPackage.of2("jack", "jack2");
 

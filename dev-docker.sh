@@ -1,9 +1,9 @@
-#!/bin/sh
-
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 REPO="hugojosefson/ubuntu-install-scripts"
-TAG="manjaro-wip"
+TAG="ubuntu-22.04"
 
 docker build -f dev-Dockerfile -t "${REPO}:${TAG}" .
 

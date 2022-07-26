@@ -4,7 +4,7 @@ import { FileSystemPath } from "../model/dependency.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
 import { CreateFile, MODE_EXECUTABLE_775 } from "./common/file-commands.ts";
-import { InstallAurPackage, InstallOsPackage } from "./common/os-package.ts";
+import { InstallBrewPackage, InstallOsPackage } from "./common/os-package.ts";
 
 const androidRemoteScreen = new CreateFile(
   targetUser,
@@ -18,7 +18,7 @@ export const android = Command.custom().withDependencies([
   androidRemoteScreen
     .withDependencies([
       addHomeBinToPath,
-      InstallAurPackage.of("scrcpy")
+      InstallBrewPackage.of("scrcpy")
         .withDependencies([InstallOsPackage.of("android-tools")]),
     ]),
 ]);
