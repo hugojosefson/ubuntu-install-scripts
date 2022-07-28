@@ -81,20 +81,24 @@ export class Command {
     this.doneDeferred.resolve(commandResult);
     return this.done;
   }
-
-  static sequential(commands: Array<Command>): Command {
+  /**
+   * Chains commands to make sure they are run one at a time, in the order given.
+   * @param commands The commands to run in order.
+   */
+  static sequential(commands: Command[]): Command {
     if (commands.length === 0) {
       return NOOP();
     }
     if (commands.length === 1) {
       return commands[0];
     }
-    const head = commands[0];
-    const tail = commands.slice(1);
-    return (new Command())
-      .withDependencies([...tail, ...head.dependencies])
-      .withLocks(head.locks)
-      .withRun(head.run);
+    return commands.reduce(
+      (acc, curr) => {
+        curr.dependencies.push(acc);
+        return curr;
+      },
+      Command.custom(),
+    );
   }
 
   withDependencies(dependencies: Array<Command>): Command {

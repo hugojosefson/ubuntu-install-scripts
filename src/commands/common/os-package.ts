@@ -25,7 +25,6 @@ export abstract class AbstractPackageCommand<T extends PackageName>
   protected constructor(packageName: T) {
     super();
     this.packageName = packageName;
-    this.skipIfAll.push(() => isInstalledOsPackage(packageName));
   }
 
   toString() {
@@ -38,6 +37,7 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
     super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
+    this.skipIfAll.push(() => isInstalledOsPackage(packageName));
   }
 
   async run(): Promise<RunResult> {

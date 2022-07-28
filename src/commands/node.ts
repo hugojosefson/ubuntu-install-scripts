@@ -6,36 +6,11 @@ import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { Command } from "../model/command.ts";
 
-/**
- * Chains commands to make sure they are run one at a time, in the order given.
- * @param commands The commands to run in order.
- */
-function inOrder(commands: Command[]): Command {
-  return commands.reduce(
-    (acc, curr) => curr.withDependencies([acc]),
-    Command.custom(),
-  );
-}
-// function inOrder(first: Command, ...rest: Command[]): Command {
-//   if (rest.length === 0) {
-//     return first;
-//   }
-//   return inOrder(...rest).withDependencies([first]);
-// }
-
-export const nvmBashRc = inOrder(
+export const nvmBashRc = Command.sequential(
   `
-  export NVM_DIR="$HOME/.nvm" #1
-  export NVM_DIR="$HOME/.nvm" #2
-  [ -s "$NVM_DIR/nvm.sh"          ] && . "$NVM_DIR/nvm.sh"           # This loads nvm 3
-  [ -s "$NVM_DIR/nvm.sh"          ] && . "$NVM_DIR/nvm.sh"           # This loads nvm 4
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 5  bash_completion
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 6  bash_completion
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 7  bash_completion
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 8  bash_completion
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 9  bash_completion
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 10 bash_completion
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm 11 bash_completion
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh"          ] && . "$NVM_DIR/nvm.sh"           # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   `
     .split("\n").map((line) => line.trim()).filter((line) => line.length > 0)
     .map((line) =>
