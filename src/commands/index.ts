@@ -48,7 +48,6 @@ import { mTemp } from "./m-temp.ts";
 import { meld } from "./meld.ts";
 import { minecraft } from "./minecraft.ts";
 import { networkUtils } from "./network-utils.ts";
-import { nordvpn } from "./nordvpn.ts";
 import { rust } from "./rust.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
@@ -138,7 +137,6 @@ const commands: Record<string, Command> = {
   meld,
   minecraft,
   networkUtils,
-  nordvpn,
   nullCommand: Command.custom(),
   nvm,
   node,

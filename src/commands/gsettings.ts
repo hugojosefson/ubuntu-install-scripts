@@ -151,7 +151,6 @@ org.gnome.desktop.wm.keybindings toggle-shaded ['']
 org.gnome.desktop.wm.keybindings unmaximize ['<Primary><Super>Down', '<Super>Down']
 org.gnome.mutter.wayland.keybindings restore-shortcuts @as []
 org.gnome.settings-daemon.plugins.media-keys logout ['']
-org.gnome.settings-daemon.plugins.media-keys screencast @as []
 org.gnome.settings-daemon.plugins.media-keys screenreader @as []
 org.gnome.shell.keybindings focus-active-notification @as []
 org.gnome.shell.keybindings open-application-menu @as []
@@ -176,7 +175,6 @@ org.gnome.shell.keybindings toggle-overview @as []
 export const gsettingsPrivacy = Command.custom()
   .withDependencies(
     gsettingsToCmds(`
-org.freedesktop.Tracker.Miner.Files crawling-interval -1
 org.freedesktop.Tracker3.Miner.Files crawling-interval -1
 org.freedesktop.Tracker3.Miner.Files enable-monitors true
 org.freedesktop.Tracker3.Miner.Files index-applications true
@@ -244,8 +242,6 @@ org.gnome.settings-daemon.plugins.color night-light-schedule-automatic false
 org.gnome.settings-daemon.plugins.color night-light-schedule-from 20.0
 org.gnome.settings-daemon.plugins.color night-light-schedule-to 5.0
 org.gnome.settings-daemon.plugins.color night-light-temperature uint32 2330
-org.gnome.settings-daemon.plugins.xsettings antialiasing 'grayscale'
-org.gnome.settings-daemon.plugins.xsettings hinting 'full'
 `).map(gsettingsExecCommand([
       "gnome-settings-daemon",
       "gnome-system-monitor",
@@ -256,14 +252,12 @@ org.gnome.settings-daemon.plugins.xsettings hinting 'full'
 export const gsettingsUsefulDefaults = Command.custom()
   .withDependencies(
     gsettingsToCmds(`
-org.gnome.Epiphany ask-for-default false
 org.gnome.FileRoller.Dialogs.Extract recreate-folders true
 org.gnome.SessionManager auto-save-session false
 org.gnome.SessionManager auto-save-session-one-shot false
 org.gnome.desktop.notifications show-banners true
 org.gnome.nautilus.compression default-compression-format 'tar.xz'
 `).map(gsettingsExecCommand([
-      "epiphany",
       "file-roller",
       "gnome-session",
       "nautilus",

@@ -15,6 +15,7 @@ export class Command {
   readonly dependencies: Array<Command> = new Array(0);
   readonly locks: Array<Lock> = new Array(0);
   readonly skipIfAll: Array<Predicate> = new Array(0);
+  readonly skipIfAny: Array<Predicate> = new Array(0);
   readonly doneDeferred: Deferred<CommandResult> = defer();
   readonly done: Promise<CommandResult> = this.doneDeferred.promise;
 
@@ -122,6 +123,11 @@ export class Command {
     return this;
   }
 
+  withSkipIfAny(predicates: Array<Predicate>): Command {
+    this.skipIfAny.push(...predicates);
+    return this;
+  }
+
   private _shouldSkip: boolean | undefined = undefined;
   async shouldSkip(): Promise<boolean> {
     if (this._shouldSkip === true) {
@@ -135,12 +141,24 @@ export class Command {
       return false;
     }
 
-    if (this.skipIfAll.length === 0) {
+    if (this.skipIfAny.length === 0 && this.skipIfAll.length === 0) {
       this._shouldSkip = false;
       return false;
     }
 
     try {
+      for (const predicate of this.skipIfAny) {
+        const shouldSkipBecauseOfThisPredicate: boolean = await resolveValue(
+          predicate,
+        );
+        if (shouldSkipBecauseOfThisPredicate) {
+          this._shouldSkip = true;
+          if (!this.doneDeferred.isDone) {
+            this.doneDeferred.resolve(this.alreadyDoneResult());
+          }
+          return true;
+        }
+      }
       for (const predicate of this.skipIfAll) {
         const shouldSkipBecauseOfThisPredicate: boolean = await resolveValue(
           predicate,

@@ -2,6 +2,7 @@ import { PasswdEntry } from "../deps.ts";
 import { Command, CommandResult, RunResult } from "../model/command.ts";
 import { Lock } from "../model/dependency.ts";
 import { ensureSuccessful, ExecOptions } from "../os/exec.ts";
+import { Ish, resolveValue } from "../fn.ts";
 
 export class Exec extends Command {
   private readonly asUser: PasswdEntry;
@@ -13,7 +14,7 @@ export class Exec extends Command {
     locks: Array<Lock>,
     asUser: PasswdEntry,
     options: ExecOptions = {},
-    cmd: Array<string>,
+    cmd: Ish<string[]>,
   ) {
     super();
     this.asUser = asUser;
@@ -23,10 +24,10 @@ export class Exec extends Command {
     this.locks.push(...locks);
   }
 
-  run(): Promise<RunResult> {
+  async run(): Promise<RunResult> {
     return ensureSuccessful(
       this.asUser,
-      this.cmd,
+      await resolveValue(this.cmd),
       this.options,
     );
   }

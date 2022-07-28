@@ -1,13 +1,17 @@
 import { memoize } from "../../deps.ts";
 import { Command, RunResult } from "../../model/command.ts";
-import { FLATPAK, OS_PACKAGE_SYSTEM } from "../../model/dependency.ts";
+import {
+  FileSystemPath,
+  FLATPAK,
+  OS_PACKAGE_SYSTEM,
+} from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
-import { FileSystemPath } from "../../model/dependency.ts";
 import { LineInFile } from "./file-commands.ts";
 import { Exec } from "../exec.ts";
 import { REFRESH_OS_PACKAGES } from "../refresh-os-packages.ts";
+import { Ish, resolveValue } from "../../fn.ts";
 
 export type OsPackageName = string;
 export type BrewPackageName = string;
@@ -293,7 +297,7 @@ export class RemoveFlatpakPackage
   ) => new RemoveFlatpakPackage(packageName);
 }
 
-export function isInstalledOsPackage(
+function isInstalledOsPackage(
   packageName: OsPackageName,
 ): Promise<boolean> {
   return isSuccessful(ROOT, [
@@ -332,4 +336,35 @@ function isInstalledFlatpakPackage(
     "-c",
     `flatpak list --columns application | grep --line-regexp '${packageName}'`,
   ], { verbose: false });
+}
+
+export function installOsPackageFromUrl(
+  expectedPackageName: string,
+  debUrl: Ish<string>,
+): Command {
+  return new Exec(
+    [
+      "curl",
+      "gdebi-core",
+    ].map(InstallOsPackage.of),
+    [OS_PACKAGE_SYSTEM],
+    ROOT,
+    {},
+    async () => [
+      "bash",
+      "-c",
+      `
+set -euo pipefail
+IFS=$'\n\t'
+
+tmp_file="$(mktemp --suffix=.deb)"
+trap 'rm -f "$tmp_file"' EXIT
+curl -sLf "${await resolveValue(debUrl)}" -o "$tmp_file"
+gdebi --non-interactive "$tmp_file"
+  `,
+    ],
+  )
+    .withSkipIfAll([
+      () => isInstalledOsPackage(expectedPackageName),
+    ]);
 }
