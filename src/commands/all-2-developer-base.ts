@@ -16,6 +16,7 @@ export const all2DeveloperBase = Command.custom()
   .withDependencies([
     all1MinimalSanity,
     ...[
+      "git-absorb",
       "moreutils",
       "bind9-dnsutils",
       "stunnel4",
