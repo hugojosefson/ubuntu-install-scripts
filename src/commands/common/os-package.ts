@@ -131,7 +131,8 @@ export class ReplaceOsPackage extends Command {
 
 const bashRc = FileSystemPath.of(targetUser, "~/.bashrc");
 
-const brewBashRcLine = `eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`;
+export const brewBashRcLine =
+  `eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`;
 const brewDeps = [
   ...["build-essential", "procps", "curl", "file", "git"]
     .map(

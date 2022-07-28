@@ -43,7 +43,6 @@ import { insync } from "./insync.ts";
 import { isolateInDocker, isolateInDockerAll } from "./isolate-in-docker.ts";
 import { java, sdkmanJava } from "./java.ts";
 import { keybase } from "./keybase.ts";
-import { kubernetes } from "./kubernetes.ts";
 import { mTemp } from "./m-temp.ts";
 import { meld } from "./meld.ts";
 import { minecraft } from "./minecraft.ts";
@@ -116,19 +115,17 @@ const commands: Record<string, Command> = {
   isolateInDockerAll,
   java,
   keybase,
-  kubernetes,
   libreoffice: Command.custom().withDependencies(
     [
+      "hunspell-en-gb",
+      "hunspell-sv",
       "hyphen-en-gb",
       "hyphen-sv",
       "libreoffice",
-      "libreoffice-grammarcheck-en-gb",
-      "libreoffice-grammarcheck-sv",
       "libreoffice-help-en-gb",
       "libreoffice-l10n-en-gb",
       "libreoffice-l10n-sv",
-      "myspell-dictionary-en-gb",
-      "myspell-dictionary-sv",
+      "libreoffice-lightproof-en",
       "mythes-en-us",
       "mythes-sv",
     ].map(InstallOsPackage.of),
