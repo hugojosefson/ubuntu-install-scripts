@@ -1,3 +1,3 @@
-import { InstallBrewPackage } from "./common/os-package.ts";
+import { InstallFlatpakPackage } from "./common/os-package.ts";
 
-export const minecraft = InstallBrewPackage.of("minecraft-launcher");
+export const minecraft = InstallFlatpakPackage.of("com.mojang.Minecraft");
