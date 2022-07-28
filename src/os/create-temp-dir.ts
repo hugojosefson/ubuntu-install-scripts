@@ -3,9 +3,9 @@ import { colorlog, PasswdEntry } from "../deps.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 import { ensureSuccessfulStdOut } from "./exec.ts";
 
-export const createTempDir = async (
+export async function createTempDir(
   asUser: PasswdEntry,
-): Promise<FileSystemPath> => {
+): Promise<FileSystemPath> {
   const path = await ensureSuccessfulStdOut(asUser, ["mktemp", "-d"]);
   const fileSystemPath = FileSystemPath.of(asUser, path);
   config.VERBOSE && console.warn(
@@ -14,4 +14,4 @@ export const createTempDir = async (
     ),
   );
   return fileSystemPath;
-};
+}

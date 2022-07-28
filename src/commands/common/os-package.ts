@@ -293,7 +293,7 @@ export class RemoveFlatpakPackage
   ) => new RemoveFlatpakPackage(packageName);
 }
 
-function isInstalledOsPackage(
+export function isInstalledOsPackage(
   packageName: OsPackageName,
 ): Promise<boolean> {
   return isSuccessful(ROOT, [

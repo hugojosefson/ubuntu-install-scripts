@@ -58,7 +58,6 @@ import {
   createTmuxinatorFiles,
   tmuxinatorByobuBashAliases,
 } from "./tmuxinator_byobu_bash_aliases.ts";
-import { v4l2loopback } from "./v4l2loopback.ts";
 import { vim } from "./vim.ts";
 import { virtualbox } from "./virtualbox.ts";
 import { yubikey } from "./yubikey.ts";
@@ -121,9 +120,18 @@ const commands: Record<string, Command> = {
   kubernetes,
   libreoffice: Command.custom().withDependencies(
     [
-      "libreoffice-fresh",
-      "libreoffice-fresh-en-gb",
-      "libreoffice-fresh-sv",
+      "hyphen-en-gb",
+      "hyphen-sv",
+      "libreoffice",
+      "libreoffice-grammarcheck-en-gb",
+      "libreoffice-grammarcheck-sv",
+      "libreoffice-help-en-gb",
+      "libreoffice-l10n-en-gb",
+      "libreoffice-l10n-sv",
+      "myspell-dictionary-en-gb",
+      "myspell-dictionary-sv",
+      "mythes-en-us",
+      "mythes-sv",
     ].map(InstallOsPackage.of),
   ),
   mTemp,
@@ -143,7 +151,6 @@ const commands: Record<string, Command> = {
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
   upgradeOsPackages: UPGRADE_OS_PACKAGES,
-  v4l2loopback,
   vim,
   virtualbox,
   yubikey,

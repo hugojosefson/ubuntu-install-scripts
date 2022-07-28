@@ -2,8 +2,11 @@ import { Command } from "../model/command.ts";
 import { ensureSuccessful } from "../os/exec.ts";
 import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { targetUser } from "../os/user/target-user.ts";
-import { InstallBrewPackage, InstallOsPackage } from "./common/os-package.ts";
-import { gnomeShellExtensionInstaller } from "./gnome-shell-extension-installer.ts";
+import { InstallOsPackage } from "./common/os-package.ts";
+import {
+  gnomeShellExtensionInstaller,
+  gnomeShellExtensionInstallerFile,
+} from "./gnome-shell-extension-installer.ts";
 
 function findGnomeExtensionId(url: string): number {
   const id: number | undefined = url.split("/")
@@ -20,7 +23,7 @@ function findGnomeExtensionId(url: string): number {
 }
 
 function installGnomeExtension(id: number): string[] {
-  return ["gnome-shell-extension-installer", `${id}`, "--yes"];
+  return [gnomeShellExtensionInstallerFile.path, `${id}`, "--yes"];
 }
 
 const uninstallOrDisableGnomeExtension = (uuid: string): Promise<string[]> =>
@@ -46,26 +49,24 @@ export const gnomeShellExtensions = Command.custom()
   .withDependencies([
     gnomeShellExtensionInstaller,
     ...[
-      "gnome-shell",
+      "gnome-shell-extensions",
+      "gnome-shell-extension-manager",
       "gnome-shell-extension-appindicator",
-      "gnome-shell-extension-dash-to-panel",
-      "gnome-shell-extension-desktop-icons-ng",
-      "gnome-shell-extension-pop-shell",
-      "pamac-gnome-integration",
     ].map(InstallOsPackage.of),
-    ...[
-      "gnome-shell-extension-middleclickclose",
-      "gnome-shell-extension-sound-output-device-chooser",
-    ].map(InstallBrewPackage.of),
   ])
   .withRun(async () => {
     const installExtensions: string[][] = await Promise.all(
       [
+        "https://extensions.gnome.org/extension/1160/dash-to-panel/",
+        "https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding/",
+        "https://extensions.gnome.org/extension/352/middle-click-to-close-in-overview/",
+        "https://extensions.gnome.org/extension/906/sound-output-device-chooser/",
         "https://extensions.gnome.org/extension/7/removable-drive-menu/",
         "https://extensions.gnome.org/extension/277/impatience/",
         "https://extensions.gnome.org/extension/36/lock-keys/",
         "https://extensions.gnome.org/extension/1720/weeks-start-on-monday-again/",
         "https://extensions.gnome.org/extension/302/windowoverlay-icons/",
+        "https://extensions.gnome.org/extension/4655/date-menu-formatter/", // TODO: set date format to "y-MMMM-dd\nkk:mm EEE",
       ]
         .map(findGnomeExtensionId)
         .map(installGnomeExtension),

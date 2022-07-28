@@ -1,6 +1,6 @@
 import { NOOP } from "../commands/common/noop.ts";
 import { config } from "../config.ts";
-import { resolveValue } from "../fn.ts";
+import { Ish, resolveValue } from "../fn.ts";
 import { defer, Deferred } from "../os/defer.ts";
 import { run } from "../run.ts";
 import { Lock } from "./dependency.ts";
@@ -143,7 +143,7 @@ export class Command {
     try {
       for (const predicate of this.skipIfAll) {
         const shouldSkipBecauseOfThisPredicate: boolean = await resolveValue(
-          predicate(),
+          predicate,
         );
         if (!shouldSkipBecauseOfThisPredicate) {
           this._shouldSkip = false;
@@ -171,6 +171,6 @@ export class Command {
   }
 }
 
-export type Predicate = () => boolean | Promise<boolean>;
+export type Predicate = Ish<boolean>;
 export type RunResult = CommandResult | void | string | Command[];
 export type RunFunction = () => Promise<RunResult>;
