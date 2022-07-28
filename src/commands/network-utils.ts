@@ -6,7 +6,7 @@ export const networkUtils: Command = Command.custom()
     [
       "corkscrew",
       "mtr",
-      "openbsd-netcat",
+      "netcat-openbsd",
       "nmap",
       "whois",
     ].map(InstallOsPackage.of),

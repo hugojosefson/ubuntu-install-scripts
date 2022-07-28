@@ -213,8 +213,27 @@ export class RemoveBrewPackage extends AbstractPackageCommand<BrewPackageName> {
 }
 
 export const flatpakOsPackages = ["xdg-desktop-portal-gtk", "flatpak"];
-export const flatpak: Command = Command.custom()
-  .withDependencies(flatpakOsPackages.map(InstallOsPackage.of));
+export const flatpak: Command = new Exec(
+  flatpakOsPackages.map(InstallOsPackage.of),
+  [FLATPAK],
+  ROOT,
+  {},
+  [
+    "flatpak",
+    "remote-add",
+    "--if-not-exists",
+    "flathub",
+    "https://flathub.org/repo/flathub.flatpakrepo",
+  ],
+)
+  .withSkipIfAll([
+    () =>
+      isSuccessful(ROOT, [
+        "sh",
+        "-c",
+        "flatpak remotes --system --columns=name | grep flathub",
+      ], { verbose: false }),
+  ]);
 
 export class InstallFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
