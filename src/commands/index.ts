@@ -80,7 +80,6 @@ const commands: Record<string, Command> = {
   addHomeBinToPath,
   addNodeModulesBinToPath,
   android,
-  awscli: InstallOsPackage.of("aws-cli"),
   bash,
   bashAliases,
   bashGitPrompt,
