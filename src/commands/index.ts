@@ -40,7 +40,7 @@ import { gitk } from "./gitk.ts";
 import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { idea } from "./idea.ts";
 import { insync } from "./insync.ts";
-import { isolateInDocker } from "./isolate-in-docker.ts";
+import { isolateInDocker, isolateInDockerAll } from "./isolate-in-docker.ts";
 import { java, sdkmanJava } from "./java.ts";
 import { keybase } from "./keybase.ts";
 import { kubernetes } from "./kubernetes.ts";
@@ -64,6 +64,7 @@ import { virtualbox } from "./virtualbox.ts";
 import { yubikey } from "./yubikey.ts";
 import { UPGRADE_OS_PACKAGES } from "./refresh-os-packages.ts";
 import { alacritty } from "./alacritty.ts";
+import { node, nvm } from "./node.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -114,6 +115,7 @@ const commands: Record<string, Command> = {
   idea,
   insync,
   isolateInDocker,
+  isolateInDockerAll,
   java,
   keybase,
   kubernetes,
@@ -130,6 +132,8 @@ const commands: Record<string, Command> = {
   networkUtils,
   nordvpn,
   nullCommand: Command.custom(),
+  nvm,
+  node,
   rust,
   saveBashHistory,
   sdkmanJava,

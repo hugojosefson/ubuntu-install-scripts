@@ -14,7 +14,8 @@ export function symlinkToIsolateInDocker(name: string) {
     ROOT,
     "isolate-in-docker",
     FileSystemPath.of(ROOT, `/usr/local/bin/${name}`),
-  );
+  )
+    .withDependencies([isolateInDocker]);
 }
 
 export const isolateInDocker = Command.custom()
@@ -29,18 +30,20 @@ export const isolateInDocker = Command.custom()
       false,
       MODE_EXECUTABLE_775,
     ),
-    ...[
-      `node`,
-      `npm`,
-      `npx`,
-      `yarn`,
-      `heroku`,
-      `webstorm`,
-      `webstorm-install-rust`,
-      `goland`,
-      `clion`,
-      `jetbrains-toolbox`,
-      `aws`,
-      `firefox40`,
-    ].map(symlinkToIsolateInDocker),
   ]);
+
+export const isolateInDockerAll = Command.custom()
+  .withDependencies([
+    `node`,
+    `npm`,
+    `npx`,
+    `yarn`,
+    `heroku`,
+    `webstorm`,
+    `webstorm-install-rust`,
+    `goland`,
+    `clion`,
+    `jetbrains-toolbox`,
+    `aws`,
+    `firefox40`,
+  ].map(symlinkToIsolateInDocker));

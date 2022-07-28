@@ -6,19 +6,23 @@ import { eog } from "./eog.ts";
 import { networkUtils } from "./network-utils.ts";
 import { rust } from "./rust.ts";
 import { webstorm } from "./webstorm.ts";
+import { deno } from "./deno.ts";
+import { node } from "./node.ts";
 
 export const all3DeveloperWeb = Command.custom()
   .withDependencies([
     all2DeveloperBase,
+    deno,
     eog,
     networkUtils,
+    node,
+    rust,
+    webstorm,
+    addNodeModulesBinToPath,
     ...[
       "org.chromium.Chromium",
       "org.mozilla.firefox",
       "com.brave.Browser",
       "com.google.Chrome",
     ].map(InstallFlatpakPackage.of),
-    rust,
-    webstorm,
-    addNodeModulesBinToPath,
   ]);

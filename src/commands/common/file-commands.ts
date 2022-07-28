@@ -3,6 +3,7 @@ import { Command, CommandResult, RunResult } from "../../model/command.ts";
 import { FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
+import { fileEndsWithNewline } from "../../os/file-ends-with-newline.ts";
 
 export abstract class AbstractFileCommand extends Command {
   readonly owner: PasswdEntry;
@@ -183,23 +184,29 @@ export class CreateDir extends Command {
 
 export const MODE_EXECUTABLE_775 = 0o755;
 
-const ensureLineInFile = (
-  line: string,
-  endWithNewline = true,
-) =>
-async (owner: PasswdEntry, file: FileSystemPath): Promise<void> => {
-  if (await isSuccessful(ROOT, ["grep", line, file.path])) {
-    return;
-  }
-  const prefix = "\n";
-  const suffix = endWithNewline ? "\n" : "";
-  const data = new TextEncoder().encode(prefix + line + suffix);
-  await Deno.writeFile(file.path, data, {
-    append: true,
-    create: true,
-  });
-  await Deno.chown(file.path, owner.uid, owner.gid);
-};
+const ensureLineInFile =
+  (line: string) =>
+  async (owner: PasswdEntry, file: FileSystemPath): Promise<void> => {
+    if (
+      await isSuccessful(ROOT, [
+        "grep",
+        "--fixed-strings",
+        "--line-regexp",
+        line,
+        file.path,
+      ])
+    ) {
+      return;
+    }
+    const prefix = await fileEndsWithNewline(file) ? "" : "\n";
+    const suffix = "\n";
+    const data = new TextEncoder().encode(prefix + line + suffix);
+    await Deno.writeFile(file.path, data, {
+      append: true,
+      create: true,
+    });
+    await Deno.chown(file.path, owner.uid, owner.gid);
+  };
 
 function ensureUserInGroup(
   user: PasswdEntry,
