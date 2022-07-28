@@ -7,7 +7,7 @@ import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { git } from "./git.ts";
-import { xorg } from "./xorg.ts";
+import { alacritty } from "./alacritty.ts";
 
 export const tabbed = async () => {
   const fileSystemPathPromise = createTempDir(targetUser);
@@ -53,13 +53,15 @@ export const tabbed = async () => {
   );
 
   const makeDeps = [
-    "base-devel",
-    "libxft",
-    "alacritty",
-    "coreutils",
-    "procps",
-    "xdotool",
-  ].map(InstallOsPackage.of);
+    alacritty,
+    ...[
+      "build-essential",
+      "libxft-dev",
+      "coreutils",
+      "procps",
+      "xdotool",
+    ].map(InstallOsPackage.of),
+  ];
 
   const make = new Exec(
     [gitClone, ...makeDeps],
@@ -88,6 +90,6 @@ export const tabbed = async () => {
     .withDependencies([
       copyExtraTools,
       makeInstall,
-      xorg,
+      InstallOsPackage.of("xorg"),
     ]);
 };

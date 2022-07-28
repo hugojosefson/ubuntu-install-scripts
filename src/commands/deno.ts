@@ -5,20 +5,18 @@ import { LineInFile } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 
-const bashRc = FileSystemPath.of(targetUser, "~/.bashrc");
-
 export const deno = new Exec(
   [
     InstallOsPackage.of("curl"),
     InstallOsPackage.of("unzip"),
     new LineInFile(
       targetUser,
-      bashRc,
+      FileSystemPath.of(targetUser, "~/.bashrc"),
       `export DENO_INSTALL="${targetUser.homedir}/.deno"`,
     ),
     new LineInFile(
       targetUser,
-      bashRc,
+      FileSystemPath.of(targetUser, "~/.bashrc"),
       'export PATH="$DENO_INSTALL/bin:$PATH"',
     ),
   ],
@@ -32,6 +30,8 @@ export const deno = new Exec(
       isSuccessful(targetUser, [
         "bash",
         "-c",
-        `. <(grep DENO "${bashRc.path}") && command -v deno`,
+        `. <(grep DENO "${
+          FileSystemPath.of(targetUser, "~/.bashrc").path
+        }") && command -v deno`,
       ], {}),
   ]);

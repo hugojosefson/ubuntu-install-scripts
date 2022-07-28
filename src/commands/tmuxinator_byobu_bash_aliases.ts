@@ -11,6 +11,7 @@ import {
 } from "./files/tmuxinator-files.ts";
 import { mTemp } from "./m-temp.ts";
 import { tabbed } from "./tabbed.ts";
+import { alacritty } from "./alacritty.ts";
 
 const files: Array<[string, string]> = [
   ["base.yml", tmuxinatorBaseYml],
@@ -36,11 +37,11 @@ const createCodeDir = new CreateDir(
 
 const installTmuxinator = RemoveOsPackage.of("screen")
   .withDependencies([
+    alacritty,
     ...([
       "byobu",
       "tmux",
       "tmuxinator",
-      "alacritty",
       "xsel",
     ].map(InstallOsPackage.of)),
   ]);

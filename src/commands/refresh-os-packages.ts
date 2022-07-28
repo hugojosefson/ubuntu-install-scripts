@@ -7,7 +7,7 @@ export const REFRESH_OS_PACKAGES = (new Command())
   .withLocks([OS_PACKAGE_SYSTEM])
   .withRun(async (): Promise<RunResult> => {
     await ensureSuccessful(ROOT, [
-      "apt-get",
+      "apt",
       "update",
     ]);
     return `Refreshed list of OS packages.`;
@@ -17,7 +17,7 @@ export const UPGRADE_OS_PACKAGES = (new Command())
   .withLocks([OS_PACKAGE_SYSTEM])
   .withRun(async (): Promise<RunResult> => {
     await ensureSuccessful(ROOT, [
-      "apt-get",
+      "apt",
       "full-upgrade",
       "-y",
       "--purge",

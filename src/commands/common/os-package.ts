@@ -5,7 +5,7 @@ import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
 import { FileSystemPath } from "../../model/dependency.ts";
-import { LineInFile } from "../common/file-commands.ts";
+import { LineInFile } from "./file-commands.ts";
 import { Exec } from "../exec.ts";
 import { REFRESH_OS_PACKAGES } from "../refresh-os-packages.ts";
 
@@ -21,6 +21,7 @@ export abstract class AbstractPackageCommand<T extends PackageName>
   protected constructor(packageName: T) {
     super();
     this.packageName = packageName;
+    this.skipIfAll.push(() => isInstalledOsPackage(packageName));
   }
 
   toString() {
@@ -36,16 +37,12 @@ export class InstallOsPackage extends AbstractPackageCommand<OsPackageName> {
   }
 
   async run(): Promise<RunResult> {
-    if (await isInstalledOsPackage(this.packageName)) {
-      return `Already installed OS package ${this.packageName}.`;
-    }
-
     await ensureSuccessful(ROOT, [
       "apt",
       "install",
       "-y",
       this.packageName,
-    ]);
+    ], {});
 
     return `Installed OS package ${this.packageName}.`;
   }
@@ -61,13 +58,10 @@ export class RemoveOsPackage extends AbstractPackageCommand<OsPackageName> {
     super(packageName);
     this.locks.push(OS_PACKAGE_SYSTEM);
     this.dependencies.push(REFRESH_OS_PACKAGES);
+    this.skipIfAll.push(async () => !(await isInstalledOsPackage(packageName)));
   }
 
   async run(): Promise<RunResult> {
-    if (!await isInstalledOsPackage(this.packageName)) {
-      return `Already removed OS package ${this.packageName}.`;
-    }
-
     await ensureSuccessful(ROOT, [
       "apt",
       "purge",
@@ -98,6 +92,11 @@ export class ReplaceOsPackage extends Command {
 
     this.removePackageName = removePackageName;
     this.installPackageName = installPackageName;
+
+    this.skipIfAll.push(() => isInstalledOsPackage(installPackageName));
+    this.skipIfAll.push(async () =>
+      !(await isInstalledOsPackage(removePackageName))
+    );
   }
 
   async run(): Promise<RunResult> {
@@ -128,6 +127,7 @@ export class ReplaceOsPackage extends Command {
 
 const bashRc = FileSystemPath.of(targetUser, "~/.bashrc");
 
+const brewBashRcLine = `eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`;
 const brewDeps = [
   ...["build-essential", "procps", "curl", "file", "git"]
     .map(
@@ -136,7 +136,7 @@ const brewDeps = [
   new LineInFile(
     targetUser,
     bashRc,
-    `eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`,
+    brewBashRcLine,
   ),
 ];
 
@@ -144,12 +144,12 @@ export const HOME_LINUXBREW = FileSystemPath.of(ROOT, "/home/linuxbrew");
 const brewInstall = new Exec(
   brewDeps,
   [HOME_LINUXBREW],
-  ROOT,
+  targetUser,
   { env: { NONINTERACTIVE: `1` } },
   [
     "bash",
     "-c",
-    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
+    "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash",
   ],
 );
 
@@ -158,7 +158,7 @@ export const brew = brewInstall.withSkipIfAll([
     isSuccessful(targetUser, [
       "bash",
       "-c",
-      `. "${bashRc.path}" && command -v brew`,
+      `${brewBashRcLine} && command -v brew`,
     ], {}),
 ]);
 
@@ -168,18 +168,14 @@ export class InstallBrewPackage
     super(packageName);
     this.locks.push(HOME_LINUXBREW);
     this.dependencies.push(brew);
+    this.skipIfAll.push(() => isInstalledBrewPackage(packageName));
   }
 
   async run(): Promise<RunResult> {
-    if (await isInstalledBrewPackage(this.packageName)) {
-      return `Already installed Brew package ${this.packageName}.`;
-    }
-
     await ensureSuccessful(targetUser, [
-      "brew",
-      "install",
-      "--quiet",
-      this.packageName,
+      "bash",
+      "-c",
+      `${brewBashRcLine} && brew install --quiet ${this.packageName}`,
     ]);
 
     return `Installed Brew package ${this.packageName}.`;
@@ -196,18 +192,16 @@ export class RemoveBrewPackage extends AbstractPackageCommand<BrewPackageName> {
     super(packageName);
     this.locks.push(HOME_LINUXBREW);
     this.dependencies.push(brew);
+    this.skipIfAll.push(async () =>
+      !(await isInstalledBrewPackage(packageName))
+    );
   }
 
   async run(): Promise<RunResult> {
-    if (!await isInstalledBrewPackage(this.packageName)) {
-      return `Already removed Brew package ${this.packageName}.`;
-    }
-
     await ensureSuccessful(targetUser, [
-      "brew",
-      "remove",
-      "--quiet",
-      this.packageName,
+      "bash",
+      "-c",
+      `${brewBashRcLine} && brew remove --quiet ${this.packageName}`,
     ]);
 
     return `Removed Brew package ${this.packageName}.`;
@@ -228,13 +222,10 @@ export class InstallFlatpakPackage
     super(packageName);
     this.locks.push(FLATPAK);
     this.dependencies.push(flatpak);
+    this.skipIfAll.push(() => isInstalledFlatpakPackage(packageName));
   }
 
   async run(): Promise<RunResult> {
-    if (await isInstalledFlatpakPackage(this.packageName)) {
-      return `Already installed Flatpak package ${this.packageName}.`;
-    }
-
     await ensureSuccessful(ROOT, [
       "flatpak",
       "install",
@@ -262,13 +253,12 @@ export class RemoveFlatpakPackage
     super(packageName);
     this.locks.push(FLATPAK);
     this.dependencies.push(flatpak);
+    this.skipIfAll.push(async () =>
+      !(await isInstalledFlatpakPackage(packageName))
+    );
   }
 
   async run(): Promise<RunResult> {
-    if (!await isInstalledFlatpakPackage(this.packageName)) {
-      return `Already removed Flatpak package ${this.packageName}.`;
-    }
-
     await ensureSuccessful(ROOT, [
       "flatpak",
       "uninstall",

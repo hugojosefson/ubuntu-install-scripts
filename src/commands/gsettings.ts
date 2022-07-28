@@ -6,7 +6,7 @@ import { Exec } from "./exec.ts";
 
 const gsettingsExecCommand = (deps: Command[] = []) => (cmd: Array<string>) =>
   new Exec(
-    [InstallOsPackage.of("glib2"), ...deps],
+    [InstallOsPackage.of("libglib2.0-bin"), ...deps],
     [],
     targetUser,
     {},
@@ -153,10 +153,6 @@ org.gnome.mutter.wayland.keybindings restore-shortcuts @as []
 org.gnome.settings-daemon.plugins.media-keys logout ['']
 org.gnome.settings-daemon.plugins.media-keys screencast @as []
 org.gnome.settings-daemon.plugins.media-keys screenreader @as []
-org.gnome.shell.extensions.pop-shell focus-down @as []
-org.gnome.shell.extensions.pop-shell focus-left @as []
-org.gnome.shell.extensions.pop-shell focus-right @as []
-org.gnome.shell.extensions.pop-shell focus-up @as []
 org.gnome.shell.keybindings focus-active-notification @as []
 org.gnome.shell.keybindings open-application-menu @as []
 org.gnome.shell.keybindings switch-to-application-1 @as []
@@ -174,7 +170,6 @@ org.gnome.shell.keybindings toggle-overview @as []
 `).map(gsettingsExecCommand([
       "ibus",
       "mutter",
-      "gnome-shell-extension-pop-shell",
     ].map(InstallOsPackage.of))),
   );
 
@@ -208,10 +203,7 @@ org.gnome.desktop.session idle-delay uint32 900
 org.gnome.shell.weather automatic-location true
 org.gnome.system.location enabled true
 `).map(gsettingsExecCommand([
-      "tracker",
-      "tracker-miners",
-      "tracker3-miners",
-      "gnome-shell-extension-openweather",
+      "tracker-miner-fs",
     ].map(InstallOsPackage.of))),
   );
 
@@ -308,7 +300,7 @@ org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
 org.gnome.desktop.peripherals.touchpad tap-to-click true
 org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled true
 `).map(gsettingsExecCommand([
-      "gnome-desktop",
+      "gnome-core",
     ].map(InstallOsPackage.of))),
   );
 
@@ -365,27 +357,6 @@ org.gnome.meld show-line-numbers true
     ].map(InstallOsPackage.of))),
   );
 
-export const gsettingsVirtManager = Command.custom()
-  .withDependencies(
-    gsettingsToCmds(`
-org.virt-manager.virt-manager xmleditor-enabled true
-org.virt-manager.virt-manager.confirm delete-storage false
-org.virt-manager.virt-manager.confirm forcepoweroff false
-org.virt-manager.virt-manager.confirm pause false
-org.virt-manager.virt-manager.confirm poweroff false
-org.virt-manager.virt-manager.confirm removedev false
-org.virt-manager.virt-manager.confirm unapplied-dev true
-org.virt-manager.virt-manager.console grab-keys true
-org.virt-manager.virt-manager.console resize-guest 1
-org.virt-manager.virt-manager.stats enable-disk-poll true
-org.virt-manager.virt-manager.stats enable-memory-poll true
-org.virt-manager.virt-manager.stats enable-net-poll true
-org.virt-manager.virt-manager.stats update-interval 1
-`).map(gsettingsExecCommand([
-      "virt-manager",
-    ].map(InstallOsPackage.of))),
-  );
-
 export const gsettingsAll: Command = Command.custom().withDependencies([
   gsettingsDisableSomeKeyboardShortcuts,
   gsettingsEnableSomeKeyboardShortcuts,
@@ -397,6 +368,5 @@ export const gsettingsAll: Command = Command.custom().withDependencies([
   gsettingsPrivacy,
   gsettingsScreenshot,
   gsettingsUsefulDefaults,
-  gsettingsVirtManager,
   gsettingsWindows,
 ]);

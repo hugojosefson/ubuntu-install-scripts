@@ -14,8 +14,8 @@ const installStarship = new Exec([], [], targetUser, {}, [
 ])
   .withDependencies(
     [
-      InstallOsPackage.of("noto-fonts-emoji"),
-      InstallOsPackage.of("powerline-fonts"),
+      InstallOsPackage.of("fonts-noto-color-emoji"),
+      InstallOsPackage.of("fonts-powerline"),
       vim,
     ],
   );

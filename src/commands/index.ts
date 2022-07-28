@@ -13,7 +13,7 @@ import { android } from "./android.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { bash } from "./bash.ts";
-import { flatpak, InstallOsPackage } from "./common/os-package.ts";
+import { brew, flatpak, InstallOsPackage } from "./common/os-package.ts";
 import { deno } from "./deno.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { eog } from "./eog.ts";
@@ -60,13 +60,13 @@ import {
 } from "./tmuxinator_byobu_bash_aliases.ts";
 import { v4l2loopback } from "./v4l2loopback.ts";
 import { vim } from "./vim.ts";
-import { virtManager } from "./virt-manager.ts";
 import { virtualbox } from "./virtualbox.ts";
-import { xorg } from "./xorg.ts";
 import { yubikey } from "./yubikey.ts";
 import { UPGRADE_OS_PACKAGES } from "./refresh-os-packages.ts";
+import { alacritty } from "./alacritty.ts";
 
 const commands: Record<string, Command> = {
+  alacritty,
   all: Command.custom().withDependencies([
     all3DeveloperWeb,
     all4DeveloperJava,
@@ -86,6 +86,7 @@ const commands: Record<string, Command> = {
   bash,
   bashAliases,
   bashGitPrompt,
+  brew,
   deno,
   desktopIsHome,
   docker,
@@ -140,9 +141,7 @@ const commands: Record<string, Command> = {
   upgradeOsPackages: UPGRADE_OS_PACKAGES,
   v4l2loopback,
   vim,
-  virtManager,
   virtualbox,
-  xorg,
   yubikey,
 };
 

@@ -1,39 +1,45 @@
 import { Command } from "../model/command.ts";
-import { ensureSuccessful } from "../os/exec.ts";
+import { ensureSuccessful, isSuccessful } from "../os/exec.ts";
 import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { UserInGroup } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
+import { Exec } from "./exec.ts";
+import { OS_PACKAGE_SYSTEM } from "../model/dependency.ts";
+
+const installDocker = new Exec(
+  [InstallOsPackage.of("curl")],
+  [OS_PACKAGE_SYSTEM],
+  ROOT,
+  {},
+  ["bash", "-c", "curl -fsSL https://get.docker.com | sh"],
+)
+  .withSkipIfAll([
+    () => isSuccessful(ROOT, ["docker", "--version"]),
+  ]);
+
+const startDocker = new Exec(
+  [installDocker],
+  [],
+  ROOT,
+  {},
+  ["systemctl", "start", "docker"],
+)
+  .withSkipIfAll([() => isSuccessful(ROOT, ["docker", "ps"])]);
 
 const addUserToDockerGroup = new UserInGroup(targetUser, "docker")
-  .withDependencies([
-    InstallOsPackage.of("docker"),
-  ]);
-
-const installDocker = Command
-  .custom()
-  .withDependencies([
-    InstallOsPackage.of("docker"),
-    InstallOsPackage.of("docker-compose"),
-    addUserToDockerGroup,
-  ]);
-
-const activateDocker = Command
-  .custom()
-  .withDependencies([
-    installDocker,
+  .withSkipIfAll([
+    () => isSuccessful(targetUser, ["docker", "--version"]),
+    () => isSuccessful(targetUser, ["docker", "ps"]),
   ])
-  .withRun(async () => {
-    await ensureSuccessful(ROOT, ["systemctl", "enable", "docker.service"]);
-    await ensureSuccessful(ROOT, ["systemctl", "start", "docker.service"]);
-    await ensureSuccessful(ROOT, ["docker", "version"]);
-  });
+  .withDependencies([installDocker, startDocker]);
 
 const testDocker = Command
   .custom()
   .withDependencies([
-    activateDocker,
+    installDocker,
     addUserToDockerGroup,
+    startDocker,
   ])
   .withRun(() =>
     ensureSuccessful(targetUser, [
@@ -49,5 +55,5 @@ export const docker = Command
   .withDependencies(
     isInsideDocker
       ? [installDocker]
-      : [installDocker, activateDocker, testDocker],
+      : [installDocker, addUserToDockerGroup, testDocker],
   );

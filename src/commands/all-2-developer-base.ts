@@ -7,30 +7,31 @@ import { gitk } from "./gitk.ts";
 import { isolateInDocker } from "./isolate-in-docker.ts";
 import { meld } from "./meld.ts";
 import { starship } from "./starship.ts";
-import { virtManager } from "./virt-manager.ts";
+import { InstallRustPackage } from "./rust.ts";
 
 export const all2DeveloperBase = Command.custom()
   .withDependencies([
     all1MinimalSanity,
     ...[
       "moreutils",
-      "bind",
-      "stunnel",
+      "bind9-dnsutils",
+      "stunnel4",
       "tig",
-      "github-cli",
-      "bat",
-      "exa",
-      "fd",
-      "ripgrep",
     ].map(InstallOsPackage.of),
     ...[
+      "gh",
       "git-revise",
     ].map(InstallBrewPackage.of),
+    ...[
+      "bat",
+      "exa",
+      "fd-find",
+      "ripgrep",
+    ].map(InstallRustPackage.of),
     docker,
     gitk,
     isolateInDocker,
     meld,
     starship,
     await fzf(),
-    virtManager,
   ]);

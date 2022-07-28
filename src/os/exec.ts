@@ -46,8 +46,19 @@ function runOptions(
   return {
     ...(opts.cwd ? { cwd: opts.cwd } : {}),
     ...(asUser === ROOT
-      ? { ...(opts.env ? { env: opts.env } : {}) }
-      : { env: { DBUS_SESSION_BUS_ADDRESS, ...(opts.env || {}) } }),
+      ? {
+        env: {
+          DEBIAN_FRONTEND: "noninteractive",
+          ...opts.env,
+        },
+      }
+      : {
+        env: {
+          DEBIAN_FRONTEND: "noninteractive",
+          DBUS_SESSION_BUS_ADDRESS,
+          ...opts.env,
+        },
+      }),
   };
 }
 
@@ -59,7 +70,7 @@ export const ensureSuccessful = async (
   const effectiveCmd = [
     ...(asUser === ROOT ? [] : [
       "sudo",
-      `--preserve-env=DBUS_SESSION_BUS_ADDRESS,XAUTHORITY,DISPLAY`,
+      `--preserve-env=DBUS_SESSION_BUS_ADDRESS,DEBIAN_FRONTEND,XAUTHORITY,DISPLAY`,
       `--user=${asUser.username}`,
       "--non-interactive",
       "--",
@@ -128,7 +139,7 @@ export const symlink = (
 ): Promise<CommandResult> =>
   ensureSuccessful(owner, [
     "ln",
-    "-s",
+    "-sf",
     from,
     to.path,
   ]);

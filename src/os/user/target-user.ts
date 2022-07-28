@@ -1,5 +1,6 @@
 import { parsePasswd, PasswdEntry } from "../../deps.ts";
 import { ensureSuccessfulStdOut } from "../exec.ts";
+import { FileSystemPath } from "../../model/dependency.ts";
 
 const byUid = (a: PasswdEntry, b: PasswdEntry) => a?.uid - b?.uid;
 
