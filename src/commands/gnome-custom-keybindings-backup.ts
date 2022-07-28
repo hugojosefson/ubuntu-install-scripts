@@ -24,17 +24,18 @@ function getDconfData(): Promise<string> {
 export const gnomeCustomKeybindingsBackup = Command.custom()
   .withDependencies([
     InstallOsPackage.of("gnome-settings-daemon"),
-    InstallOsPackage.of("dconf"),
-    InstallOsPackage.of("glib2"),
+    InstallOsPackage.of("dconf-cli"),
+    InstallOsPackage.of("libglib2.0-bin"),
   ])
   .withRun(async () => {
-    const backupScript = `#!/bin/sh
+    const backupScript = `#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
+IFS=$'\n\t'
 
-dconf load ${dconfPath} <<'🔚'
+dconf load ${dconfPath} <<'EOF'
 ${await getDconfData()}
-🔚
+EOF
 
 gsettings set ${gsettingsSchema} ${gsettingsKey} "${await getGsettingsValue()}"
 `;
