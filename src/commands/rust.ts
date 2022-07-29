@@ -2,6 +2,7 @@ import { targetUser } from "../os/user/target-user.ts";
 import {
   AbstractPackageCommand,
   InstallOsPackage,
+  RustPackageName,
 } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { RunResult } from "../model/command.ts";
@@ -32,7 +33,7 @@ export class InstallRustPackage
       "-c",
       `. <(grep cargo/ "${
         FileSystemPath.of(targetUser, "~/.bashrc").path
-      }") && cargo install ${this.packageName}`,
+      }") && cargo install --locked ${this.packageName}`,
     ]);
 
     return `Installed Rust package ${this.packageName}.`;

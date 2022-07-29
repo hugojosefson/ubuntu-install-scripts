@@ -4,21 +4,15 @@ import { readRelativeFile } from "../os/read-relative-file.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { CreateFile, LineInFile } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
-import { Exec } from "./exec.ts";
 import { vim } from "./vim.ts";
+import { InstallRustPackage } from "./rust.ts";
 
-const installStarship = new Exec([], [], targetUser, {}, [
-  "sh",
-  "-c",
-  "curl -fsSL https://starship.rs/install.sh | sh -s -- --yes",
-])
-  .withDependencies(
-    [
-      InstallOsPackage.of("fonts-noto-color-emoji"),
-      InstallOsPackage.of("fonts-powerline"),
-      vim,
-    ],
-  );
+const installStarship = InstallRustPackage.of("starship")
+  .withDependencies([
+    InstallOsPackage.of("fonts-noto-color-emoji"),
+    InstallOsPackage.of("fonts-powerline"),
+    vim,
+  ]);
 
 const activateStarship = new LineInFile(
   targetUser,

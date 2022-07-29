@@ -16,7 +16,12 @@ import { Ish, resolveValue } from "../../fn.ts";
 export type OsPackageName = string;
 export type BrewPackageName = string;
 export type FlatpakPackageName = string;
-export type PackageName = OsPackageName | BrewPackageName | FlatpakPackageName;
+export type RustPackageName = string;
+export type PackageName =
+  | OsPackageName
+  | BrewPackageName
+  | FlatpakPackageName
+  | RustPackageName;
 
 export abstract class AbstractPackageCommand<T extends PackageName>
   extends Command {
