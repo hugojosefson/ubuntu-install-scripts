@@ -30,7 +30,7 @@ const uninstallOrDisableGnomeExtension = (uuid: string): Promise<string[]> =>
   Promise.resolve([
     "sh",
     "-c",
-    `gnome-extensions uninstall "${uuid}" 2>/dev/null || gnome-extensions disable "${uuid}"`,
+    `gnome-extensions uninstall "${uuid}" 2>/dev/null || gnome-extensions disable "${uuid}" || true`,
   ]);
 
 const restartGnomeShell = [
