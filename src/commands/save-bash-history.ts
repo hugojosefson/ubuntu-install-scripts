@@ -6,5 +6,5 @@ import { LineInFile } from "./common/file-commands.ts";
 export const saveBashHistory: Command = new LineInFile(
   targetUser,
   FileSystemPath.of(targetUser, "~/.bashrc"),
-  'export PROMPT_COMMAND="history -a $HOME/.bash_history; $PROMPT_COMMAND"',
+  '[[ "${PROMPT_COMMAND}" == *"history -a $HOME/.bash_history"* ]] || export PROMPT_COMMAND="${PROMPT_COMMAND:-:}; history -a $HOME/.bash_history"',
 );
