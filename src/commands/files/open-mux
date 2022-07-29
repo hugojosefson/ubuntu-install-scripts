@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+while true; do
+  tmuxinator start base
+  sleep .1
+done

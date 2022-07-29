@@ -12,6 +12,7 @@ import {
 import { mTemp } from "./m-temp.ts";
 import { tabbed } from "./tabbed.ts";
 import { alacritty } from "./alacritty.ts";
+import { openMux } from "./open-mux.ts";
 
 const files: Array<[string, string]> = [
   ["base.yml", tmuxinatorBaseYml],
@@ -53,5 +54,6 @@ export const tmuxinatorByobuBashAliases = Command.custom()
     ...createTmuxinatorFiles,
     createCodeDir,
     mTemp,
+    openMux,
     bashAliases,
   ]);

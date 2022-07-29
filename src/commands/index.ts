@@ -62,6 +62,7 @@ import { yubikey } from "./yubikey.ts";
 import { UPGRADE_OS_PACKAGES } from "./refresh-os-packages.ts";
 import { alacritty } from "./alacritty.ts";
 import { node, nvm } from "./node.ts";
+import { openMux } from "./open-mux.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -136,6 +137,7 @@ const commands: Record<string, Command> = {
   nullCommand: Command.custom(),
   nvm,
   node,
+  openMux,
   rust,
   saveBashHistory,
   sdkmanJava,
