@@ -1,12 +1,25 @@
-import { targetUser } from "../os/user/target-user.ts";
+import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { installOsPackageFromUrl } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { Command } from "../model/command.ts";
 import { isInsideDocker } from "../os/is-inside-docker.ts";
+import { FileSystemPath } from "../model/dependency.ts";
 
-export const installKeybase = installOsPackageFromUrl(
-  "keybase",
-  "https://prerelease.keybase.io/keybase_amd64.deb",
+export const installKeybase = new Exec(
+  [
+    installOsPackageFromUrl(
+      "keybase",
+      "https://prerelease.keybase.io/keybase_amd64.deb",
+    ),
+  ],
+  [FileSystemPath.of(ROOT, "/etc/apt/trusted.gpg.d/keybase.gpg")],
+  ROOT,
+  {},
+  [
+    "bash",
+    "-c",
+    "sudo apt-key export 656D16C7 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/keybase.gpg",
+  ],
 );
 
 const runKeybase = new Exec(
