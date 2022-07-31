@@ -1,5 +1,4 @@
 import { Command } from "../model/command.ts";
-import { addNodeModulesBinToPath } from "./add-node_modules-bin-to-path.ts";
 import { all2DeveloperBase } from "./all-2-developer-base.ts";
 import {
   InstallFlatpakPackage,
@@ -21,7 +20,6 @@ export const all3DeveloperWeb = Command.custom()
     node,
     rust,
     webstorm,
-    addNodeModulesBinToPath,
     InstallOsPackage.of("firefox"),
     ...[
       "org.chromium.Chromium",
