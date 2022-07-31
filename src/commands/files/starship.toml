@@ -85,6 +85,7 @@ style = 'green bold'
 disabled = false
 detect_extensions = []
 detect_files = [
+    '.starship.deno',
     'mod.ts',
     'deps.ts',
     'mod.js',
@@ -399,12 +400,7 @@ symbol = ' '
 style = 'bold green'
 disabled = false
 not_capable_style = 'bold red'
-detect_extensions = [
-    'js',
-    'mjs',
-    'cjs',
-    'ts',
-]
+detect_extensions = []
 detect_files = [
     'package.json',
     '.node-version',
