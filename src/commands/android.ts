@@ -8,7 +8,14 @@ import { InstallOsPackage } from "./common/os-package.ts";
 export const android = new CreateFile(
   targetUser,
   FileSystemPath.of(targetUser, "~/bin/android-remote-screen"),
-  `#!/bin/sh\nadb connect ${config.ANDROID_HOSTNAME} && scrcpy --prefer-text`,
+  `#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\\t\\n'
+
+adb connect ${config.ANDROID_HOSTNAME}:\${1:-5555}
+scrcpy --prefer-text
+`,
   false,
   MODE_EXECUTABLE_775,
 )
