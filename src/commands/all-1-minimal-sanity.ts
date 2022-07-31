@@ -4,6 +4,7 @@ import { bash } from "./bash.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { downloadsIsCleanedOnBoot } from "./downloads-is-cleaned-on-boot.ts";
+import { gnomeDisableWayland } from "./gnome-disable-wayland.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { tmuxinatorByobuBashAliases } from "./tmuxinator_byobu_bash_aliases.ts";
 import { vim } from "./vim.ts";
@@ -34,4 +35,5 @@ export const all1MinimalSanity = Command.custom()
     downloadsIsCleanedOnBoot,
     addHomeBinToPath,
     tmuxinatorByobuBashAliases,
+    gnomeDisableWayland,
   ]);

@@ -63,6 +63,8 @@ import { UPGRADE_OS_PACKAGES } from "./refresh-os-packages.ts";
 import { alacritty } from "./alacritty.ts";
 import { node, nvm } from "./node.ts";
 import { openMux } from "./open-mux.ts";
+import { gnomeDisableWayland } from "./gnome-disable-wayland.ts";
+import { downloadsIsCleanedOnBoot } from "./downloads-is-cleaned-on-boot.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -88,6 +90,7 @@ const commands: Record<string, Command> = {
   deno,
   desktopIsHome,
   docker,
+  downloadsIsCleanedOnBoot,
   downloadsIsTmp,
   eog,
   flatpak,
@@ -96,6 +99,7 @@ const commands: Record<string, Command> = {
   git,
   gitk,
   gnomeCustomKeybindingsBackup,
+  gnomeDisableWayland,
   gnomeShellExtensions,
   gnomeShellExtensionInstaller,
   gsettingsAll,
