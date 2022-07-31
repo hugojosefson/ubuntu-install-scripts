@@ -285,9 +285,7 @@ export const gsettingsInput = Command.custom()
     gsettingsToCmds(`
 org.gnome.desktop.input-sources xkb-options ['compose:ralt']
 org.gnome.desktop.peripherals.keyboard remember-numlock-state true
-org.gnome.desktop.peripherals.mouse natural-scroll true
 org.gnome.desktop.peripherals.touchpad click-method 'fingers'
-org.gnome.desktop.peripherals.touchpad natural-scroll true
 org.gnome.desktop.peripherals.touchpad tap-and-drag true
 org.gnome.desktop.peripherals.touchpad tap-and-drag-lock false
 org.gnome.desktop.peripherals.touchpad tap-button-map 'default'
