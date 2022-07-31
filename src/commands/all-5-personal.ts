@@ -1,12 +1,10 @@
 import { Command } from "../model/command.ts";
-import { android } from "./android.ts";
 import {
   InstallFlatpakPackage,
   InstallOsPackage,
 } from "./common/os-package.ts";
 import { gsettingsAll } from "./gsettings.ts";
 import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
-import { insync } from "./insync.ts";
 import { keybase } from "./keybase.ts";
 import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
 import { yubikey } from "./yubikey.ts";
@@ -36,7 +34,6 @@ export const all5Personal = Command.custom()
       "inkscape",
       "neofetch",
       "pass",
-      "xpra",
     ]
       .map(InstallOsPackage.of),
     ...[
@@ -50,7 +47,5 @@ export const all5Personal = Command.custom()
     signalDesktopViaDocker,
     gnomeShellExtensions,
     mullvad,
-    insync,
-    android,
     gsettingsAll,
   ]);
