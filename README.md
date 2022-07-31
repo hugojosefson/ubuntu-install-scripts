@@ -6,10 +6,12 @@ They save some keystrokes :) Use the `all*` commands to save even more!
 
 Always a Work-in-progress. Happy testing!
 
-## Run directly
+## Download and run
 
-This will show you the usage/help text:
+This will download into `./ubuntu-install-scripts-ubuntu-22.04/`, and show you
+the usage/help text:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hugojosefson/ubuntu-install-scripts/ubuntu-22.04/src/cli.ts | sudo sh -s --
+wget -qO- https://github.com/hugojosefson/ubuntu-install-scripts/archive/refs/heads/ubuntu-22.04.tar.gz | tar xz
+sudo VERBOSE=true ./ubuntu-install-scripts-ubuntu-22.04/src/cli.ts
 ```
