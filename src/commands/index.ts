@@ -65,6 +65,7 @@ import { node, nvm } from "./node.ts";
 import { openMux } from "./open-mux.ts";
 import { gnomeDisableWayland } from "./gnome-disable-wayland.ts";
 import { downloadsIsCleanedOnBoot } from "./downloads-is-cleaned-on-boot.ts";
+import { sudoNoPassword } from "./sudo-no-password.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -147,6 +148,7 @@ const commands: Record<string, Command> = {
   sdkmanJava,
   signalDesktopViaDocker,
   starship,
+  sudoNoPassword,
   tabbed: await tabbed(),
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
