@@ -15,7 +15,7 @@ export const gitk: Command = Command.custom()
   .withDependencies([
     addHomeBinToPath,
     git,
-    InstallOsPackage.of("tk"),
+    InstallOsPackage.of("gitk"),
     new CreateFile(
       targetUser,
       FileSystemPath.of(targetUser, "~/bin/gk"),
