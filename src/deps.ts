@@ -1,4 +1,4 @@
-import { dirname } from "https://deno.land/std@0.95.0/path/mod.ts";
+import { dirname } from "https://deno.land/std@0.150.0/path/mod.ts";
 export { dirname };
 
 import {
