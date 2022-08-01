@@ -6,6 +6,7 @@ import { readFromUrl } from "../os/read-from-url.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { dconfLoad } from "./common/dconf-load.ts";
 import { Command } from "../model/command.ts";
+import { deno } from "./deno.ts";
 
 const installToggleTerminal = new CreateFile(
   ROOT,
@@ -18,6 +19,7 @@ const installToggleTerminal = new CreateFile(
 )
   .withDependencies([
     wmUtils,
+    deno,
     ...[
       "coreutils",
       "xdotool",
