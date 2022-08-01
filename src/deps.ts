@@ -37,7 +37,7 @@ interface PasswdEntry_ {
   gid: any;
 }
 
-import parsePasswd_ from "https://cdn.skypack.dev/parse-passwd@v1.0.0";
+import parsePasswd_ from "https://cdn.skypack.dev/pin/parse-passwd@v1.0.0-c1feX7BOq3S3SMESPpB1/mode=imports/optimized/parse-passwd.js?dts";
 export const parsePasswd = (content: string): Array<PasswdEntry> => {
   const parsed = parsePasswd_(content) as Array<PasswdEntry_>;
   return parsed
@@ -53,13 +53,13 @@ export const parsePasswd = (content: string): Array<PasswdEntry> => {
     );
 };
 
-import { stringify as stringifyYaml_ } from "https://cdn.skypack.dev/yaml@v2.0.0-5";
+import { stringify as stringifyYaml_ } from "https://cdn.skypack.dev/pin/yaml@v2.1.1-940wF4nVcO1JvartcxSp/mode=imports/optimized/yaml.js?dts";
 // yaml can stringify any-thing ;)
 // deno-lint-ignore no-explicit-any
 export const stringifyYaml = (value: any): string =>
   stringifyYaml_(value, undefined, undefined) || "";
 
-import { fetch as fetchFile } from "https://deno.land/x/file_fetch@0.1.0/mod.ts";
+import { fetch as fetchFile } from "https://deno.land/x/file_fetch@0.2.0/mod.ts";
 export { fetchFile };
 
 import memoize from "https://deno.land/x/memoizy@1.0.0/mod.ts";
@@ -81,7 +81,7 @@ import {
 } from "https://deno.land/x/compose@1.3.2/index.js";
 export { compose, composeUnary, pipe, pipeline, pipelineUnary };
 
-import { paramCase } from "https://deno.land/x/case@v2.1.0/mod.ts";
+import { paramCase } from "https://deno.land/x/case@2.1.1/mod.ts";
 export function kebabCase(s: string): string {
   const kebab: string = paramCase(s);
 
