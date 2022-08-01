@@ -1,3 +1,6 @@
+// Compare old dependency with latest:
+// url=https://deno.land/std@0.95.0/path/posix.ts; new_url="$(echo "${url}"| sed -E "s/@[^/?]*//")"; meld <(echo "${url}"; curl -sfL "${url}") <(echo "${new_url}"; curl -sfL "${new_url}")
+
 import { dirname } from "https://deno.land/std@0.150.0/path/mod.ts";
 export { dirname };
 
