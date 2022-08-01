@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\t\n'
+
+get_gsettings() {
+  (
+    for schema in $(gsettings list-schemas); do
+      gsettings list-recursively "${schema}"
+    done
+  ) | sort -u
+}
+
+skip_first_n_lines() {
+  local n
+  n="${1}"
+  tail -n +"$((n + 1))"
+}
+
+# output only lines starting with '+', removing the initial '+'
+only_new_lines() {
+  awk '/^\+/ { print }' | sed 's/^+//'
+}
+
+
+simple_diff() {
+  diff --unified="0" --minimal --suppress-common-lines --color="never" "${@}" | skip_first_n_lines 3 | only_new_lines || true
+}
+
+main() {
+  local previous
+  local current
+
+  current="$(get_gsettings)"
+  echo "Make a config change in gnome, then press ENTER to show change (or Ctrl+C to exit)
+----------------------------------------------------------------------------------" >&2
+  while true; do
+    previous="${current}"
+    read -r
+    current="$(get_gsettings)"
+    simple_diff <(echo "${previous}") <(echo "${current}")
+  done
+}
+
+main
