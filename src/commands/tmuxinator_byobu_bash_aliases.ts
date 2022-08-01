@@ -10,8 +10,7 @@ import {
   tmuxinatorTempTemplate,
 } from "./files/tmuxinator-files.ts";
 import { mTemp } from "./m-temp.ts";
-import { tabbed } from "./tabbed.ts";
-import { alacritty } from "./alacritty.ts";
+import { toggleTerminal } from "./toggle-terminal.ts";
 import { openMux } from "./open-mux.ts";
 
 const files: Array<[string, string]> = [
@@ -38,9 +37,9 @@ const createCodeDir = new CreateDir(
 
 const installTmuxinator = RemoveOsPackage.of("screen")
   .withDependencies([
-    alacritty,
     ...([
       "byobu",
+      "gnome-terminal",
       "tmux",
       "tmuxinator",
       "xsel",
@@ -49,7 +48,7 @@ const installTmuxinator = RemoveOsPackage.of("screen")
 
 export const tmuxinatorByobuBashAliases = Command.custom()
   .withDependencies([
-    await tabbed(),
+    toggleTerminal,
     installTmuxinator,
     ...createTmuxinatorFiles,
     createCodeDir,

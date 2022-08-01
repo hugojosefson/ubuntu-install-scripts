@@ -44,3 +44,12 @@ export async function resolveValue<T>(x: Ish<T>): Promise<T> {
   }
   return x;
 }
+
+export function startsAndEndsWith(
+  start: string,
+  end: string = start,
+): (s: string) => boolean {
+  return function (s: string): boolean {
+    return s.startsWith(start) && s.endsWith(end);
+  };
+}

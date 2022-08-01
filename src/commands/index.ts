@@ -51,7 +51,7 @@ import { rust } from "./rust.ts";
 import { saveBashHistory } from "./save-bash-history.ts";
 import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
 import { starship } from "./starship.ts";
-import { tabbed } from "./tabbed.ts";
+import { toggleTerminal } from "./toggle-terminal.ts";
 import {
   createTmuxinatorFiles,
   tmuxinatorByobuBashAliases,
@@ -149,7 +149,7 @@ const commands: Record<string, Command> = {
   signalDesktopViaDocker,
   starship,
   sudoNoPassword,
-  tabbed: await tabbed(),
+  toggleTerminal,
   tmuxinatorByobuBashAliases,
   tmuxinatorFiles: Command.custom().withDependencies(createTmuxinatorFiles),
   upgradeOsPackages: UPGRADE_OS_PACKAGES,

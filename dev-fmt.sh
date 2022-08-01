@@ -2,4 +2,4 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-exec deno fmt lib src
+exec deno fmt -- lib src *.md *.ts

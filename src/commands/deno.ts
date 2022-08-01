@@ -1,37 +1,37 @@
 import { FileSystemPath } from "../model/dependency.ts";
 import { isSuccessful } from "../os/exec.ts";
-import { targetUser } from "../os/user/target-user.ts";
+import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { LineInFile } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
+import { readFromUrl } from "../os/read-from-url.ts";
+import { Command } from "../model/command.ts";
 
-export const deno = new Exec(
+const downloadDenoToUsrLocalBin = new Exec(
   [
     InstallOsPackage.of("curl"),
     InstallOsPackage.of("unzip"),
-    new LineInFile(
-      targetUser,
-      FileSystemPath.of(targetUser, "~/.bashrc"),
-      `export DENO_INSTALL="${targetUser.homedir}/.deno"`,
-    ),
-    new LineInFile(
-      targetUser,
-      FileSystemPath.of(targetUser, "~/.bashrc"),
-      'export PATH="$DENO_INSTALL/bin:$PATH"',
-    ),
   ],
-  [FileSystemPath.of(targetUser, "~/.deno")],
-  targetUser,
-  {},
-  ["sh", "-c", "curl -fsSL https://deno.land/x/install/install.sh | sh"],
+  [FileSystemPath.of(ROOT, "/usr/local/bin/deno")],
+  ROOT,
+  {
+    env: { DENO_INSTALL: "/usr/local" },
+    stdin: await readFromUrl("https://deno.land/install.sh"),
+  },
+  ["sh"],
 )
   .withSkipIfAll([
-    () =>
-      isSuccessful(targetUser, [
-        "bash",
-        "-c",
-        `. <(grep DENO "${
-          FileSystemPath.of(targetUser, "~/.bashrc").path
-        }") && command -v deno`,
-      ], {}),
+    () => isSuccessful(targetUser, "command -v deno".split(" "), {}),
+    () => isSuccessful(ROOT, "command -v deno".split(" "), {}),
   ]);
+
+const setDenoInstallEnv = new LineInFile(
+  ROOT,
+  FileSystemPath.of(targetUser, "/etc/environment"),
+  `DENO_INSTALL=/usr/local`,
+);
+
+export const deno = Command.custom().withDependencies([
+  setDenoInstallEnv,
+  downloadDenoToUsrLocalBin,
+]);

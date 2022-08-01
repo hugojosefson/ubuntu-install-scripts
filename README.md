@@ -1,10 +1,10 @@
 # Install scripts, for Ubuntu
 
-_Install scripts for various things I like to install on a fresh Ubuntu._
+_Install scripts for various things I like to install on a fresh Ubuntu virtual
+machine._
 
-They save some keystrokes :) Use the `all*` commands to save even more!
-
-Always a Work-in-progress. Happy testing!
+Do note, that most settings are for how I like them inside virtual machines, so
+not likely to be appropriate for your main install! Happy testing!
 
 ## Download and run
 
