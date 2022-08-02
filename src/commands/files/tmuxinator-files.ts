@@ -11,8 +11,59 @@ export const tmuxinatorBaseYml = stringifyYaml({
       "top": "top",
     },
     {
-      "":
-        `( set -euo pipefail; IFS=$'\t\n'; hr() { printf '\n---------------------------------------------------------------------\n'; } ; clear && sudo apt update && hr && sudo apt full-upgrade -y --purge --auto-remove && (hr && sudo snap refresh); (hr && sudo flatpak update -y); (hr && command -v deno && (deno upgrade || sudo deno upgrade)); (hr && nvm install --lts --latest-npm && hr && nvm exec --lts npm install --location=global yarn@latest); (hr && nvm install node --latest-npm && hr && nvm exec node npm install --location=global yarn@latest); (hr && brew upgrade); (hr && cargo install --locked -- $(cargo install --list | awk '/^[^ ]/{print $1}')) )`,
+      "": `
+(
+set -euo pipefail; IFS=$'\\t\\n';
+
+hr() {
+  printf '\\n---------------------------------------------------------------------\\n'
+};
+
+_if() {
+  local command
+  command="\${1}"
+  if [[ "\${command}" = "sudo" ]]; then
+    command="\${2}"
+  fi
+  if command -v "\${command}" >/dev/null; then
+    "\${@}"
+  fi
+};
+
+_if_hr() {
+  local command
+  command="\${1}"
+  if [[ "\${command}" = "sudo" ]]; then
+    command="\${2}"
+  fi
+  if command -v "\${command}" >/dev/null; then
+    hr
+    "\${@}"
+  fi
+};
+
+main() {
+  clear
+  _if_hr sudo apt update
+  _if_hr sudo apt full-upgrade -y --purge --auto-remove
+  _if_hr sudo snap refresh
+  _if_hr sudo flatpak update -y
+  if [[ -w "$(command -v deno)" ]]; then
+    _if_hr deno upgrade
+  elif sudo [ -w "$(command -v deno)" ]; then
+    _if_hr sudo deno upgrade
+  fi
+  _if_hr nvm install --lts --latest-npm
+  _if_hr nvm exec --lts npm install --location=global yarn@latest
+  _if_hr nvm install node --latest-npm
+  _if_hr nvm exec node npm install --location=global yarn@latest
+  _if_hr brew upgrade
+  _if_hr rustup update
+  _if_hr cargo install --locked -- $(_if cargo install --list | awk '/^[^ ]/{print $1}')
+};
+
+main
+)`.trim(),
     },
   ],
 });
