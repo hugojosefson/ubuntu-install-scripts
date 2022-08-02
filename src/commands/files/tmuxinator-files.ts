@@ -12,7 +12,7 @@ export const tmuxinatorBaseYml = stringifyYaml({
     },
     {
       "":
-        `( set -euo pipefail; IFS=$'\t\n'; hr() { printf '\n---------------------------------------------------------------------\n'; } ; clear && sudo apt update && hr && sudo apt full-upgrade -y --purge --auto-remove && (hr && sudo snap refresh); (hr && sudo flatpak update -y); (hr && command -v deno && (deno upgrade || sudo deno upgrade)); (hr && nvm install --lts --latest-npm && hr && nvm exec --lts npm install --location=global yarn@latest); (hr && nvm install node --latest-npm && hr && nvm exec node npm install --location=global yarn@latest); (hr && brew update) )`,
+        `( set -euo pipefail; IFS=$'\t\n'; hr() { printf '\n---------------------------------------------------------------------\n'; } ; clear && sudo apt update && hr && sudo apt full-upgrade -y --purge --auto-remove && (hr && sudo snap refresh); (hr && sudo flatpak update -y); (hr && command -v deno && (deno upgrade || sudo deno upgrade)); (hr && nvm install --lts --latest-npm && hr && nvm exec --lts npm install --location=global yarn@latest); (hr && nvm install node --latest-npm && hr && nvm exec node npm install --location=global yarn@latest); (hr && brew update); (hr && cargo install --locked -- $(cargo install --list | awk '/^[^ ]/{print $1}')) )`,
     },
   ],
 });
