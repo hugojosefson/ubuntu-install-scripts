@@ -61,14 +61,12 @@ set -euo pipefail
 IFS=$'\n'
 . <(grep nvm "${FileSystemPath.of(targetUser, "~/.bashrc").path}")
 
-nvm install node --lts
-npm install -g npm@latest
-npm install -g yarn@latest
+nvm install --lts --latest-npm
+nvm exec --lts npm install --location=global yarn@latest
+nvm install node --latest-npm
+nvm exec node npm install --location=global yarn@latest
 
-nvm install node
 nvm use node
-npm install -g npm@latest
-npm install -g yarn@latest
 nvm alias default node
   `,
   ],

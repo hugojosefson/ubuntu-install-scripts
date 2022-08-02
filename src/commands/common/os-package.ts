@@ -249,10 +249,13 @@ export const flatpak: Command = new Exec(
   ]);
 
 export const snapOsPackages = ["snapd", "snapd-xdg-open"];
-export const snap: Command = Command.custom()
-  .withDependencies(
-    snapOsPackages.map(InstallOsPackage.of),
-  );
+export const snap: Command = new Exec(
+  snapOsPackages.map(InstallOsPackage.of),
+  [SNAP],
+  ROOT,
+  {},
+  ["snap", "refresh"],
+);
 
 export class InstallFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
