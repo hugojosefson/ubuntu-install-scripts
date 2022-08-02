@@ -4,6 +4,7 @@ import {
   FileSystemPath,
   FLATPAK,
   OS_PACKAGE_SYSTEM,
+  SNAP,
 } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
 import { isInsideDocker } from "../../os/is-inside-docker.ts";
@@ -16,11 +17,13 @@ import { Ish, resolveValue } from "../../fn.ts";
 export type OsPackageName = string;
 export type BrewPackageName = string;
 export type FlatpakPackageName = string;
+export type SnapPackageName = string;
 export type RustPackageName = string;
 export type PackageName =
   | OsPackageName
   | BrewPackageName
   | FlatpakPackageName
+  | SnapPackageName
   | RustPackageName;
 
 export abstract class AbstractPackageCommand<T extends PackageName>
@@ -245,6 +248,12 @@ export const flatpak: Command = new Exec(
       ], { verbose: false }),
   ]);
 
+export const snapOsPackages = ["snapd", "snapd-xdg-open"];
+export const snap: Command = Command.custom()
+  .withDependencies(
+    snapOsPackages.map(InstallOsPackage.of),
+  );
+
 export class InstallFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
   private constructor(packageName: FlatpakPackageName) {
@@ -276,6 +285,46 @@ export class InstallFlatpakPackage
   );
 }
 
+export class InstallSnapPackage
+  extends AbstractPackageCommand<SnapPackageName> {
+  private readonly classic: boolean;
+
+  private constructor(packageName: SnapPackageName, classic: boolean) {
+    super(packageName);
+    this.classic = classic;
+    this.locks.push(SNAP);
+    this.dependencies.push(snap);
+    this.skipIfAll.push(() => isInstalledSnapPackage(packageName));
+  }
+
+  async run(): Promise<RunResult> {
+    await ensureSuccessful(ROOT, [
+      "snap",
+      "install",
+      ...(this.classic ? ["--classic"] : []),
+      this.packageName,
+    ]);
+
+    return `Installed Snap package ${this.packageName}${
+      this.classic ? " in classic mode" : ""
+    }.`;
+  }
+
+  static of: (
+    packageName: SnapPackageName,
+  ) => InstallSnapPackage = memoize(
+    (packageName: SnapPackageName): InstallSnapPackage =>
+      new InstallSnapPackage(packageName, false),
+  );
+
+  static ofClassic: (
+    packageName: SnapPackageName,
+  ) => InstallSnapPackage = memoize(
+    (packageName: SnapPackageName): InstallSnapPackage =>
+      new InstallSnapPackage(packageName, true),
+  );
+}
+
 export class RemoveFlatpakPackage
   extends AbstractPackageCommand<FlatpakPackageName> {
   private constructor(packageName: FlatpakPackageName) {
@@ -301,6 +350,31 @@ export class RemoveFlatpakPackage
   static of: (packageName: FlatpakPackageName) => RemoveFlatpakPackage = (
     packageName: FlatpakPackageName,
   ) => new RemoveFlatpakPackage(packageName);
+}
+
+export class RemoveSnapPackage extends AbstractPackageCommand<SnapPackageName> {
+  private constructor(packageName: SnapPackageName) {
+    super(packageName);
+    this.locks.push(SNAP);
+    this.dependencies.push(snap);
+    this.skipIfAll.push(async () =>
+      !(await isInstalledSnapPackage(packageName))
+    );
+  }
+
+  async run(): Promise<RunResult> {
+    await ensureSuccessful(ROOT, [
+      "snap",
+      "remove",
+      this.packageName,
+    ]);
+
+    return `Removed Snap package ${this.packageName}.`;
+  }
+
+  static of: (packageName: SnapPackageName) => RemoveSnapPackage = (
+    packageName: SnapPackageName,
+  ) => new RemoveSnapPackage(packageName);
 }
 
 function isInstalledOsPackage(
@@ -344,6 +418,14 @@ function isInstalledFlatpakPackage(
   ], { verbose: false });
 }
 
+function isInstalledSnapPackage(
+  packageName: SnapPackageName,
+): Promise<boolean> {
+  return isSuccessful(ROOT, ["snap", "list", "--", packageName], {
+    verbose: false,
+  });
+}
+
 export function installOsPackageFromUrl(
   expectedPackageName: string,
   debUrl: Ish<string>,
@@ -364,13 +446,13 @@ set -euo pipefail
 IFS=$'\n\t'
 
 tmp_file="$(mktemp --suffix=.deb)"
-trap 'rm -f "$tmp_file"' EXIT
+trap 'rm -f -- "$tmp_file"' EXIT
 curl -sLf "${await resolveValue(debUrl)}" -o "$tmp_file"
 gdebi --non-interactive "$tmp_file"
   `,
     ],
   )
-    .withSkipIfAll([
+    .withSkipIfAny([
       () => isInstalledOsPackage(expectedPackageName),
     ]);
 }

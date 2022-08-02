@@ -1,8 +1,5 @@
 import { Command } from "../model/command.ts";
-import {
-  InstallFlatpakPackage,
-  InstallOsPackage,
-} from "./common/os-package.ts";
+import { InstallOsPackage, InstallSnapPackage } from "./common/os-package.ts";
 import { gsettingsAll } from "./gsettings.ts";
 import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { keybase } from "./keybase.ts";
@@ -37,11 +34,11 @@ export const all5Personal = Command.custom()
     ]
       .map(InstallOsPackage.of),
     ...[
-      "com.spotify.Client",
-      "com.slack.Slack",
-      "com.microsoft.Teams",
+      "spotify",
+      "slack",
+      "teams",
     ]
-      .map(InstallFlatpakPackage.of),
+      .map(InstallSnapPackage.of),
     yubikey,
     keybase,
     signalDesktopViaDocker,

@@ -3,6 +3,8 @@
 
 import { dirname } from "https://deno.land/std@0.150.0/path/mod.ts";
 export { dirname };
+export { equals as equalsBytes } from "https://deno.land/std@0.150.0/bytes/equals.ts";
+export { readAll } from "https://deno.land/std@0.150.0/streams/conversion.ts";
 
 import {
   error,

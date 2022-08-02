@@ -1,9 +1,10 @@
-import { dirname, PasswdEntry } from "../../deps.ts";
+import { dirname, equalsBytes, PasswdEntry } from "../../deps.ts";
 import { Command, CommandResult, RunResult } from "../../model/command.ts";
 import { FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
 import { fileEndsWithNewline } from "../../os/file-ends-with-newline.ts";
+import { equals } from "https://deno.land/std@0.97.0/bytes/mod.ts";
 
 export abstract class AbstractFileCommand extends Command {
   readonly owner: PasswdEntry;
@@ -69,7 +70,8 @@ const mkdirp = async (
   }
   await mkdirp(owner, getParentDirSegments(dirSegments));
   await Deno.mkdir(asPath(dirSegments)).then(
-    () => {},
+    () => {
+    },
     (reason) =>
       reason?.name === "AlreadyExists"
         ? Promise.resolve()
@@ -80,13 +82,19 @@ const mkdirp = async (
 
 const backupFileUnlessContentAlready = async (
   filePath: FileSystemPath,
-  contents: string,
+  contents: string | Uint8Array,
 ): Promise<FileSystemPath | undefined> => {
   if (!await existsPath(asPathSegments(filePath))) {
     return undefined;
   }
-  if ((await Deno.readTextFile(filePath.path)) == contents) {
-    return undefined;
+  if (typeof contents === "string") {
+    if ((await Deno.readTextFile(filePath.path)) == contents) {
+      return undefined;
+    }
+  } else {
+    if (equals(contents, await Deno.readFile(filePath.path))) {
+      return undefined;
+    }
   }
 
   const backupFilePath: FileSystemPath = FileSystemPath.of(
@@ -103,13 +111,15 @@ const backupFileUnlessContentAlready = async (
 const createFile = async (
   owner: PasswdEntry,
   path: FileSystemPath,
-  contents: string,
+  contents: string | Uint8Array,
   shouldBackupAnyExistingFile = false,
   mode?: number,
 ): Promise<FileSystemPath | undefined> => {
   await mkdirp(owner, dirname(path.path).split("/"));
 
-  const data: Uint8Array = new TextEncoder().encode(contents);
+  const data: Uint8Array = typeof contents === "string"
+    ? new TextEncoder().encode(contents)
+    : contents;
   const options: Deno.WriteFileOptions = mode ? { mode } : {};
 
   const backupFilePath: FileSystemPath | undefined = shouldBackupAnyExistingFile
@@ -122,13 +132,13 @@ const createFile = async (
 };
 
 export class CreateFile extends AbstractFileCommand {
-  readonly contents: string;
+  readonly contents: string | Uint8Array;
   readonly shouldBackupAnyExistingFile: boolean;
 
   constructor(
     owner: PasswdEntry,
     path: FileSystemPath,
-    contents: string,
+    contents: string | Uint8Array,
     shouldBackupAnyExistingFile: boolean = false,
     mode?: number,
   ) {

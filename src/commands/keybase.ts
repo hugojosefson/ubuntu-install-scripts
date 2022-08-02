@@ -18,7 +18,7 @@ export const installKeybase = new Exec(
   [
     "bash",
     "-c",
-    "sudo apt-key export 656D16C7 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/keybase.gpg",
+    "apt-key export 656D16C7 | gpg --dearmour --output - | tee /etc/apt/trusted.gpg.d/keybase.gpg >/dev/null",
   ],
 );
 

@@ -81,9 +81,6 @@ export class FileSystemPath extends Lock {
   }
 }
 
-export const OS_PACKAGE_SYSTEM: Lock = FileSystemPath.of(
-  ROOT,
-  "/var/lib/apt",
-);
-
-export const FLATPAK = OS_PACKAGE_SYSTEM;
+export const OS_PACKAGE_SYSTEM: Lock = FileSystemPath.of(ROOT, "/var/lib/apt");
+export const FLATPAK: Lock = FileSystemPath.of(ROOT, "/var/lib/flatpak");
+export const SNAP = FileSystemPath.of(ROOT, "/snap");

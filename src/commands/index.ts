@@ -13,7 +13,7 @@ import { android } from "./android.ts";
 import { bashAliases } from "./bash-aliases.ts";
 import { bashGitPrompt } from "./bash-git-prompt.ts";
 import { bash } from "./bash.ts";
-import { brew, flatpak, InstallOsPackage } from "./common/os-package.ts";
+import { brew, flatpak, InstallOsPackage, snap } from "./common/os-package.ts";
 import { deno } from "./deno.ts";
 import { desktopIsHome } from "./desktop-is-home.ts";
 import { eog } from "./eog.ts";
@@ -64,6 +64,9 @@ import { openMux } from "./open-mux.ts";
 import { gnomeDisableWayland } from "./gnome-disable-wayland.ts";
 import { downloadsIsCleanedOnBoot } from "./downloads-is-cleaned-on-boot.ts";
 import { sudoNoPassword } from "./sudo-no-password.ts";
+import { chrome } from "./chrome.ts";
+import { brave } from "./brave.ts";
+import { webstorm } from "./webstorm.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -85,7 +88,9 @@ const commands: Record<string, Command> = {
   bash,
   bashAliases,
   bashGitPrompt,
+  brave,
   brew,
+  chrome,
   deno,
   desktopIsHome,
   docker,
@@ -143,6 +148,7 @@ const commands: Record<string, Command> = {
   saveBashHistory,
   sdkmanJava,
   signalDesktopViaDocker,
+  snap,
   starship,
   sudoNoPassword,
   toggleTerminal,
@@ -151,6 +157,7 @@ const commands: Record<string, Command> = {
   upgradeOsPackages: UPGRADE_OS_PACKAGES,
   vim,
   virtualbox,
+  webstorm,
   yubikey,
 };
 

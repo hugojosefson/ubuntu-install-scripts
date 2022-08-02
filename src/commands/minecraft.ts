@@ -1,3 +1,6 @@
-import { InstallFlatpakPackage } from "./common/os-package.ts";
+import { installOsPackageFromUrl } from "./common/os-package.ts";
 
-export const minecraft = InstallFlatpakPackage.of("com.mojang.Minecraft");
+export const minecraft = installOsPackageFromUrl(
+  "minecraft-launcher",
+  "https://launcher.mojang.com/download/Minecraft.deb",
+);
