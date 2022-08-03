@@ -1,12 +1,13 @@
 import { Command } from "../model/command.ts";
 import { ensureSuccessful, ensureSuccessfulStdOut } from "../os/exec.ts";
-import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import {
   gnomeShellExtensionInstaller,
   gnomeShellExtensionInstallerFile,
 } from "./gnome-shell-extension-installer.ts";
+import { createTempDir } from "../os/create-temp-dir.ts";
+import { isInsideDocker } from "../deps.ts";
 
 function findGnomeExtensionId(url: string): number {
   const id: number | undefined = url.split("/")
@@ -22,13 +23,15 @@ function findGnomeExtensionId(url: string): number {
   );
 }
 
-function installGnomeExtensionsAndRestartCmd(ids: number[]): string[] {
-  return [
+function downloadGnomeExtensions(ids: number[]): string[][] {
+  if (ids.length === 0) {
+    return [];
+  }
+  return [[
     gnomeShellExtensionInstallerFile.path,
+    "--no-install",
     ...ids.map((id) => `${id}`),
-    "--yes",
-    "--restart-shell",
-  ];
+  ]];
 }
 
 function uninstallOrDisableGnomeExtensionCmd(uuid: string): string[] {
@@ -47,15 +50,45 @@ function disableGnomeExtensionCmd(uuid: string): string[] {
   ];
 }
 
+function installGnomeExtensionCmd(uuid: string): string[] {
+  return [
+    "gnome-extensions",
+    "install",
+    "--force",
+    `${uuid}.shell-extension.zip`,
+  ];
+}
+
+function enableGnomeExtensionCmd(uuid: string): string[] {
+  return [
+    "gnome-extensions",
+    "enable",
+    uuid,
+  ];
+}
+
 async function idToUuid(id: number): Promise<string> {
   const response: Response = await fetch(
-    `https://extensions.gnome.org/extension-info/?pk=${id}`,
+    `https://extensions.gnome.org/extension-info/?pk=${encodeURIComponent(id)}`,
   );
   const { uuid }: { uuid: string } = await response.json();
   if (!uuid) {
     throw new Error(`Gnome extension id ${id} not found`);
   }
   return uuid;
+}
+
+async function uuidToId(uuid: string): Promise<number> {
+  const response: Response = await fetch(
+    `https://extensions.gnome.org/extension-info/?uuid=${
+      encodeURIComponent(uuid)
+    }`,
+  );
+  const { pk }: { pk: number } = await response.json();
+  if (!pk) {
+    throw new Error(`Gnome extension uuid ${uuid} not found`);
+  }
+  return pk;
 }
 
 export const gnomeShellExtensions = Command.custom()
@@ -68,7 +101,7 @@ export const gnomeShellExtensions = Command.custom()
     ].map(InstallOsPackage.of),
   ])
   .withRun(async () => {
-    const extensionIds: number[] = [
+    const ids: number[] = [
       // user installed
       "https://extensions.gnome.org/extension/7/removable-drive-menu/",
       "https://extensions.gnome.org/extension/36/lock-keys/",
@@ -79,22 +112,40 @@ export const gnomeShellExtensions = Command.custom()
       "https://extensions.gnome.org/extension/4655/date-menu-formatter/", // TODO: set date format to "y-MM-dd\nkk:mm EEE",
 
       // default ubuntu installed, make sure to enable them
-      "https://extensions.gnome.org/extension/615/appindicator-support/",
+      "https://extensions.gnome.org/extension/1301/ubuntu-appindicators/",
       "https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding/",
     ]
       .map(findGnomeExtensionId);
 
-    const extensionUuids: string[] = await Promise.all(
-      extensionIds.map(idToUuid),
+    const uuids: string[] = await Promise.all(
+      ids.map(idToUuid),
     );
 
-    const uninstallOrDisableExtensions: string[][] = [
+    const uninstallOrDisableExtensionsCmds: string[][] = [
       "dash-to-dock@micxgx.gmail.com",
     ]
       .map(uninstallOrDisableGnomeExtensionCmd);
 
-    const installExtensionsAndRestart: string[] =
-      installGnomeExtensionsAndRestartCmd(extensionIds);
+    const installedExtensionUuids: string[] = (await ensureSuccessfulStdOut(
+      targetUser,
+      ["gnome-extensions", "list"],
+    )).split("\n");
+
+    const uuidsToDownload: number[] = uuids.filter(
+      (uuid) => !installedExtensionUuids.includes(uuid),
+    );
+
+    const idsToDownload: number[] = await Promise.all(
+      uuidsToDownload.map(uuidToId),
+    );
+
+    const uuidsToInstall: string[] = await Promise.all(
+      idsToDownload.map(idToUuid),
+    );
+
+    const downloadExtensionsCmds: string[][] = downloadGnomeExtensions(
+      idsToDownload,
+    );
 
     const enabledExtensionUuids: string[] = (await ensureSuccessfulStdOut(
       targetUser,
@@ -102,14 +153,43 @@ export const gnomeShellExtensions = Command.custom()
     )).split("\n");
 
     const uuidsToDisable: string[] = enabledExtensionUuids.filter((uuid) =>
-      !extensionUuids.includes(uuid)
+      !uuids.includes(uuid)
     );
+    const uuidsToEnable: string[] = uuids.filter((uuid) =>
+      !enabledExtensionUuids.includes(uuid)
+    );
+
     const disableExtensionsCmds: string[][] = uuidsToDisable.map((uuid) =>
       disableGnomeExtensionCmd(uuid)
     );
 
+    const cwd = (await createTempDir(targetUser)).path;
+
+    console.log(JSON.stringify(
+      {
+        ids,
+        uuids,
+        uninstallOrDisableExtensionsCmds,
+        installedExtensionUuids,
+        uuidsToDownload,
+        idsToDownload,
+        uuidsToInstall,
+        downloadExtensionsCmds,
+        enabledExtensionUuids,
+        uuidsToDisable,
+        uuidsToEnable,
+        disableExtensionsCmds,
+        cwd,
+      },
+      null,
+      2,
+    ));
+
     for (
-      const cmd of [...disableExtensionsCmds, ...uninstallOrDisableExtensions]
+      const cmd of [
+        ...disableExtensionsCmds,
+        ...uninstallOrDisableExtensionsCmds,
+      ]
     ) {
       await ensureSuccessful(targetUser, cmd);
     }
@@ -117,5 +197,23 @@ export const gnomeShellExtensions = Command.custom()
     if (isInsideDocker) {
       return;
     }
-    await ensureSuccessful(targetUser, installExtensionsAndRestart);
+
+    for (
+      const cmd of [
+        ...downloadExtensionsCmds,
+        ...uuidsToInstall.map(installGnomeExtensionCmd),
+        ...uuidsToEnable.map(enableGnomeExtensionCmd),
+      ]
+    ) {
+      try {
+        await ensureSuccessful(targetUser, cmd, { cwd });
+      } catch (e) {
+        throw new Error(
+          `Failed to run ${
+            cmd.join(" ")
+          } in ${cwd}. Please try again after logging in to gnome the next time.`,
+          e,
+        );
+      }
+    }
   });

@@ -2,7 +2,7 @@ import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { installOsPackageFromUrl } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { Command } from "../model/command.ts";
-import { isInsideDocker } from "../os/is-inside-docker.ts";
+import { isInsideDocker } from "../deps.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 
 export const installKeybase = new Exec(

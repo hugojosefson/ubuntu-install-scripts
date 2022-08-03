@@ -10,6 +10,8 @@ export const toObject = <K extends string | number | symbol, V>() =>
   return acc;
 };
 
+export type SimpleValue = string | number | boolean;
+
 export async function filterAsync<T>(
   predicate: (t: T) => Promise<boolean>,
   array: T[],
@@ -26,21 +28,13 @@ export async function filterAsync<T>(
     .map(([t, _shouldInclude]) => t);
 }
 
-export function isPromise<T>(
-  maybePromise: PromiseLike<T> | unknown,
-): maybePromise is Promise<T> {
-  return typeof (maybePromise as PromiseLike<T>)?.then === "function";
-}
-
 export type Getter<T> = () => T | Promise<T>;
 export type Ish<T> = T | Promise<T> | Getter<T>;
 
 export async function resolveValue<T>(x: Ish<T>): Promise<T> {
   if (typeof x === "function") {
-    return resolveValue((x as Getter<T>)());
-  }
-  if (isPromise(x)) {
-    return await x;
+    const x_ = x as Getter<T>;
+    return await resolveValue(await x_());
   }
   return x;
 }
@@ -52,4 +46,26 @@ export function startsAndEndsWith(
   return function (s: string): boolean {
     return s.startsWith(start) && s.endsWith(end);
   };
+}
+
+export async function loopUntil(
+  predicate: () => Promise<boolean>,
+  delayMs = 100,
+  timeoutMs = 10_000,
+): Promise<void> {
+  const expires = Date.now() + timeoutMs;
+  while (true) {
+    if (await predicate()) {
+      break;
+    }
+    if (Date.now() > expires) {
+      throw new Error("Timeout", predicate.toString());
+    }
+    await sleep(delayMs);
+  }
+  return;
+}
+
+export async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

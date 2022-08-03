@@ -1,12 +1,12 @@
 import { config } from "../config.ts";
 import { colorlog, PasswdEntry } from "../deps.ts";
 import { FileSystemPath } from "../model/dependency.ts";
-import { ensureSuccessfulStdOut } from "./exec.ts";
 
 export async function createTempDir(
   asUser: PasswdEntry,
 ): Promise<FileSystemPath> {
-  const path = await ensureSuccessfulStdOut(asUser, ["mktemp", "-d"]);
+  const path = await Deno.makeTempDir();
+  await Deno.chown(path, asUser.uid, asUser.gid);
   const fileSystemPath = FileSystemPath.of(asUser, path);
   config.VERBOSE && console.warn(
     colorlog.warning(

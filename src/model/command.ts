@@ -81,6 +81,7 @@ export class Command {
     this.doneDeferred.resolve(commandResult);
     return this.done;
   }
+
   /**
    * Chains commands to make sure they are run one at a time, in the order given.
    * @param commands The commands to run in order.
@@ -133,6 +134,7 @@ export class Command {
   }
 
   private _shouldSkip: boolean | undefined = undefined;
+
   async shouldSkip(): Promise<boolean> {
     if (this._shouldSkip === true) {
       if (!this.doneDeferred.isDone) {
@@ -145,17 +147,17 @@ export class Command {
       return false;
     }
 
-    if (this.skipIfAny.length === 0 && this.skipIfAll.length === 0) {
-      this._shouldSkip = false;
-      return false;
-    }
-
     try {
-      for (const predicate of this.skipIfAny) {
-        const shouldSkipBecauseOfThisPredicate: boolean = await resolveValue(
+      if (this.skipIfAny.length > 0) {
+        const skipIfAnyValuePromises: Promise<boolean>[] = this.skipIfAny.map((
           predicate,
+        ) => resolveValue(predicate));
+        const skipIfAnyValues: boolean[] = await Promise.all(
+          skipIfAnyValuePromises,
         );
-        if (shouldSkipBecauseOfThisPredicate) {
+        const skipIfAnyResult: boolean = skipIfAnyValues.some(Boolean);
+        if (skipIfAnyResult) {
+          console.log("Skipping because of skipIfAny", skipIfAnyValues);
           this._shouldSkip = true;
           if (!this.doneDeferred.isDone) {
             this.doneDeferred.resolve(this.alreadyDoneResult());
@@ -163,25 +165,28 @@ export class Command {
           return true;
         }
       }
-      for (const predicate of this.skipIfAll) {
-        const shouldSkipBecauseOfThisPredicate: boolean = await resolveValue(
-          predicate,
+      if (this.skipIfAll.length > 0) {
+        const skipIfAllValuePromises: Promise<boolean>[] = this.skipIfAll.map(
+          (predicate) => resolveValue(predicate),
         );
-        if (!shouldSkipBecauseOfThisPredicate) {
-          this._shouldSkip = false;
-          return false;
+        const skipIfAllValues: boolean[] = await Promise.all(
+          skipIfAllValuePromises,
+        );
+        const skipIfAllResult: boolean = skipIfAllValues.every(Boolean);
+        if (skipIfAllResult) {
+          console.log("Skipping because of skipIfAll", skipIfAllValues);
+          this._shouldSkip = true;
+          if (!this.doneDeferred.isDone) {
+            this.doneDeferred.resolve(this.alreadyDoneResult());
+          }
+          return true;
         }
       }
-      this._shouldSkip = true;
-      if (!this.doneDeferred.isDone) {
-        this.doneDeferred.resolve(this.alreadyDoneResult());
-      }
-      return true;
     } catch (e) {
       console.warn(`Some predicate failed, so we should run the command.`, e);
     }
     this._shouldSkip = false;
-    return this._shouldSkip;
+    return false;
   }
 
   private alreadyDoneResult(): CommandResult {

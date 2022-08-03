@@ -1,5 +1,5 @@
 import { installOsPackageFromUrl } from "./common/os-package.ts";
-import { isInsideDocker } from "../os/is-inside-docker.ts";
+import { isInsideDocker } from "../deps.ts";
 
 export const mullvad = installOsPackageFromUrl(
   "mullvad-vpn",

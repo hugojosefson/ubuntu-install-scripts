@@ -7,7 +7,7 @@ import {
   SNAP,
 } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
-import { isInsideDocker } from "../../os/is-inside-docker.ts";
+import { isInsideDocker } from "../../deps.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
 import { LineInFile } from "./file-commands.ts";
 import { Exec } from "../exec.ts";

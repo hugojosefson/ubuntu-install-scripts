@@ -71,7 +71,7 @@ import memoize from "https://deno.land/x/memoizy@1.0.0/mod.ts";
 export { memoize };
 
 import { isDocker } from "https://deno.land/x/is_docker@v2.0.0/mod.ts";
-export { isDocker };
+export const isInsideDocker = await isDocker();
 
 import toposort_ from "https://cdn.skypack.dev/toposort@v2.0.2?dts";
 export const toposort = <T>(things: Array<[T, T]>): Array<T> =>

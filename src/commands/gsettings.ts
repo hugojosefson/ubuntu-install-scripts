@@ -3,7 +3,7 @@ import { targetUser } from "../os/user/target-user.ts";
 import { gsettingsToCmds } from "./common/gsettings-to-cmds.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
-import { isDocker } from "../deps.ts";
+import { isInsideDocker } from "../deps.ts";
 
 const gsettingsExecCommand = (deps: Command[] = []) => (cmd: Array<string>) =>
   new Exec(
@@ -13,7 +13,7 @@ const gsettingsExecCommand = (deps: Command[] = []) => (cmd: Array<string>) =>
     {},
     cmd,
   )
-    .withSkipIfAny([isDocker]);
+    .withSkipIfAny([isInsideDocker]);
 
 export const gsettingsDisableSomeKeyboardShortcuts = Command.custom()
   .withDependencies(

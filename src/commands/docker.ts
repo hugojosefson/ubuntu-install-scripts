@@ -1,11 +1,11 @@
 import { Command } from "../model/command.ts";
 import { ensureSuccessful, isSuccessful } from "../os/exec.ts";
-import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { UserInGroup } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { OS_PACKAGE_SYSTEM } from "../model/dependency.ts";
+import { isInsideDocker } from "../deps.ts";
 
 const installDocker = new Exec(
   [InstallOsPackage.of("curl")],

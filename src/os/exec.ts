@@ -3,6 +3,7 @@ import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 import { DBUS_SESSION_BUS_ADDRESS, ROOT } from "./user/target-user.ts";
+import { SimpleValue } from "../fn.ts";
 
 export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
   verbose?: boolean;
@@ -64,7 +65,7 @@ function runOptions(
 
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
-  cmd: Array<string>,
+  cmd: Array<SimpleValue>,
   options: ExecOptions = {},
 ): Promise<CommandResult> => {
   const effectiveCmd = [
@@ -89,7 +90,7 @@ export const ensureSuccessful = async (
     stdin: shouldPipeStdin ? "piped" : "null",
     stdout: "piped",
     stderr: "piped",
-    cmd: effectiveCmd,
+    cmd: effectiveCmd.map((x) => `${x}`),
     ...runOptions(asUser, options),
   });
 
@@ -146,14 +147,14 @@ export const symlink = (
 
 export const ensureSuccessfulStdOut = async (
   asUser: PasswdEntry,
-  cmd: Array<string>,
+  cmd: Array<SimpleValue>,
   options: ExecOptions = {},
 ): Promise<string> =>
   (await ensureSuccessful(asUser, cmd, options)).stdout.trim();
 
 export const isSuccessful = (
   asUser: PasswdEntry,
-  cmd: Array<string>,
+  cmd: Array<SimpleValue>,
   options: ExecOptions = {},
 ): Promise<boolean> =>
   ensureSuccessful(asUser, cmd, options).then(
