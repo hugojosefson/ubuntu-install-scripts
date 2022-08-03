@@ -1,5 +1,5 @@
 import { Command } from "../model/command.ts";
-import { ensureSuccessful } from "../os/exec.ts";
+import { ensureSuccessful, ensureSuccessfulStdOut } from "../os/exec.ts";
 import { isInsideDocker } from "../os/is-inside-docker.ts";
 import { targetUser } from "../os/user/target-user.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
@@ -22,28 +22,41 @@ function findGnomeExtensionId(url: string): number {
   );
 }
 
-function installGnomeExtension(id: number): string[] {
-  return [gnomeShellExtensionInstallerFile.path, `${id}`, "--yes"];
+function installGnomeExtensionsAndRestartCmd(ids: number[]): string[] {
+  return [
+    gnomeShellExtensionInstallerFile.path,
+    ...ids.map((id) => `${id}`),
+    "--yes",
+    "--restart-shell",
+  ];
 }
 
-const uninstallOrDisableGnomeExtension = (uuid: string): Promise<string[]> =>
-  Promise.resolve([
+function uninstallOrDisableGnomeExtensionCmd(uuid: string): string[] {
+  return [
     "sh",
     "-c",
     `gnome-extensions uninstall "${uuid}" 2>/dev/null || gnome-extensions disable "${uuid}" || true`,
-  ]);
+  ];
+}
 
-const restartGnomeShell = [
-  "busctl",
-  "--user",
-  "call",
-  "org.gnome.Shell",
-  "/org/gnome/Shell",
-  "org.gnome.Shell",
-  "Eval",
-  "s",
-  `'Meta.restart("Enabling installed GNOME Extensions...")'`,
-];
+function disableGnomeExtensionCmd(uuid: string): string[] {
+  return [
+    "sh",
+    "-c",
+    `gnome-extensions disable "${uuid}" || true`,
+  ];
+}
+
+async function idToUuid(id: number): Promise<string> {
+  const response: Response = await fetch(
+    `https://extensions.gnome.org/extension-info/?pk=${id}`,
+  );
+  const { uuid }: { uuid: string } = await response.json();
+  if (!uuid) {
+    throw new Error(`Gnome extension id ${id} not found`);
+  }
+  return uuid;
+}
 
 export const gnomeShellExtensions = Command.custom()
   .withDependencies([
@@ -55,38 +68,54 @@ export const gnomeShellExtensions = Command.custom()
     ].map(InstallOsPackage.of),
   ])
   .withRun(async () => {
-    const installExtensions: string[][] = await Promise.all(
-      [
-        "https://extensions.gnome.org/extension/1160/dash-to-panel/",
-        "https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding/",
-        "https://extensions.gnome.org/extension/352/middle-click-to-close-in-overview/",
-        "https://extensions.gnome.org/extension/906/sound-output-device-chooser/",
-        "https://extensions.gnome.org/extension/7/removable-drive-menu/",
-        "https://extensions.gnome.org/extension/277/impatience/",
-        "https://extensions.gnome.org/extension/36/lock-keys/",
-        "https://extensions.gnome.org/extension/1720/weeks-start-on-monday-again/",
-        "https://extensions.gnome.org/extension/302/windowoverlay-icons/",
-        "https://extensions.gnome.org/extension/4655/date-menu-formatter/", // TODO: set date format to "y-MMMM-dd\nkk:mm EEE",
-      ]
-        .map(findGnomeExtensionId)
-        .map(installGnomeExtension),
-    );
-    const uninstallOrDisableExtensions: string[][] = await Promise.all(
-      [
-        "dash-to-dock@micxgx.gmail.com",
-      ]
-        .map(uninstallOrDisableGnomeExtension),
+    const extensionIds: number[] = [
+      // user installed
+      "https://extensions.gnome.org/extension/7/removable-drive-menu/",
+      "https://extensions.gnome.org/extension/36/lock-keys/",
+      "https://extensions.gnome.org/extension/352/middle-click-to-close-in-overview/",
+      "https://extensions.gnome.org/extension/1160/dash-to-panel/",
+      "https://extensions.gnome.org/extension/1689/always-show-titles-in-overview/",
+      "https://extensions.gnome.org/extension/1720/weeks-start-on-monday-again/",
+      "https://extensions.gnome.org/extension/4655/date-menu-formatter/", // TODO: set date format to "y-MM-dd\nkk:mm EEE",
+
+      // default ubuntu installed, make sure to enable them
+      "https://extensions.gnome.org/extension/615/appindicator-support/",
+      "https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding/",
+    ]
+      .map(findGnomeExtensionId);
+
+    const extensionUuids: string[] = await Promise.all(
+      extensionIds.map(idToUuid),
     );
 
-    if (isInsideDocker) {
-      for (const cmd of uninstallOrDisableExtensions) {
-        await ensureSuccessful(targetUser, cmd);
-      }
-      return;
-    }
+    const uninstallOrDisableExtensions: string[][] = [
+      "dash-to-dock@micxgx.gmail.com",
+    ]
+      .map(uninstallOrDisableGnomeExtensionCmd);
 
-    for (const cmd of [...installExtensions, ...uninstallOrDisableExtensions]) {
+    const installExtensionsAndRestart: string[] =
+      installGnomeExtensionsAndRestartCmd(extensionIds);
+
+    const enabledExtensionUuids: string[] = (await ensureSuccessfulStdOut(
+      targetUser,
+      ["gnome-extensions", "list", "--enabled"],
+    )).split("\n");
+
+    const uuidsToDisable: string[] = enabledExtensionUuids.filter((uuid) =>
+      !extensionUuids.includes(uuid)
+    );
+    const disableExtensionsCmds: string[][] = uuidsToDisable.map((uuid) =>
+      disableGnomeExtensionCmd(uuid)
+    );
+
+    for (
+      const cmd of [...disableExtensionsCmds, ...uninstallOrDisableExtensions]
+    ) {
       await ensureSuccessful(targetUser, cmd);
     }
-    await ensureSuccessful(targetUser, restartGnomeShell);
+
+    if (isInsideDocker) {
+      return;
+    }
+    await ensureSuccessful(targetUser, installExtensionsAndRestart);
   });
