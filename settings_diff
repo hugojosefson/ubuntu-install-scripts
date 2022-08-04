@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\t\n'
+
+script_dir="$(cd "$(dirname "${0}")" && pwd)"
+
+get_gsettings() {
+  (
+    for schema in $(gsettings list-schemas); do
+      gsettings list-recursively "${schema}"
+    done
+  ) | sort -u
+}
+
+get_dconf() {
+  dconf dump / | deno run --quiet "${script_dir}/src/model/dconf-dump-to-lines.ts"
+}
+
+skip_first_n_lines() {
+  local n
+  n="${1}"
+  tail -n +"$((n + 1))"
+}
+
+# output only lines starting with '+', removing the initial '+'
+only_new_lines() {
+  awk '/^\+/ { print }' | sed 's/^+//'
+}
+
+simple_diff() {
+  diff --unified="0" --minimal --suppress-common-lines --color="never" "${@}" | skip_first_n_lines 3 | only_new_lines || true
+}
+
+show_changes_loop() {
+  local database
+  local fn
+  local previous
+  local current
+  local the_diff
+
+  database="${1}"
+  fn="get_${database}"
+
+  current="$("${fn}")"
+  echo "Make a config change, then press ENTER to show changes to ${database} (or Ctrl+C to exit)
+-----------------------------------------------------------------------------------------------" >&2
+  while true; do
+    previous="${current}"
+    read -r
+    current="$("${fn}")"
+    the_diff="$(simple_diff <(echo "${previous}") <(echo "${current}"))"
+    # if the_diff is empty or only contains whitespace, continue the loop
+    if [[ -z "${the_diff}" ]] || [[ "${the_diff}" =~ ^[[:space:]]*$ ]]; then
+      continue
+    fi
+    if [[ "${database}" = "dconf" ]]; then
+      for dir in $(echo "${the_diff}" | awk '{print $1}' | sort -u); do
+        dconf dump "/${dir}/" | sed -E "s|^\[/]|[${dir}]|g"
+      done
+    else
+      echo "${the_diff}"
+    fi
+  done
+}
+
+DATABASE="${1:-""}"
+if [[ -z "${DATABASE}" ]]; then
+  echo "Usage: ${0} <gsettings | dconf>" >&2
+  exit 2
+fi
+
+show_changes_loop "${DATABASE}"
