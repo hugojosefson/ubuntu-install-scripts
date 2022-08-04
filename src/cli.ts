@@ -8,8 +8,6 @@ import { colorlog } from "./deps.ts";
 import { Command, CommandResult } from "./model/command.ts";
 import { RejectFn } from "./os/defer.ts";
 import { isRunningAsRoot } from "./os/user/is-running-as-root.ts";
-import { sudoKeepalive } from "./os/user/sudo-keepalive.ts";
-import { targetUser } from "./os/user/target-user.ts";
 import { run } from "./run.ts";
 import { errorAndExit, usageAndExit } from "./usage.ts";
 
@@ -28,7 +26,6 @@ export const cli = async () => {
 
   const commands: Command[] = await Promise.all(args.map(getCommand));
   const runCommandsPromise = run(commands);
-  const stopSudoKeepalive: () => void = sudoKeepalive(targetUser);
   try {
     await runCommandsPromise.then(
       (results: Array<CommandResult>) => {
@@ -72,7 +69,12 @@ export const cli = async () => {
       },
     );
   } finally {
-    stopSudoKeepalive();
+    await runCommandsPromise.finally(() => {
+      if (config.VERBOSE) {
+        console.error("finally");
+      }
+      Deno.exit(0);
+    });
   }
 };
 
