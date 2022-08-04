@@ -13,5 +13,5 @@ the usage/help text:
 
 ```bash
 wget -qO- https://github.com/hugojosefson/ubuntu-install-scripts/archive/refs/heads/ubuntu-22.04.tar.gz | tar xz
-sudo VERBOSE=true ./ubuntu-install-scripts-ubuntu-22.04/src/cli.ts
+sudo ./ubuntu-install-scripts-ubuntu-22.04/src/cli.ts
 ```

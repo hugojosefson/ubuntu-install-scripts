@@ -6,5 +6,5 @@ export type Config = {
 export const config: Config = {
   ANDROID_HOSTNAME: Deno.env.get("ANDROID_HOSTNAME") || "my-android-device",
   NON_INTERACTIVE: Deno.env.get("NON_INTERACTIVE") !== "false",
-  VERBOSE: Deno.env.get("VERBOSE") === "true",
+  VERBOSE: Deno.env.get("VERBOSE") !== "false",
 };
