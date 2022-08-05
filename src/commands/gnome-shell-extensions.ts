@@ -164,27 +164,6 @@ export const gnomeShellExtensions = Command.custom()
     );
 
     const cwd = (await createTempDir(targetUser)).path;
-
-    console.log(JSON.stringify(
-      {
-        ids,
-        uuids,
-        uninstallOrDisableExtensionsCmds,
-        installedExtensionUuids,
-        uuidsToDownload,
-        idsToDownload,
-        uuidsToInstall,
-        downloadExtensionsCmds,
-        enabledExtensionUuids,
-        uuidsToDisable,
-        uuidsToEnable,
-        disableExtensionsCmds,
-        cwd,
-      },
-      null,
-      2,
-    ));
-
     for (
       const cmd of [
         ...disableExtensionsCmds,
