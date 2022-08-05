@@ -6,6 +6,7 @@ import { keybase } from "./keybase.ts";
 import { signalDesktop } from "./signal-desktop.ts";
 import { yubikey } from "./yubikey.ts";
 import { mullvad } from "./mullvad.ts";
+import { pass } from "./pass.ts";
 
 export const all5Personal = Command.custom()
   .withDependencies([
@@ -30,7 +31,6 @@ export const all5Personal = Command.custom()
       "imagemagick",
       "inkscape",
       "neofetch",
-      "pass",
     ]
       .map(InstallOsPackage.of),
     ...[
@@ -39,6 +39,7 @@ export const all5Personal = Command.custom()
       "teams",
     ]
       .map(InstallSnapPackage.of),
+    pass,
     yubikey,
     keybase,
     signalDesktop,

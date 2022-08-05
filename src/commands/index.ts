@@ -68,6 +68,7 @@ import { chrome } from "./chrome.ts";
 import { brave } from "./brave.ts";
 import { webstorm } from "./webstorm.ts";
 import { signalDesktop } from "./signal-desktop.ts";
+import { pass } from "./pass.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -150,6 +151,7 @@ const commands: Record<string, Command> = {
   nvm,
   node,
   openMux,
+  pass,
   rust,
   saveBashHistory,
   sdkmanJava,
