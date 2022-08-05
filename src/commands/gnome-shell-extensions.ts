@@ -7,7 +7,7 @@ import {
   gnomeShellExtensionInstallerFile,
 } from "./gnome-shell-extension-installer.ts";
 import { createTempDir } from "../os/create-temp-dir.ts";
-import { isInsideDocker } from "../deps.ts";
+import { isDocker } from "../deps.ts";
 
 function findGnomeExtensionId(url: string): number {
   const id: number | undefined = url.split("/")
@@ -194,7 +194,7 @@ export const gnomeShellExtensions = Command.custom()
       await ensureSuccessful(targetUser, cmd);
     }
 
-    if (isInsideDocker) {
+    if (await isDocker()) {
       return;
     }
 

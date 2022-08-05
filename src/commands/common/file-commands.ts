@@ -4,7 +4,6 @@ import { FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
 import { fileEndsWithNewline } from "../../os/file-ends-with-newline.ts";
-import { equals } from "https://deno.land/std@0.97.0/bytes/mod.ts";
 
 export abstract class AbstractFileCommand extends Command {
   readonly owner: PasswdEntry;
@@ -92,7 +91,7 @@ const backupFileUnlessContentAlready = async (
       return undefined;
     }
   } else {
-    if (equals(contents, await Deno.readFile(filePath.path))) {
+    if (equalsBytes(contents, await Deno.readFile(filePath.path))) {
       return undefined;
     }
   }

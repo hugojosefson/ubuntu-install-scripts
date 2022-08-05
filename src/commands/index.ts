@@ -1,4 +1,4 @@
-import { isInsideDocker, kebabCase } from "../deps.ts";
+import { isDocker, kebabCase } from "../deps.ts";
 import { toObject } from "../fn.ts";
 import { Command } from "../model/command.ts";
 import { addHomeBinToPath } from "./add-home-bin-to-path.ts";
@@ -117,8 +117,8 @@ const commands: Record<string, Command> = {
   gsettingsWindows,
   idea,
   insync,
-  isInsideDocker: Command.custom().withRun(() =>
-    isInsideDocker
+  isInsideDocker: Command.custom().withRun(async () =>
+    await isDocker()
       ? "✓ You are in a docker container."
       : "✗ You are NOT in a docker container."
   ),

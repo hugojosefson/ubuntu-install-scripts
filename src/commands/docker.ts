@@ -5,7 +5,7 @@ import { UserInGroup } from "./common/file-commands.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { OS_PACKAGE_SYSTEM } from "../model/dependency.ts";
-import { isInsideDocker } from "../deps.ts";
+import { isDocker } from "../deps.ts";
 
 const installDocker = new Exec(
   [InstallOsPackage.of("curl")],
@@ -53,7 +53,7 @@ const testDocker = Command
 export const docker = Command
   .custom()
   .withDependencies(
-    isInsideDocker
+    await isDocker()
       ? [installDocker]
       : [installDocker, addUserToDockerGroup, testDocker],
   );

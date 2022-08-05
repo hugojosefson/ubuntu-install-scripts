@@ -2,8 +2,8 @@ import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { installOsPackageFromUrl } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { Command } from "../model/command.ts";
-import { isInsideDocker } from "../deps.ts";
 import { FileSystemPath } from "../model/dependency.ts";
+import { isDocker } from "../deps.ts";
 
 export const installKeybase = new Exec(
   [
@@ -29,7 +29,7 @@ const runKeybase = new Exec(
   {},
   ["run_keybase"],
 )
-  .withSkipIfAny([isInsideDocker]);
+  .withSkipIfAny([await isDocker()]);
 
 export const keybase = Command.custom().withDependencies([
   installKeybase,

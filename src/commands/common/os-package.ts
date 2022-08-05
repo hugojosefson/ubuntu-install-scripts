@@ -1,4 +1,4 @@
-import { memoize } from "../../deps.ts";
+import { isDocker, memoize } from "../../deps.ts";
 import { Command, RunResult } from "../../model/command.ts";
 import {
   FileSystemPath,
@@ -7,7 +7,6 @@ import {
   SNAP,
 } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful } from "../../os/exec.ts";
-import { isInsideDocker } from "../../deps.ts";
 import { ROOT, targetUser } from "../../os/user/target-user.ts";
 import { LineInFile } from "./file-commands.ts";
 import { Exec } from "../exec.ts";
@@ -272,7 +271,7 @@ export class InstallFlatpakPackage
       "install",
       "--or-update",
       "--noninteractive",
-      ...(isInsideDocker ? ["--no-deploy"] : []),
+      ...(await isDocker() ? ["--no-deploy"] : []),
       "flathub",
       this.packageName,
     ]);

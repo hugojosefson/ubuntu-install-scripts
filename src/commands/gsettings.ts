@@ -3,17 +3,20 @@ import { targetUser } from "../os/user/target-user.ts";
 import { gsettingsToCmds } from "./common/gsettings-to-cmds.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
-import { isInsideDocker } from "../deps.ts";
+import { isDocker } from "../deps.ts";
+const docker = await isDocker();
 
-const gsettingsExecCommand = (deps: Command[] = []) => (cmd: Array<string>) =>
-  new Exec(
-    [InstallOsPackage.of("libglib2.0-bin"), ...deps],
-    [],
-    targetUser,
-    {},
-    cmd,
-  )
-    .withSkipIfAny([isInsideDocker]);
+const gsettingsExecCommand = (deps: Command[] = []) => {
+  return (cmd: Array<string>) =>
+    new Exec(
+      [InstallOsPackage.of("libglib2.0-bin"), ...deps],
+      [],
+      targetUser,
+      {},
+      cmd,
+    )
+      .withSkipIfAny([docker]);
+};
 
 export const gsettingsDisableSomeKeyboardShortcuts = Command.custom()
   .withDependencies(
