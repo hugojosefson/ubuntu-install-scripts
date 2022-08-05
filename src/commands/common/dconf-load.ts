@@ -7,6 +7,10 @@ import { startsAndEndsWith } from "../../fn.ts";
 
 const startsAndEndsWithSlash = startsAndEndsWith("/");
 
+export function dconfLoadRoot(dconfDump: string): Command {
+  return dconfLoad("/", dconfDump);
+}
+
 export function dconfLoad(directoryPath: string, dconfDump: string): Command {
   if (!startsAndEndsWithSlash(directoryPath)) {
     throw new Error("directoryPath must start and end with a slash");
