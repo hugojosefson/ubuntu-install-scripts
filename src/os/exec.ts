@@ -7,7 +7,7 @@ import { SimpleValue } from "../fn.ts";
 
 export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
   verbose?: boolean;
-  stdin?: string;
+  stdin?: string | Uint8Array;
 };
 
 export const pipeAndCollect = async (
@@ -84,7 +84,8 @@ export const ensureSuccessful = async (
     ),
   );
   const stdinString = typeof options.stdin === "string" ? options.stdin : "";
-  const shouldPipeStdin: boolean = stdinString.length > 0;
+  const shouldPipeStdin: boolean = stdinString.length > 0 ||
+    options.stdin instanceof Uint8Array;
 
   const process: Deno.Process = Deno.run({
     stdin: shouldPipeStdin ? "piped" : "null",
@@ -95,7 +96,9 @@ export const ensureSuccessful = async (
   });
 
   if (shouldPipeStdin) {
-    const stdinBytes = new TextEncoder().encode(stdinString);
+    const stdinBytes = options.stdin instanceof Uint8Array
+      ? options.stdin
+      : new TextEncoder().encode(stdinString);
     try {
       await process.stdin?.write(stdinBytes);
     } finally {

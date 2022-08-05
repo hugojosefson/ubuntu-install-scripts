@@ -3,7 +3,7 @@ import { InstallOsPackage, InstallSnapPackage } from "./common/os-package.ts";
 import { gsettingsAll } from "./gsettings.ts";
 import { gnomeShellExtensions } from "./gnome-shell-extensions.ts";
 import { keybase } from "./keybase.ts";
-import { signalDesktopViaDocker } from "./signal-desktop-via-docker.ts";
+import { signalDesktop } from "./signal-desktop.ts";
 import { yubikey } from "./yubikey.ts";
 import { mullvad } from "./mullvad.ts";
 
@@ -41,7 +41,7 @@ export const all5Personal = Command.custom()
       .map(InstallSnapPackage.of),
     yubikey,
     keybase,
-    signalDesktopViaDocker,
+    signalDesktop,
     gnomeShellExtensions,
     mullvad,
     gsettingsAll,

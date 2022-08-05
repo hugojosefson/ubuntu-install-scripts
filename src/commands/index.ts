@@ -67,6 +67,7 @@ import { sudoNoPassword } from "./sudo-no-password.ts";
 import { chrome } from "./chrome.ts";
 import { brave } from "./brave.ts";
 import { webstorm } from "./webstorm.ts";
+import { signalDesktop } from "./signal-desktop.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -152,6 +153,7 @@ const commands: Record<string, Command> = {
   rust,
   saveBashHistory,
   sdkmanJava,
+  signalDesktop,
   signalDesktopViaDocker,
   snap,
   starship,
