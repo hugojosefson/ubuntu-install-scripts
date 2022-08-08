@@ -11,6 +11,7 @@ export const pass = new Symlink(
   FileSystemPath.of(ROOT, "/usr/local/bin/passmenu"),
 ).withDependencies([
   InstallOsPackage.of("pass"),
+  InstallOsPackage.of("pass-extension-otp"),
   InstallBrewPackage.of("dmenu"),
   new Exec(
     [],
