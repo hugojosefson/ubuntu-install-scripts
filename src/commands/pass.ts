@@ -1,7 +1,9 @@
 import { InstallBrewPackage, InstallOsPackage } from "./common/os-package.ts";
 import { Symlink } from "./common/file-commands.ts";
-import { ROOT } from "../os/user/target-user.ts";
+import { ROOT, targetUser } from "../os/user/target-user.ts";
 import { FileSystemPath } from "../model/dependency.ts";
+import { Exec } from "./exec.ts";
+import { readFromUrl } from "../os/read-from-url.ts";
 
 export const pass = new Symlink(
   ROOT,
@@ -10,4 +12,15 @@ export const pass = new Symlink(
 ).withDependencies([
   InstallOsPackage.of("pass"),
   InstallBrewPackage.of("dmenu"),
+  new Exec(
+    [],
+    [],
+    targetUser,
+    {
+      stdin: await readFromUrl(
+        "https://github.com/passff/passff-host/releases/latest/download/install_host_app.sh",
+      ),
+    },
+    ["bash", "-s", "--", "firefox"],
+  ),
 ]);
