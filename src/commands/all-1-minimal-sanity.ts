@@ -11,6 +11,7 @@ import { vim } from "./vim.ts";
 import { starship } from "./starship.ts";
 import { UPGRADE_OS_PACKAGES } from "./refresh-os-packages.ts";
 import { sudoNoPassword } from "./sudo-no-password.ts";
+import { mdr } from "./mdr.ts";
 
 export const all1MinimalSanity = Command.custom()
   .withDependencies([
@@ -32,6 +33,7 @@ export const all1MinimalSanity = Command.custom()
     bash,
     vim,
     starship,
+    mdr,
     saveBashHistory,
     desktopIsHome,
     downloadsIsCleanedOnBoot,

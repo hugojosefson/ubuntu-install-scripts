@@ -69,6 +69,7 @@ import { brave } from "./brave.ts";
 import { webstorm } from "./webstorm.ts";
 import { signalDesktop } from "./signal-desktop.ts";
 import { pass } from "./pass.ts";
+import { mdr } from "./mdr.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -144,6 +145,7 @@ const commands: Record<string, Command> = {
     ].map(InstallOsPackage.of),
   ),
   mTemp,
+  mdr,
   meld,
   minecraft,
   networkUtils,
