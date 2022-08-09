@@ -1,6 +1,6 @@
 import { dirname, equalsBytes, PasswdEntry } from "../../deps.ts";
 import { Command, CommandResult, RunResult } from "../../model/command.ts";
-import { FileSystemPath } from "../../model/dependency.ts";
+import { asStringPath, FileSystemPath } from "../../model/dependency.ts";
 import { ensureSuccessful, isSuccessful, symlink } from "../../os/exec.ts";
 import { ROOT } from "../../os/user/target-user.ts";
 import { fileEndsWithNewline } from "../../os/file-ends-with-newline.ts";
@@ -274,9 +274,13 @@ async function isDirectoryEmpty(directory: FileSystemPath) {
 export class Symlink extends AbstractFileCommand {
   readonly target: string;
 
-  constructor(owner: PasswdEntry, from: string, to: FileSystemPath) {
+  constructor(
+    owner: PasswdEntry,
+    from: string | FileSystemPath,
+    to: FileSystemPath,
+  ) {
     super(owner, to);
-    this.target = from;
+    this.target = asStringPath(from);
   }
 
   async run(): Promise<RunResult> {

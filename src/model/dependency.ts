@@ -1,5 +1,5 @@
 import { config } from "../config.ts";
-import { memoize, PasswdEntry } from "../deps.ts";
+import { memoize, normalizePath, PasswdEntry } from "../deps.ts";
 import { defer, deferAlreadyResolvedVoid, Deferred } from "../os/defer.ts";
 import { resolvePath } from "../os/resolve-path.ts";
 import { ROOT } from "../os/user/target-user.ts";
@@ -17,6 +17,13 @@ export class Lock {
   }
 }
 
+export function asStringPath(path: string | FileSystemPath): string {
+  if (path instanceof FileSystemPath) {
+    return path.path;
+  }
+  return path;
+}
+
 export class FileSystemPath extends Lock {
   readonly path: string;
 
@@ -27,6 +34,11 @@ export class FileSystemPath extends Lock {
 
   toString(): string {
     return `${this.constructor.name}(${this.path})`;
+  }
+
+  slash(relativePath: string): FileSystemPath {
+    const resolvedPath: string = normalizePath(this.path + "/" + relativePath);
+    return FileSystemPath.ofAbsolutePath(resolvedPath);
   }
 
   private static ofAbsolutePath(absolutePath: string): FileSystemPath {

@@ -4,10 +4,11 @@ import { gsettingsToCmds } from "./common/gsettings-to-cmds.ts";
 import { InstallOsPackage } from "./common/os-package.ts";
 import { Exec } from "./exec.ts";
 import { isDocker } from "../deps.ts";
+import { SimpleValue } from "../fn.ts";
 const docker = await isDocker();
 
 const gsettingsExecCommand = (deps: Command[] = []) => {
-  return (cmd: Array<string>) =>
+  return (cmd: SimpleValue[]) =>
     new Exec(
       [InstallOsPackage.of("libglib2.0-bin"), ...deps],
       [],

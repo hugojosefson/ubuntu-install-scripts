@@ -70,6 +70,8 @@ import { webstorm } from "./webstorm.ts";
 import { signalDesktop } from "./signal-desktop.ts";
 import { pass } from "./pass.ts";
 import { mdr } from "./mdr.ts";
+import { dmenu } from "./dmenu.ts";
+import { firefoxLocal } from "./firefox-local.ts";
 
 const commands: Record<string, Command> = {
   alacritty,
@@ -96,10 +98,12 @@ const commands: Record<string, Command> = {
   chrome,
   deno,
   desktopIsHome,
+  dmenu,
   docker,
   downloadsIsCleanedOnBoot,
   downloadsIsTmp,
   eog,
+  firefoxLocal,
   flatpak,
   fzf: await fzf(),
   gedit,

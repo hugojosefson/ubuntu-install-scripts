@@ -21,7 +21,6 @@ export const all3DeveloperWeb = Command.custom()
     node,
     rust,
     webstorm,
-    InstallOsPackage.of("firefox"),
     InstallSnapPackage.of("chromium"),
     InstallSnapPackage.ofClassic("code"),
   ]);

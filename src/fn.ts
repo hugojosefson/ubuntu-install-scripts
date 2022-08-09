@@ -59,13 +59,14 @@ export async function loopUntil(
       break;
     }
     if (Date.now() > expires) {
-      throw new Error("Timeout", predicate.toString());
+      const predicateSourceCode: string = predicate.toString();
+      throw new Error(`Timeout from ${predicateSourceCode}`);
     }
     await sleep(delayMs);
   }
   return;
 }
 
-export async function sleep(ms: number): Promise<void> {
+export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

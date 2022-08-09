@@ -1,12 +1,13 @@
 import { config } from "../config.ts";
 import { colorlog, PasswdEntry } from "../deps.ts";
 import { CommandResult } from "../model/command.ts";
-import { FileSystemPath } from "../model/dependency.ts";
+import { asStringPath, FileSystemPath } from "../model/dependency.ts";
 import { DBUS_SESSION_BUS_ADDRESS, ROOT } from "./user/target-user.ts";
-import { SimpleValue } from "../fn.ts";
+import { Ish, resolveValue, SimpleValue } from "../fn.ts";
 
-export type ExecOptions = Pick<Deno.RunOptions, "cwd" | "env"> & {
+export type ExecOptions = Pick<Deno.RunOptions, "env"> & {
   verbose?: boolean;
+  cwd?: string | FileSystemPath;
   stdin?: string | Uint8Array;
 };
 
@@ -45,7 +46,7 @@ function runOptions(
   opts: ExecOptions,
 ): Pick<Deno.RunOptions, "cwd" | "env"> {
   return {
-    ...(opts.cwd ? { cwd: opts.cwd } : {}),
+    ...(opts.cwd ? { cwd: asStringPath(opts.cwd) } : {}),
     ...(asUser === ROOT
       ? {
         env: {
@@ -65,7 +66,7 @@ function runOptions(
 
 export const ensureSuccessful = async (
   asUser: PasswdEntry,
-  cmd: Array<SimpleValue>,
+  cmd: Ish<SimpleValue[]>,
   options: ExecOptions = {},
 ): Promise<CommandResult> => {
   const effectiveCmd = [
@@ -76,7 +77,7 @@ export const ensureSuccessful = async (
       "--non-interactive",
       "--",
     ]),
-    ...cmd,
+    ...(await resolveValue(cmd)),
   ];
   config.VERBOSE && console.error(
     colorlog.warning(
@@ -150,14 +151,14 @@ export const symlink = (
 
 export const ensureSuccessfulStdOut = async (
   asUser: PasswdEntry,
-  cmd: Array<SimpleValue>,
+  cmd: Ish<SimpleValue[]>,
   options: ExecOptions = {},
 ): Promise<string> =>
   (await ensureSuccessful(asUser, cmd, options)).stdout.trim();
 
 export const isSuccessful = (
   asUser: PasswdEntry,
-  cmd: Array<SimpleValue>,
+  cmd: Ish<SimpleValue[]>,
   options: ExecOptions = {},
 ): Promise<boolean> =>
   ensureSuccessful(asUser, cmd, options).then(

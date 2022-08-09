@@ -2,11 +2,11 @@ import { PasswdEntry } from "../deps.ts";
 import { Command, CommandResult, RunResult } from "../model/command.ts";
 import { Lock } from "../model/dependency.ts";
 import { ensureSuccessful, ExecOptions } from "../os/exec.ts";
-import { Ish, resolveValue } from "../fn.ts";
+import { Ish, resolveValue, SimpleValue } from "../fn.ts";
 
 export class Exec extends Command {
   private readonly asUser: PasswdEntry;
-  private readonly cmd: Array<string>;
+  private readonly cmd: Ish<SimpleValue[]>;
   private readonly options?: ExecOptions;
 
   constructor(
@@ -14,7 +14,7 @@ export class Exec extends Command {
     locks: Array<Lock>,
     asUser: PasswdEntry,
     options: ExecOptions = {},
-    cmd: Ish<string[]>,
+    cmd: Ish<SimpleValue[]>,
   ) {
     super();
     this.asUser = asUser;
