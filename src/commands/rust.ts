@@ -11,7 +11,10 @@ import { memoize } from "../deps.ts";
 import { FileSystemPath } from "../model/dependency.ts";
 
 export const rust = new Exec(
-  [InstallOsPackage.of("build-essential")],
+  [
+    InstallOsPackage.of("build-essential"),
+    InstallOsPackage.of("cmake"),
+  ],
   [],
   targetUser,
   {},
