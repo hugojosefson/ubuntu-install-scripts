@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
-
-cd "$(dirname "$(readlink -f "${0}")")"
-exec docker build -t hugojosefson/ubuntu-install-scripts -f Dockerfile ..

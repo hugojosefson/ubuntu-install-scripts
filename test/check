@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+image=ubuntu-install-scripts-test:26.04
+docker build -f "$repo_dir/test/Dockerfile" -t "$image" "$repo_dir"
+# No host home, Docker socket, devices, or privileged access in the container.
+exec docker run --rm --init "$image" "$@"

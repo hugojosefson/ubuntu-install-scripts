@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+if ! command -v deno >/dev/null; then
+    printf '%s\n' 'Deno 2 is required. Install it from https://deno.land/install.sh, then retry.' >&2
+    exit 1
+fi
+exec deno run --config "$repo_dir/deno.json" --frozen --allow-read --allow-env --allow-run "$repo_dir/src/cli.ts" "$@"

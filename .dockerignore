@@ -1,4 +1,6 @@
-/.*
-test
-README.md
+.git
+.idea
+.vscode
+.isolate-in-docker
+node_modules
 .*.swp

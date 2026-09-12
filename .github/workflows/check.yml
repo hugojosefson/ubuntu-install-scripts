@@ -1,0 +1,14 @@
+name: Check Ubuntu 26.04
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check inside Ubuntu 26.04
+        run: ./test/check
