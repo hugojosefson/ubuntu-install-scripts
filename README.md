@@ -42,6 +42,60 @@ remaining recipes and returns an error code. After you fix the error, run the
 same selection again. Provider scripts can ask for information that their
 installations require.
 
+`base` includes Neovim through the `vim` recipe. `developer` adds LazyVim,
+GitHub CLI (`gh`), and T3 Code. `personal` includes Keybase, Mullvad, the
+Desktop link, and the guarded Downloads cleanup described below.
+
+## Editors and development tools
+
+The `vim` recipe installs Neovim and makes `vim` run `nvim`. It sets `EDITOR`
+and `VISUAL` to `nvim` for new shells and user sessions. It leaves Neovim
+configuration intact. `base` does not install LazyVim or Node.
+
+The `lazyvim` recipe uses the
+[official starter](https://www.lazyvim.org/installation) when no Neovim
+configuration exists. It preserves existing LazyVim files and updates their
+plugins. It stops if it finds an unrelated Neovim configuration. It installs
+configured Mason tools, Treesitter parsers, and Blink completion binaries before
+completion. Mason supplies language servers and formatters. Treesitter parsers
+supply syntax analysis. The supplied configuration starts without downloads,
+including when opening a Lua file and using completion. Custom plugins can have
+additional setup requirements.
+
+The `java` recipe installs SDKMAN's recommended Java version and sets it as the
+SDKMAN default. SDKMAN supplies the version through its API and performs the
+installation. New shells initialize SDKMAN automatically. Use `sdk` to manage
+Java versions. The older `sdkman-java` name selects the same recipe.
+
+IntelliJ IDEA and WebStorm use the official Toolbox CLI for installation.
+Toolbox owns the installed applications and their desktop launchers. The recipe
+downloads Toolbox and its matching CLI with provider checksums. The CLI uses
+Toolbox's bundled runtime. The Java development runtime remains under SDKMAN.
+See
+[JetBrains' current CLI download instructions](https://www.jetbrains.com/help/toolbox-app/offline-remote-development-in-the-toolbox-app.html#tba_agent).
+Repeated installation skips builds that Toolbox already owns. A detected
+standalone installation does not count as a Toolbox installation.
+
+## Personal directories
+
+The `desktop-is-home` recipe replaces an empty `~/Desktop` directory with a link
+to home. It preserves hidden files, nonempty directories, mounts, and existing
+links to other locations. It leaves a missing Desktop directory alone.
+
+The `downloads-is-cleaned-on-boot` recipe enables automatic deletion only when
+`~/Downloads` already exists and is empty, including hidden files. It refuses
+symlinks and mounted directories. After this one-time opt-in, systemd deletes
+future Downloads contents at each boot. The installation itself deletes no
+Downloads contents. Repeated installation keeps the existing opt-in.
+
+The cleanup rule is
+`/etc/tmpfiles.d/ubuntu-install-scripts-downloads-<uid>.conf`. To turn off this
+cleanup, remove that rule:
+
+```bash
+sudo rm -- "/etc/tmpfiles.d/ubuntu-install-scripts-downloads-$(id -u).conf"
+```
+
 ## Desktop and browsers
 
 Wayland remains the default. The Foot launcher and icons follow
@@ -51,9 +105,11 @@ Foot configuration files remain intact.
 
 Run `./install apply gnome-settings` from your GNOME Wayland session. This
 recipe selects the dark theme, click focus, and Ctrl-Alt-T for Foot. It
-preserves unrelated keyboard shortcuts. Use `./install apply t3-icons` to
-register an existing T3 Code AppImage. Set `T3_APPIMAGE` if the AppImage is
-outside your `PATH`.
+preserves unrelated keyboard shortcuts. The `t3code` recipe downloads the latest
+x86-64 AppImage from T3 Code's release API and checks its SHA-256 digest. It
+installs `t3` and `t3code` launchers with the bundled icons. Use
+`./install apply t3-icons` to register an existing T3 Code AppImage. Set
+`T3_APPIMAGE` if the AppImage is outside your `PATH`.
 
 Firefox uses Mozilla's signed APT repository. Brave uses its official
 installation script. Chrome uses Google's DEB package, which installs its update
@@ -91,6 +147,8 @@ Run all tests in disposable Docker containers:
 ```bash
 ./test/check
 ./test/check bash test/integration.sh
+./test/check bash test/developer.sh
+./test/editor
 ```
 
 The test image uses Ubuntu 26.04 and Deno 2.9.6. It contains a separate user
@@ -98,6 +156,11 @@ with passwordless sudo for installation tests. Containers receive no host home
 directory, Docker socket, or devices. The second command downloads and installs
 provider software inside its container. It tests Docker packages and commands
 without starting a nested Docker daemon.
+
+The developer test installs Java, both JetBrains IDEs, T3 Code, and LazyVim. The
+editor test provisions LazyVim in a fresh container, disconnects its network,
+and exercises startup, completion, parsers, and a Lua language server. It also
+traces child commands to detect downloads or parser builds during startup.
 
 The checks cover TypeScript, formatting, shell scripts, recipe ordering, error
 propagation, and repeated configuration changes. The GNOME configuration test

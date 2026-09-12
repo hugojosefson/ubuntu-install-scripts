@@ -13,6 +13,36 @@ Deno.test("shared dependencies run once, before their consumers", () => {
   }
   assertEquals(names.filter((name) => name === "firefox"), ["firefox"]);
 });
+Deno.test("profiles select the requested editors, managers, and personal software", () => {
+  const base = plan(["base"]).map((recipe) => recipe.name);
+  assert(base.includes("vim"));
+  assert(!base.includes("lazyvim"));
+  assert(!base.includes("node"));
+  const developer = plan(["developer"]).map((recipe) => recipe.name);
+  for (const name of ["vim", "lazyvim", "gh", "t3code"]) {
+    assert(developer.includes(name));
+  }
+  const personal = plan(["personal"]).map((recipe) => recipe.name);
+  for (
+    const name of [
+      "keybase",
+      "mullvad",
+      "desktop-is-home",
+      "downloads-is-cleaned-on-boot",
+    ]
+  ) assert(personal.includes(name));
+  const java = plan(["java", "sdkman-java"]).map((recipe) => recipe.name);
+  assert(java.indexOf("sdkman") < java.indexOf("java"));
+  assertEquals(java.filter((name) => name === "java").length, 1);
+  for (const name of ["idea", "webstorm"]) {
+    const selected = plan([name]).map((recipe) => recipe.name);
+    assert(selected.indexOf("jetbrains-toolbox") < selected.indexOf(name));
+    assertEquals(catalog[name].script, "jetbrains-ide.sh");
+  }
+  const packages = plan(["all"]).flatMap((recipe) => recipe.packages ?? []);
+  assert(!packages.includes("vim"));
+  assert(!packages.includes("default-jdk"));
+});
 Deno.test("unknown recipes, missing dependencies, and cycles fail before execution", () => {
   assertThrows(() => plan(["firfox"]), Error, "Unknown recipe");
   assertThrows(() =>

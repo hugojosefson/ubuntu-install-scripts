@@ -8,9 +8,17 @@ for tool_dir in "$HOME/.local/bin" "$HOME/bin" "$HOME/.deno/bin" "$HOME/.cargo/b
 done
 unset tool_dir
 [[ ! -r "$HOME/.config/ubuntu-install-scripts/homebrew.sh" ]] || source "$HOME/.config/ubuntu-install-scripts/homebrew.sh"
+[[ ! -r "$HOME/.config/ubuntu-install-scripts/editor.sh" ]] || source "$HOME/.config/ubuntu-install-scripts/editor.sh"
+# SDKMAN and nvm read optional unset variables during initialization.
+ubuntu_install_restore_nounset=false
+case $- in *u*) ubuntu_install_restore_nounset=true; set +u ;; esac
+export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
+[[ ! -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] || source "$SDKMAN_DIR/bin/sdkman-init.sh"
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 [[ ! -s "$NVM_DIR/nvm.sh" ]] || source "$NVM_DIR/nvm.sh"
 [[ ! -s "$NVM_DIR/bash_completion" ]] || source "$NVM_DIR/bash_completion"
+if [[ "$ubuntu_install_restore_nounset" == true ]]; then set -u; fi
+unset ubuntu_install_restore_nounset
 if [[ $- == *i* ]]; then
     shopt -s histappend
     HISTSIZE=100000

@@ -64,6 +64,113 @@ test ! -e "$HOME/managed.ubuntu-install-scripts.bak.~1~"`,
   }
 });
 
+Deno.test("vim selects Neovim without creating or replacing Neovim configuration", async () => {
+  const home = await Deno.makeTempDir();
+  try {
+    const result = await bash(
+      `bash recipes/shell.sh
+bash recipes/vim.sh
+test ! -e "$HOME/.config/nvim"
+mkdir -p "$HOME/.config/nvim"
+printf 'personal configuration' > "$HOME/.config/nvim/init.lua"
+bash recipes/vim.sh
+source "$HOME/.config/ubuntu-install-scripts/bash.sh"
+test "$EDITOR" = nvim
+test "$VISUAL" = nvim
+test -x "$HOME/.local/bin/vim"
+test "$(cat "$HOME/.config/nvim/init.lua")" = 'personal configuration'`,
+      { HOME: home },
+    );
+    assertEquals(result.code, 0, result.stderr);
+  } finally {
+    await Deno.remove(home, { recursive: true });
+  }
+});
+
+Deno.test("Desktop linking preserves hidden files and symlinks and only removes an empty directory", async () => {
+  const home = await Deno.makeTempDir();
+  try {
+    const result = await bash(
+      `bash recipes/desktop-is-home.sh
+test ! -e "$HOME/Desktop"
+mkdir "$HOME/Desktop" "$HOME/keep"
+printf 'keep' > "$HOME/Desktop/.hidden"
+bash recipes/desktop-is-home.sh
+test "$(cat "$HOME/Desktop/.hidden")" = keep
+mv "$HOME/Desktop/.hidden" "$HOME/keep/.hidden"
+rmdir "$HOME/Desktop"
+ln -s keep "$HOME/Desktop"
+bash recipes/desktop-is-home.sh
+test "$(readlink "$HOME/Desktop")" = keep
+rm "$HOME/Desktop"
+mkdir "$HOME/Desktop"
+bash recipes/desktop-is-home.sh
+bash recipes/desktop-is-home.sh
+test "$(readlink "$HOME/Desktop")" = .
+test "$(cat "$HOME/keep/.hidden")" = keep`,
+      { HOME: home },
+    );
+    assertEquals(result.code, 0, result.stderr);
+  } finally {
+    await Deno.remove(home, { recursive: true });
+  }
+});
+
+Deno.test("Downloads cleanup requires an empty real directory and never follows links", async () => {
+  // Quotes, whitespace, and % exercise tmpfiles path escaping too.
+  const parent = await Deno.makeTempDir();
+  const home = `${parent}/home % with "quotes"`;
+  await Deno.mkdir(home);
+  try {
+    const result = await bash(
+      `set -euo pipefail
+config="/etc/tmpfiles.d/ubuntu-install-scripts-downloads-$(id -u).conf"
+test ! -e "$config"
+trap 'sudo rm -f -- "$config"' EXIT
+setup() {
+  sudo env UBUNTU_INSTALL_USER="$(id -un)" UBUNTU_INSTALL_HOME="$HOME" bash recipes/downloads-is-cleaned-on-boot.sh
+}
+setup
+test ! -e "$config"
+mkdir "$HOME/Downloads" "$HOME/keep"
+printf 'keep' > "$HOME/Downloads/.hidden"
+setup
+test ! -e "$config"
+mv "$HOME/Downloads/.hidden" "$HOME/keep/.hidden"
+rmdir "$HOME/Downloads"
+ln -s keep "$HOME/Downloads"
+setup
+test ! -e "$config"
+rm "$HOME/Downloads"
+mkdir "$HOME/Downloads"
+chmod 0750 "$HOME/Downloads"
+setup
+test -s "$config"
+printf 'future download' > "$HOME/Downloads/.future"
+ln -s "$HOME/keep" "$HOME/Downloads/keep-link"
+setup
+test -f "$HOME/Downloads/.future"
+# Ordinary cleanup must leave downloads alone. Only --boot permits deletion.
+sudo systemd-tmpfiles --remove "$config"
+test -f "$HOME/Downloads/.future"
+sudo systemd-tmpfiles --create --remove --boot "$config"
+test ! -e "$HOME/Downloads/.future"
+test ! -L "$HOME/Downloads/keep-link"
+test "$(stat -c %a "$HOME/Downloads")" = 750
+test "$(cat "$HOME/keep/.hidden")" = keep
+rmdir "$HOME/Downloads"
+ln -s keep "$HOME/Downloads"
+sudo systemd-tmpfiles --create --remove --boot "$config" || true
+test "$(cat "$HOME/keep/.hidden")" = keep
+test -L "$HOME/Downloads"`,
+      { HOME: home },
+    );
+    assertEquals(result.code, 0, result.stderr);
+  } finally {
+    await Deno.remove(parent, { recursive: true });
+  }
+});
+
 Deno.test("a failed provider download never executes a partial script", async () => {
   const home = await Deno.makeTempDir();
   try {

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+image=ubuntu-install-scripts-test:26.04
+docker build -f "$repo_dir/test/Dockerfile" -t "$image" "$repo_dir"
+container=$(docker run -d --init --network bridge "$image" sleep infinity)
+trap 'docker rm -f "$container" >/dev/null' EXIT
+docker exec "$container" ./install apply lazyvim
+docker network disconnect bridge "$container"
+docker exec "$container" bash test/editor-offline.sh

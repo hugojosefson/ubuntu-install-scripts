@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates sudo bash git curl gnupg jq unzip xz-utils \
     shellcheck python3 python3-gi gir1.2-glib-2.0 dbus-daemon \
     dconf-cli libglib2.0-bin gsettings-desktop-schemas gnome-settings-daemon-common \
-    desktop-file-utils && rm -rf /var/lib/apt/lists/*
+    desktop-file-utils systemd strace && rm -rf /var/lib/apt/lists/*
 COPY --from=deno /usr/bin/deno /usr/local/bin/deno
 RUN useradd --create-home --shell /bin/bash installer && \
     printf 'installer ALL=(ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/installer && \
